@@ -18,3 +18,21 @@ CREATE TABLE friends (
     imagefile CHAR(64),
     price DECIMAL(6,2)
 );
+
+-- stores all users
+CREATE TABLE users (
+	id INT AUTO_INCREMENT,
+	username VARCHAR,
+	passwordhash VARCHAR,
+	picturefile VARCHAR,
+	primary key(id)
+);
+
+-- stores friendships between users (bidirectional)
+CREATE TABLE friendships (
+	id INT AUTO_INCREMENT,
+	user1 VARCHAR,
+	user2 VARCHAR,
+	status VARCHAR,
+	primary key(id)
+);
