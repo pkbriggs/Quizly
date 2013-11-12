@@ -1,7 +1,9 @@
 package dbconnection;
 
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
+
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSetMetaData;
 import com.mysql.jdbc.Statement;
@@ -38,13 +40,16 @@ public class DBConnection {
 			*the connection. To maintain database info over several sessions
 			*simply comment it out.
 			*/
-			stmt.executeQuery("SOURCE SetUpDatabase.sql");
+			SetUpDatabase();
 		}catch(Exception e){
 			e.printStackTrace();
 			System.out.println("OpenConnection: Could not establish connection: " + e.getMessage());
 		}
 	}
 	
+	/**
+	 * Closes the connection to the mysql database
+	 */
 	public void closeConnection(){
 		try {
 			connection.close();
@@ -54,6 +59,11 @@ public class DBConnection {
 		}
 	}
 	
+	/**
+	 * Executes the query in the database and returns the result set
+	 * @param query
+	 * @return
+	 */
 	public ResultSet executeQuery(String query){
 		ResultSet rs= null;
 		try {
@@ -67,6 +77,30 @@ public class DBConnection {
 		return rs;
 	}
 	
+	/**
+	 * Sets up the database using the sql file SetUpDatabase.sql. 
+	 * This will erase all data in the database, so only use for testing
+	 * purposes.
+	 * @return void
+	 */
+	private void SetUpDatabase(){
+		try {
+			System.out.println(new File("."));
+			BufferedReader reader = new BufferedReader(new FileReader("SetUpDatabase.sql"));
+			StringBuilder sb = new StringBuilder();
+			String line = "";
+			while(( line = reader.readLine() ) != null){
+				sb.append(line);
+			}
+			
+			java.sql.Statement stmt = connection.createStatement();
+			stmt.executeQuery(sb.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+	}
 
 
 }

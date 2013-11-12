@@ -8,7 +8,9 @@
 </head>
 <body>
 <h1>Create Quiz</h1>
-<form action=""></form>
+<form action="">
+Quiz Description: <textarea rows="5" cols="50"></textarea>
+</form>
 <button>Add New Question</button>
 </body>
 </html>
