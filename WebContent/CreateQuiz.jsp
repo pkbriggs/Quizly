@@ -7,6 +7,8 @@
 <title>Create Quiz</title>
 </head>
 <body>
-
+<h1>Create Quiz</h1>
+<form action=""></form>
+<button>Add New Question</button>
 </body>
 </html>

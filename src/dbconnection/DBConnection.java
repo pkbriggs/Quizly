@@ -55,7 +55,16 @@ public class DBConnection {
 	}
 	
 	public ResultSet executeQuery(String query){
-		
+		ResultSet rs= null;
+		try {
+			java.sql.Statement stmt = connection.createStatement();
+			rs = stmt.executeQuery(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return rs;
 	}
 	
 
