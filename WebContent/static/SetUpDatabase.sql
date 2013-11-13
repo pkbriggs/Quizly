@@ -1,38 +1,38 @@
-USE c_cs108_lucyanne;
+USE c_cs108_henna;
 
 DROP TABLE IF EXISTS quizzes, friends, users, friendships;
 /* remove table if it already exists and start from scratch */
 
 CREATE TABLE quizzes (
-	id INT AUTO_INCREMENT,
-    name CHAR(64),
+    id int AUTO_INCREMENT,
+    qname CHAR(64),
     imagefile CHAR(64),
     price DECIMAL(6,2),
-    primary key(id)
+    PRIMARY KEY(id)
 );
 
-/* stores all friendships and freidn requests */
+/* stores all friendships and friend requests */
 CREATE TABLE friends (
-	productid CHAR(6),
-    name CHAR(64),
+    productid CHAR(6),
+    qname CHAR(64),
     imagefile CHAR(64),
     price DECIMAL(6,2)
 );
 
 /* stores all users */
 CREATE TABLE users (
-	id INT AUTO_INCREMENT,
-	username VARCHAR,
-	passwordhash VARCHAR,
-	picturefile VARCHAR,
-	primary key(id)
+    pID int AUTO_INCREMENT,
+    username varchar(255),
+    passwordhash varchar(255),
+    picturefile varchar(255),
+    PRIMARY KEY(pID)
 );
 
 /* stores friendships between users */
 CREATE TABLE friendships (
-	id INT AUTO_INCREMENT,
-	user1 VARCHAR,
-	user2 VARCHAR,
-	status VARCHAR,
-	primary key(id)
+    pID int AUTO_INCREMENT,
+    user1 varchar(255),
+    user2 varchar(255),
+    status varchar(255),
+    PRIMARY KEY(pID)
 );
