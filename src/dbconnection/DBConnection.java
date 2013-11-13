@@ -89,6 +89,7 @@ public class DBConnection {
 		// http://stackoverflow.com/questions/8437240/how-can-i-run-a-script-file-using-the-source-command
 		try {
 			java.sql.Statement stm = connection.createStatement();
+			// http://stackoverflow.com/questions/15506341/where-to-place-a-directory-of-static-files-in-eclipse-dynamic-web-project
 			BufferedReader reader = new BufferedReader(new FileReader(rootPath+"/static/SetUpDatabase.sql"));
 			
 			while (true) {
