@@ -1,7 +1,7 @@
 USE c_cs108_lucyanne;
 
-DROP TABLE IF EXISTS ;
- -- remove table if it already exists and start from scratch
+DROP TABLE IF EXISTS quizzes, friends, users, friendships;
+/* remove table if it already exists and start from scratch */
 
 CREATE TABLE quizzes (
 	id INT AUTO_INCREMENT,
@@ -11,7 +11,7 @@ CREATE TABLE quizzes (
     primary key(id)
 );
 
--- stores all friendships and freidn requests
+/* stores all friendships and freidn requests */
 CREATE TABLE friends (
 	productid CHAR(6),
     name CHAR(64),
@@ -19,7 +19,7 @@ CREATE TABLE friends (
     price DECIMAL(6,2)
 );
 
--- stores all users
+/* stores all users */
 CREATE TABLE users (
 	id INT AUTO_INCREMENT,
 	username VARCHAR,
@@ -28,7 +28,7 @@ CREATE TABLE users (
 	primary key(id)
 );
 
--- stores friendships between users (bidirectional)
+/* stores friendships between users */
 CREATE TABLE friendships (
 	id INT AUTO_INCREMENT,
 	user1 VARCHAR,

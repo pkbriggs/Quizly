@@ -21,9 +21,11 @@ public class DBConnection {
 	private static String server= DBInfo.MYSQL_DATABASE_SERVER;
 
 	private static java.sql.Connection connection;
+	private String rootPath;
 	
-	public DBConnection(){
+	public DBConnection(String rootPath){
 		connection = null;
+		this.rootPath = rootPath;
 		OpenConnection();
 	}
 	
@@ -84,22 +86,56 @@ public class DBConnection {
 	 * @return void
 	 */
 	private void SetUpDatabase(){
+		// http://stackoverflow.com/questions/8437240/how-can-i-run-a-script-file-using-the-source-command
 		try {
-			System.out.println(new File("."));
-			BufferedReader reader = new BufferedReader(new FileReader("SetUpDatabase.sql"));
-			StringBuilder sb = new StringBuilder();
-			String line = "";
-			while(( line = reader.readLine() ) != null){
-				sb.append(line);
-			}
+			java.sql.Statement stm = connection.createStatement();
+			BufferedReader reader = new BufferedReader(new FileReader(rootPath+"/static/SetUpDatabase.sql"));
 			
-			java.sql.Statement stmt = connection.createStatement();
-			stmt.executeQuery(sb.toString());
+			while (true) {
+				String line = reader.readLine();
+				if (line == null) {
+					break;
+				}
+				if (line.trim().length() == 0) {
+					continue;
+				}
+				System.out.println(line);
+				
+				// this is the trick -- you need to pass different SQL to different methods
+				if (line.startsWith("SELECT")) {
+					stm.executeQuery(line);
+				} else if (line.startsWith("UPDATE") || line.startsWith("INSERT")
+						|| line.startsWith("DELETE")) {
+					stm.executeUpdate(line);
+				} else {
+					stm.execute(line);
+				}
+			}
+			stm.close();
+			reader.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
+		
+		
+//		try {
+//			System.out.println(new File("."));
+//			BufferedReader reader = new BufferedReader(new FileReader("SetUpDatabase.sql"));
+//			StringBuilder sb = new StringBuilder();
+//			String line = "";
+//			while(( line = reader.readLine() ) != null){
+//				sb.append(line);
+//			}
+//			
+//			java.sql.Statement stmt = connection.createStatement();
+//			stmt.executeQuery(sb.toString());
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			System.out.println(e.getMessage());
+//		}
 	}
 
 
