@@ -19,6 +19,7 @@ public class MultipleChoice implements Question {
 	public MultipleChoice(){
 		this.correct_answers = new HashSet<String>();
 		this.choices = new ArrayList<String>();
+		this.worth = 1;
 	}
 
 	
@@ -34,7 +35,8 @@ public class MultipleChoice implements Question {
 	@Override
 	public int numPoints(String answer) {
 		if(correct_answers.contains(answer))
-			return this.worth();
+			return this.worth;
+		
 		return 0;
 	}
 	
@@ -71,7 +73,8 @@ public class MultipleChoice implements Question {
 
 	@Override
 	public int worth() {
-		return this.correct_answers.size();
+		//In this case returns the worth of the entire question
+		return this.worth * correct_answers.size();
 	}
 
 
@@ -79,9 +82,5 @@ public class MultipleChoice implements Question {
 	public void setWorth(int worth) {
 		//Sets the worth for each correct answer
 		this.worth = worth;
-		System.out.println("MC worth = " + this.worth);
-	}
-
-
-	
+	}	
 }

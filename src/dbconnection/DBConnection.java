@@ -92,8 +92,14 @@ public class DBConnection {
 			// http://stackoverflow.com/questions/15506341/where-to-place-a-directory-of-static-files-in-eclipse-dynamic-web-project
 			BufferedReader reader = new BufferedReader(new FileReader(rootPath+"/static/SetUpDatabase.sql"));
 			
-			while (true) {
-				String line = reader.readLine();
+			String line;
+			while ((line = reader.readLine()) != null) {
+
+				while(!line.endsWith(";")){
+					line += reader.readLine();
+				}
+				
+				System.out.println(line);
 				if (line == null) {
 					break;
 				}
@@ -109,6 +115,7 @@ public class DBConnection {
 						|| line.startsWith("DELETE")) {
 					stm.executeUpdate(line);
 				} else {
+					System.out.println("About to execute: " + line);
 					stm.execute(line);
 				}
 			}

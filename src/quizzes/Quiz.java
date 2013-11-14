@@ -11,7 +11,7 @@ public class Quiz {
 	private String description;
 	private ArrayList<Question> questions;
 	
-	Quiz(){
+	public Quiz(){
 		questions = new ArrayList<Question>();
 	}
 	
