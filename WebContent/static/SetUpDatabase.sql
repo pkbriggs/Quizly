@@ -1,4 +1,4 @@
-USE c_cs108_henna;
+USE c_cs108_lucyanne;
 
 DROP TABLE IF EXISTS quizzes, friends, users, friendships;
 /* remove table if it already exists and start from scratch */

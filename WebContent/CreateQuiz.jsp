@@ -6,12 +6,21 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Create Quiz</title>
 </head>
+<script src="jquery.js"></script>
+<script>
+$(document).ready(function() {
+  $("your form selector here").submit(function() {
+
+
+  });
+});
+</script>
 <body>
 <h1>Create Quiz</h1>
 
 <!-- This form submits the basic quiz info to the database
 AT THE MOMENT THIS FORM MUST BE SUBMITTED BEFORE STARTING TO CREATE QUESTIONS-->
-<form id= "quiz_info" action="CreateQuiz" method="post">
+<form id= "quiz_info" action="createQuiz()" >
 Title: <textarea rows="1" cols="20"></textarea>
 Description: <textarea rows="5" cols="50"></textarea>
 <input type="submit" value="Start Making Quiz"/>

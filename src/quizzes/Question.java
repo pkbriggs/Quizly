@@ -12,16 +12,17 @@ public interface Question {
 	 * Returns the number of points this answer should receive for
 	 * the question. Allows for questions which may have multiple possible 
 	 * answers.
-	 * @param answers
+	 * @param answer
 	 * @return
 	 */
-	int numPoints(ArrayList<String> answers);
-
+	int numPoints(String answer);
+	
 	/**
 	 * Sets the correct answer(s) to this question. 
 	 * @param answer
 	 */
 	void setCorrectAnswer(List<String> correct_answers);
+	void setCorrectAnswer(String correct_answer);
 	
 	/**
 	 * Sets the question. In the case of a picture-response question

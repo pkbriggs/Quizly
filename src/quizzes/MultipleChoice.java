@@ -2,7 +2,7 @@ package quizzes;
 
 import java.util.*;
 
-public class MultipleChoiceQuestion implements Question {
+public class MultipleChoice implements Question {
 
 	//The set of correct answers to this multiple choice question
 	private Set<String> correct_answers;
@@ -12,12 +12,16 @@ public class MultipleChoiceQuestion implements Question {
 	
 	private String question;
 	
-	public MultipleChoiceQuestion(){
-		this.correct_answers = null;
+	//In this case, worth is the worth for each correct answer
+	//To the multiple choice question
+	private int worth;
+	
+	public MultipleChoice(){
+		this.correct_answers = new HashSet<String>();
+		this.choices = new ArrayList<String>();
 	}
 
 	
-	@Override
 	public int numPoints(ArrayList<String> answers){
 		int numPoints = 0;
 		for(String answer : answers){
@@ -25,9 +29,16 @@ public class MultipleChoiceQuestion implements Question {
 				numPoints++;
 		}
 		
-		return numPoints;
+		return numPoints * this.worth;
 	}
 
+	@Override
+	public int numPoints(String answer) {
+		if(correct_answers.contains(answer))
+			return this.worth();
+		return 0;
+	}
+	
 	@Override
 	public void setCorrectAnswer(List<String> correct_answers) {
 		//add all the submitted answers to the set of possible answers t
@@ -35,6 +46,11 @@ public class MultipleChoiceQuestion implements Question {
 			this.correct_answers.add(answer);
 		}
 		
+	}
+	
+	@Override
+	public void setCorrectAnswer(String correct_answer) {
+		this.correct_answers.add(correct_answer);
 	}
 	
 	/**
@@ -62,8 +78,11 @@ public class MultipleChoiceQuestion implements Question {
 
 	@Override
 	public void setWorth(int worth) {
-		//Should not be used in this case
+		//Sets the worth for each correct answer
+		this.worth = worth;
+		System.out.println("MC worth = " + this.worth);
 	}
-	
+
+
 	
 }

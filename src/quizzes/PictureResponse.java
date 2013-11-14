@@ -2,21 +2,16 @@ package quizzes;
 
 import java.util.*;
 
-public class FillInTheBlank implements Question {
+public class PictureResponse implements Question {
 
-	//the "blank" will be represented by a number of underscores
-	//for example "______"
-	private String question;
-	
-	//There may be one or more correct answers 
-	private Set<String>  correct_answers;
-	
-	//Number of points this question is worth
+	private String image_file;
+	private Set<String> correct_answers;
 	private int worth;
 	
-	FillInTheBlank(){
+	PictureResponse(){
 		this.worth = 1;
 		this.correct_answers = new HashSet<String>();
+		this.image_file = "";
 	}
 	
 	@Override
@@ -28,20 +23,21 @@ public class FillInTheBlank implements Question {
 
 	@Override
 	public void setCorrectAnswer(List<String> correct_answers) {
-		for(String answer : correct_answers){
+		for(String answer: correct_answers){
 			this.correct_answers.add(answer);
 		}
+
 	}
-	
+
 	@Override
 	public void setCorrectAnswer(String correct_answer) {
 		this.correct_answers.add(correct_answer);
 	}
-
+	
 	@Override
 	public void setQuestion(String question) {
-		this.question = question;
-
+		//In this case, question should be a URL to an image
+		this.image_file = question;
 	}
 
 	@Override
@@ -51,7 +47,7 @@ public class FillInTheBlank implements Question {
 
 	@Override
 	public void setWorth(int worth) {
-		this.worth = worth;	
+		this.worth = worth;
 	}
 
 }
