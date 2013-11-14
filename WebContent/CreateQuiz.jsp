@@ -8,9 +8,20 @@
 </head>
 <body>
 <h1>Create Quiz</h1>
-<form action="">
-Quiz Description: <textarea rows="5" cols="50"></textarea>
+
+<!-- This form submits the basic quiz info to the database
+AT THE MOMENT THIS FORM MUST BE SUBMITTED BEFORE STARTING TO CREATE QUESTIONS-->
+<form id= "quiz_info" action="CreateQuiz" method="post">
+Title: <textarea rows="1" cols="20"></textarea>
+Description: <textarea rows="5" cols="50"></textarea>
+<input type="submit" value="Start Making Quiz"/>
 </form>
-<button>Add New Question</button>
+
+<!-- The form for creating a multiple choice question -->
+<form id ="multiple_choice" action ="CreateQuiz" method="post">
+
+<input type="submit" value="Add Question"/>
+</form>
+
 </body>
 </html>
