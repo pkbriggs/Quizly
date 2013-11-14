@@ -6,8 +6,7 @@ DROP TABLE IF EXISTS quizzes, friends, users, friendships;
 CREATE TABLE quizzes (
     id int AUTO_INCREMENT,
     qname CHAR(64),
-    imagefile CHAR(64),
-    price DECIMAL(6,2),
+    quiz BLOB,
     PRIMARY KEY(id)
 );
 
