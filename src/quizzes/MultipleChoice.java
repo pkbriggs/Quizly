@@ -28,7 +28,6 @@ public class MultipleChoice implements Question {
 			if(correct_answers.contains(answer))
 				numPoints++;
 		}
-		
 		return numPoints * this.worth;
 	}
 
