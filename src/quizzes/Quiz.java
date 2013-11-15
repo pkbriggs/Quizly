@@ -4,14 +4,17 @@ import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
 
+import com.mysql.jdbc.PreparedStatement;
+
 import dbconnection.DBConnection;
 
 /*
  * This class will store a series of questions of various types that 
  * can then 
  */
-public class Quiz {
+public class Quiz implements java.io.Serializable{
 
+	private String title;
 	private String description;
 	private ArrayList<Question> questions;
 	private int id;
@@ -23,7 +26,9 @@ public class Quiz {
 	 */
 	public static int pushQuizToDatabase(Quiz quiz, ServletContext context){
 		DBConnection connection = (DBConnection) context.getAttribute("dbconnection");
-		connection.executeQuery("INSERT INTO quizzes (values(\")");
+		String title = quiz.getTitle();
+		
+		connection.executeQuery("INSERT INTO quizzes(qtitle, quiz) values(\""+title+"\", \""+quiz+"\")");
 		return 0;
 	}
 	
@@ -63,5 +68,13 @@ public class Quiz {
 	 */
 	public void addQuestion(Question question){
 		questions.add(question);
+	}
+	
+	/**
+	 * Returns the title of this quiz object
+	 * @return
+	 */
+	public String getTitle(){
+		return this.title;
 	}
 }

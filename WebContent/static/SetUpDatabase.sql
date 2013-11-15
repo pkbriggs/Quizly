@@ -5,9 +5,49 @@ DROP TABLE IF EXISTS quizzes, friends, users, friendships;
 
 CREATE TABLE quizzes (
     id int AUTO_INCREMENT,
-    qname CHAR(64),
-    quiz BLOB,
+    title CHAR(64),
+    description TEXT,
+    creator TINYTEXT,
+    dateCreated DATETIME,
     PRIMARY KEY(id)
+);
+
+/*Each question will have the quizID of the quiz it is associated with*/
+CREATE TABLE multiple_choice (
+    id int AUTO_INCREMENT,
+	quizID int,
+	question TINYTEXT,
+	choice1 CHAR(64),
+	choice2 CHAR(64),
+	choice3 CHAR(64),
+	choice4 CHAR(64),
+	answer CHAR(64),
+	PRIMARY KEY(id)
+
+);
+
+CREATE TABLE fill_in_the_blank (
+    id int AUTO_INCREMENT,
+	quizID int,
+	question TINYTEXT,
+	answer CHAR(64),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE picture_response (
+    id int AUTO_INCREMENT,
+	quizID int,
+	imagefile TINYTEXT,
+	answer CHAR(64),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE question_response (
+    id int AUTO_INCREMENT,
+	quizID int,
+	imagefile TINYTEXT,
+	answer CHAR(64),
+	PRIMARY KEY(id)
 );
 
 /* stores all friendships and friend requests */
