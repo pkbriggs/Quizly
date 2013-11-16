@@ -1,6 +1,6 @@
 USE c_cs108_lucyanne;
 
-DROP TABLE IF EXISTS quizzes, friends, users, friendships;
+DROP TABLE IF EXISTS quizzes, friends, users, friendships, multiple_choice, fill_in_the_blank, picture_response, question_response;
 /* remove table if it already exists and start from scratch */
 
 CREATE TABLE quizzes (
@@ -37,7 +37,7 @@ CREATE TABLE fill_in_the_blank (
 CREATE TABLE picture_response (
     id int AUTO_INCREMENT,
 	quizID int,
-	imagefile TINYTEXT,
+	imageURL TINYTEXT,
 	answer CHAR(64),
 	PRIMARY KEY(id)
 );
@@ -45,7 +45,7 @@ CREATE TABLE picture_response (
 CREATE TABLE question_response (
     id int AUTO_INCREMENT,
 	quizID int,
-	imagefile TINYTEXT,
+	question TINYTEXT,
 	answer CHAR(64),
 	PRIMARY KEY(id)
 );

@@ -4,6 +4,10 @@ import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSetMetaData;
 import com.mysql.jdbc.Statement;
@@ -70,7 +74,17 @@ public class DBConnection {
 		ResultSet rs= null;
 		try {
 			java.sql.Statement stmt = connection.createStatement();
-			rs = stmt.executeQuery(query);
+			// this is the trick -- you need to pass different SQL to different methods
+			if (query.startsWith("SELECT")) {
+				rs = stmt.executeQuery(query);
+			} else if (query.startsWith("UPDATE") || query.startsWith("INSERT")
+					|| query.startsWith("DELETE")) {
+				stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+				rs = stmt.getGeneratedKeys();
+			} else {
+				stmt.execute(query, Statement.RETURN_GENERATED_KEYS);
+				rs = stmt.getGeneratedKeys();
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -108,16 +122,8 @@ public class DBConnection {
 				}
 				System.out.println(line);
 				
-				// this is the trick -- you need to pass different SQL to different methods
-				if (line.startsWith("SELECT")) {
-					stm.executeQuery(line);
-				} else if (line.startsWith("UPDATE") || line.startsWith("INSERT")
-						|| line.startsWith("DELETE")) {
-					stm.executeUpdate(line);
-				} else {
-					System.out.println("About to execute: " + line);
-					stm.execute(line);
-				}
+				this.executeQuery(line);
+
 			}
 			stm.close();
 			reader.close();
@@ -126,25 +132,28 @@ public class DBConnection {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-		
-		
-//		try {
-//			System.out.println(new File("."));
-//			BufferedReader reader = new BufferedReader(new FileReader("SetUpDatabase.sql"));
-//			StringBuilder sb = new StringBuilder();
-//			String line = "";
-//			while(( line = reader.readLine() ) != null){
-//				sb.append(line);
-//			}
-//			
-//			java.sql.Statement stmt = connection.createStatement();
-//			stmt.executeQuery(sb.toString());
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			System.out.println(e.getMessage());
-//		}
+
 	}
 
+	/**
+	 * Helper method for getting a session attribute given a request
+	 * @param request
+	 * @param attribute
+	 * @return
+	 */
+	public static Object GetSessionAttribute(HttpServletRequest request, String attribute){
+		HttpSession session = request.getSession();
+		return session.getAttribute(attribute);
+	}
+
+	/**
+	 * Helper method that Returns the current DBConnection stored in the Servlet Context
+	 * @param request
+	 * @return
+	 */
+	public static DBConnection GetConnection(HttpServletRequest request){
+		ServletContext context = request.getServletContext();
+		return (DBConnection) context.getAttribute("dbconnection");
+	}
 
 }
