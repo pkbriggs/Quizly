@@ -17,10 +17,6 @@ private void createQuiz(){
 %>
 <body>
 <h1>Create Quiz</h1>
-<form id= "initialize_quiz" action="CreateQuiz" method="post">
-<input type = "hidden" name="formID" value ="initialize_quiz"/>
-<input type="submit" value="Initialize Quiz"/>
-</form>
 
 <!-- This form submits the basic quiz info to the database and redirects to the success page-->
 <form id= "quiz_info" action="CreateQuiz" method="post">
