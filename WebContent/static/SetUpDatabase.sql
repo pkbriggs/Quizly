@@ -75,3 +75,14 @@ CREATE TABLE friendships (
     status varchar(255),
     PRIMARY KEY(pID)
 );
+
+CREATE TABLE messages (
+    pID int AUTO_INCREMENT,
+    fromUser varchar(255),
+    toUser varchar(255), 
+    mType int,
+    message TEXT,
+    seen TINYINT(1),
+    quizID int,
+    PRIMARY KEY(pID)
+);
