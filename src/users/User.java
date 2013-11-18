@@ -5,6 +5,10 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.servlet.ServletContext;
+
+import dbconnection.DBConnection;
+
 /**
  * @class User
  * This will be a static class will be stored as a context attribute 
@@ -19,9 +23,32 @@ public class User {
 	 * @param pass the plain-text password
 	 * @return true if the password is correct, false otherwise
 	 */
-	public static boolean checkPassword(int userID, String pass) {
+	public static boolean checkPassword(int userID, String pass, ServletContext context) {
 		String sql = String.format("SELECT passwordhash FROM users WHERE id = %d;", userID);
-		ResultSet results = null; // db.executeQuery(sql)
+		return checkPasswordHelper(sql, pass, context);
+	}
+	
+	/**
+	 * Given a @username, will compare the hashed @pass to the hashed password associated with the user's account.
+	 * @param userID
+	 * @param pass the plain-text password
+	 * @return true if the password is correct, false otherwise
+	 */
+	public static boolean checkPassword(String username, String pass, ServletContext context) {
+		String sql = String.format("SELECT passwordhash FROM users WHERE username = '%s';", username);
+		return checkPasswordHelper(sql, pass, context);
+	}
+	
+	/**
+	 * Helper method for checking a user's password - 
+	 * Will compare the hashed @pass to the hashed password associated with the user's account.
+	 * @param sql the SQL string specifying the query
+	 * @param pass the plain-text password
+	 * @return true if the password is correct, false otherwise
+	 */
+	private static boolean checkPasswordHelper(String sql, String pass, ServletContext context) {
+		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
+		ResultSet results = db.executeQuery(sql);
 		
 		try {
 			if (results.next()) {
@@ -46,10 +73,12 @@ public class User {
 	 * @param username
 	 * @param pass
 	 */
-	public static void createUser(String username, String pass) {
+	public static void createUser(String username, String pass, ServletContext context) {
+		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
+		
 		String hashedPass = generatePasswordHash(pass);
 		String sql = String.format("INSERT INTO users (username, passwordhash) VALUES ('%s', '%s');", username, hashedPass);
-		// db.executeQuery(sql)
+		db.executeQuery(sql);
 	}
 	
 	/**
