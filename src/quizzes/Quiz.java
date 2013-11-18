@@ -189,13 +189,24 @@ public class Quiz{
 	 * makes Question objects out of them, and adds them to the quizzes 
 	 * array of questions so they can be printed
 	 */
-	private ArrayList<Question> findQuestionsInDatabase(DBConnection connection){
+	public ArrayList<Question> findQuestionsInDatabase(DBConnection connection){
 		ArrayList<Question> questions = new ArrayList<Question>();
 		
 		//Multiple Choice Questions
 		ResultSet rs = connection.executeQuery("SELECT * FROM multiple_choice WHERE quizID="+this.id);
 		AddQuestions(rs, questions, Question.MULTIPLE_CHOICE);
 		
+		//Fill in the blank questions
+		rs = connection.executeQuery("SELECT * FROM fill_in_the_blank WHERE quizID="+this.id);
+		AddQuestions(rs, questions, Question.FILL_IN_THE_BLANK);
+		
+		//Add the question response questions
+		rs = connection.executeQuery("SELECT * FROM question_response WHERE quizID="+this.id);
+		AddQuestions(rs, questions, Question.QUESTION_RESPONSE);
+		
+		//Add the picture-response questions
+		rs = connection.executeQuery("SELECT * FROM picture_response WHERE quizID="+this.id);
+		AddQuestions(rs, questions, Question.PICTURE_RESPONSE);
 		return questions;
 	}
 	
@@ -203,7 +214,7 @@ public class Quiz{
 			int type) {
 		try {
 			while(rs.next()){
-				Question question = new Question(rs, type);
+				Question question = new Question(rs, type, rs.getRow());
 				questions.add(question);
 			}
 		} catch (SQLException e) {

@@ -18,8 +18,11 @@ public class Question {
 	private int type ;
 	private String html;
 	private String answer;
-	Question(ResultSet rs, int type){
+	private int questionIndex;
+	
+	Question(ResultSet rs, int type, int questionIndex){
 		this.type = type;
+		this.questionIndex= questionIndex;
 		try {
 			this.answer = rs.getString("answer");
 		} catch (SQLException e) {
@@ -29,20 +32,50 @@ public class Question {
 		
 		switch(type){
 		case FILL_IN_THE_BLANK:
-			this.html = FillInTheBlankToHtml(rs);
+			this.html = FillInTheBlankToHtml(rs, questionIndex);
 			break;
 		case MULTIPLE_CHOICE:
-			this.html = MultipleChoiceToHtml(rs);
+			this.html = MultipleChoiceToHtml(rs, questionIndex);
 			break;
 		case PICTURE_RESPONSE:
-			this.html = PictureResponseToHtml(rs);
+			this.html = PictureResponseToHtml(rs, questionIndex);
 			break;
 		case QUESTION_RESPONSE:
-			this.html = QuestionResponseToHtml(rs);
+			this.html = QuestionResponseToHtml(rs, questionIndex);
 			break;
 		default:
 			break;
 		}
+	}
+	
+	/**
+	 * Returns the HTML associated with this question
+	 * @return
+	 */
+	public String getHTML(){
+		return this.html;
+	}
+	
+	/**
+	 * Returns the html information that begins each question's form
+	 * @param questionIndex
+	 * @param type
+	 * @return
+	 */
+	private String formHeader(int questionIndex, int type){
+		String html = "";
+		html+="<form action='QuizRunner' method='post'>";
+		html+="<input type='hidden' name='question' value='"+questionIndex+"'/>";
+		html+="<input type='hidden' name='type' value='"+type+"'/>";
+		html+="<input type='hidden' name='type' value='"+type+"'/>";
+		html+="<p>" + questionIndex + ") ";
+		return html;
+	}
+	
+	private String formFooter(){
+		String html= "";
+		html +="</form><p>";
+		return html;
 	}
 	
 	/**
@@ -52,8 +85,9 @@ public class Question {
 	 * @param rs
 	 * @return
 	 */
-	private String FillInTheBlankToHtml(ResultSet rs){
+	private String FillInTheBlankToHtml(ResultSet rs, int questionIndex){
 		StringBuilder html = new StringBuilder();
+		html.append(formHeader(questionIndex, QUESTION_RESPONSE));
 		String question ="";
 		try {
 			question = rs.getString("question");
@@ -66,6 +100,7 @@ public class Question {
 		return html.toString();
 	}
 	
+
 	/**
 	 * Takes the information about a multiple choice question 
 	 * from the row the result set @rs is pointing, and creates an
@@ -73,8 +108,9 @@ public class Question {
 	 * @param rs
 	 * @return
 	 */
-	private String MultipleChoiceToHtml(ResultSet rs){
+	private String MultipleChoiceToHtml(ResultSet rs, int questionIndex){
 		StringBuilder html = new StringBuilder();
+		html.append(formHeader(questionIndex, MULTIPLE_CHOICE));
 		String question="";
 		String choice1 = "";
 		String choice2 = "";
@@ -96,7 +132,8 @@ public class Question {
 		html.append("<input type='radio' value='"+choice2+"'/><p>" );
 		html.append("<input type='radio' value='"+choice3+"'/><p>" );
 		html.append("<input type='radio' value='"+choice4+"'/><p>" );
-
+		
+		html.append(formFooter());
 		return html.toString();
 	}
 	
@@ -107,8 +144,9 @@ public class Question {
 	 * @param rs
 	 * @return
 	 */
-	private String PictureResponseToHtml(ResultSet rs){
+	private String PictureResponseToHtml(ResultSet rs, int questionIndex){
 		StringBuilder html = new StringBuilder();
+		html.append(formHeader(questionIndex, PICTURE_RESPONSE));
 		String imageURL = "";
 		try {
 			imageURL = rs.getString("imageURL");
@@ -118,6 +156,8 @@ public class Question {
 		}
 		html.append("<img src='"+imageURL+"'/>");
 		html.append("<input type='text' name='answer'/>");
+		html.append(formFooter());
+
 		return html.toString();	
 	}
 	
@@ -128,8 +168,9 @@ public class Question {
 	 * @param rs
 	 * @return
 	 */
-	private String QuestionResponseToHtml(ResultSet rs){
+	private String QuestionResponseToHtml(ResultSet rs, int questionIndex){
 		StringBuilder html = new StringBuilder();
+		html.append(formHeader(questionIndex, QUESTION_RESPONSE));
 		String question = "";
 		try {
 			question = rs.getString("question");
@@ -139,6 +180,8 @@ public class Question {
 		}
 		html.append(question);
 		html.append("<input type='text' name='answer'/>");
+		html.append(formFooter());
+
 		return html.toString();	
 	}
 	
