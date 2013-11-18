@@ -19,6 +19,8 @@ public class Message{
 	
 	
 	public static Message createMessage(String text, int userIDFrom, int userIDTo, int type, int quizID){
+		String sql = "INSERT into messages (fromUser, toUser, mType, message, quizID)" + " VALUES ('"
+				+ userIDFrom + "', '" + userIDTo + "', '" + type + "', '" + text + "', '" + quizID + "')";
 		Message m = null;
 		
 		if(type == 0){
