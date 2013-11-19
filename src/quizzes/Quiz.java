@@ -24,20 +24,19 @@ public class Quiz{
 	private String title;
 	private String description;
 	private ArrayList<Question> questions;
+	private ArrayList<Question> unsaved_questions;
 	private int id;
 	private String dateCreated;
+	private boolean inDatabase;
 	//TODO add the user info
 	
 	Quiz(){
-		//Creates an uninitialized quiz object, to be filled out later
-	}
-	
-	//This constructor creates an entirely new quiz and adds it to the database
-	Quiz(DBConnection connection){
 		this.title = "";
 		this.description = "";
 		this.dateCreated = GetDate();
-		this.id = initializeQuizToDatabase(connection);
+		this.id= -1;
+		this.inDatabase = false;
+		this.unsaved_questions = new ArrayList<Question>();
 	}
 	
 	/*This constructor retrieves information from the database for the quizID
@@ -52,6 +51,7 @@ public class Quiz{
 			e.printStackTrace();
 		}
 		FillWithInfoFromRow(this, rs);
+		this.inDatabase = true;
 	}
 	
 	/**
@@ -176,12 +176,29 @@ public class Quiz{
 	}
 	
 	/**
+	 * Adds a question that has not yet been sent to the database
+	 * to the list of unsaved questions
+	 * @param request
+	 */
+	
+	public void addQuestion(HttpServletRequest request, int type){
+		Question question = new Question(request, type);
+		unsaved_questions.add(question);	
+	}
+	
+	/**
 	 * Stores this quizzes information in the database
 	 * @param connection
 	 */
 	public void updateQuizInDB( DBConnection connection){
 		//TODO update the creator as well
-		connection.executeQuery("UPDATE quizzes SET title="+this.title+", description="+this.description+" WHERE quizID=" + this.id);
+		if(!this.inDatabase){
+			this.id = this.initializeQuizToDatabase(connection);
+			this.inDatabase = true;
+		}
+		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"' WHERE id=" + this.id);
+		saveQuestionsToDatabase(this.id);
+		
 	}
 	
 	/**
@@ -189,7 +206,7 @@ public class Quiz{
 	 * makes Question objects out of them, and adds them to the quizzes 
 	 * array of questions so they can be printed
 	 */
-	public ArrayList<Question> findQuestionsInDatabase(DBConnection connection){
+	private ArrayList<Question> findQuestionsInDatabase(DBConnection connection){
 		ArrayList<Question> questions = new ArrayList<Question>();
 		
 		//Multiple Choice Questions
@@ -229,13 +246,14 @@ public class Quiz{
 	 * @param query, connection
 	 * @return
 	 */
-	public static ArrayList<Quiz> GetArrayOfQuizzes(String query, DBConnection connection){
+	private static ArrayList<Quiz> GetArrayOfQuizzes(String query, DBConnection connection){
 		ResultSet rs = connection.executeQuery(query);
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
 		try {
 			while(rs.next()){
 				Quiz quiz = new Quiz();
 				FillWithInfoFromRow(quiz, rs);
+				System.out.println("After filling with Info: quizID=" + quiz.getID() + " quizTitle= "+ quiz.getTitle()  +  " datecreated = "+ quiz.dateCreated);
 				quizzes.add(quiz);
 			}
 		} catch (SQLException e) {
@@ -244,6 +262,47 @@ public class Quiz{
 		}
 		
 		return quizzes;
+	}
+	
+	/**
+	 * Lists the quizzes searched according to @query and returns an 
+	 * html string 
+	 * @param query
+	 * @param request
+	 * @param response
+	 */
+	public static String quizzesToHTML(String query, HttpServletRequest request){
+		DBConnection connection = DBConnection.GetConnection(request);
+		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes(query, connection);
+		String html = "";
+		for(Quiz quiz: quizzes){
+			html+=("<a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + " HEERE</a><p>");
+		}
+		
+		return html;
+	}
+	
+	/**
+	 * Returns all the Questions of this Quiz in the form of an HTML String
+	 * that can be displayed on the screen.
+	 * @return 
+	 */
+	public String QuestionsToHTML( DBConnection connection){
+		ArrayList<Question> questions = this.findQuestionsInDatabase(connection);
+		System.out.println("Numquestoins = " +questions.size());
+		String html = "";
+		for(Question question: questions){
+			html+= question.getHTML();
+		}
+		
+		return html;
+	}
+	
+	
+	private void saveQuestionsToDatabase(int quizID){
+		for(Question question: this.unsaved_questions){
+			question.saveToDatabase(quizID);
+		}
 	}
 		
 }

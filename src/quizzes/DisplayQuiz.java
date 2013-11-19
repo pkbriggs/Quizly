@@ -32,18 +32,35 @@ public class DisplayQuiz extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		System.out.println("In the get");
+		String quizID = request.getParameter("id");
+		System.out.println("id="+ quizID);
+
+		if(quizID != null){
+			DBConnection connection = DBConnection.GetConnection(request);
+			Quiz quiz = new Quiz(Integer.parseInt(quizID), connection);
+			PrintQuizToScreen(connection, response, quiz);
+		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Integer quizID = Integer.parseInt( request.getParameter("quiz_id") );
-		DBConnection connection = DBConnection.GetConnection(request);
-		Quiz quiz = new Quiz(quizID, connection);
-		PrintQuizToScreen(connection, response, quiz);
+		String formID = request.getParameter("formID");
+		System.out.println("Made it to ");
+
+		if(formID != null && formID.equals("list_quizzes")){
+			System.out.println("Im thisblock/");
+			PrintWriter out = response.getWriter();
+			String outStr = Quiz.quizzesToHTML("SELECT * FROM quizzes" , request);
+			out.println(outStr);	
+			return;
+		}
+
 	}
+	
+
 
 	private void PrintQuizToScreen(DBConnection connection, HttpServletResponse response, Quiz quiz){
 		PrintWriter out = null;
@@ -55,27 +72,14 @@ public class DisplayQuiz extends HttpServlet {
 		}
 		PrintHeader(out);
 		out.println("<body>");
-		out.append(QuestionsToHTML(quiz, connection));
+		String questions = quiz.QuestionsToHTML(connection);
+		out.append(questions);
+		System.out.println("Questions html =" + questions );
 		out.append("<form method='post' action='QuizRunner'>");
 		out.append("<input type='hidden' name='question' value='submit'>");
-		out.append("<input type='submit' value='submit_quiz'/>");
+		out.append("<input type='submit' value='Submit Quiz'/>");
 		out.append("</form>");
 
-	}
-	
-	/**
-	 * Returns all the Questions of this Quiz in the form of an HTML String
-	 * that can be displayed on the screen.
-	 * @return 
-	 */
-	private String QuestionsToHTML(Quiz quiz, DBConnection connection){
-		ArrayList<Question> questions = quiz.findQuestionsInDatabase(connection);
-		String html = "";
-		for(Question question: questions){
-			html+= question.getHTML();
-		}
-		
-		return html;
 	}
 	
 	/**

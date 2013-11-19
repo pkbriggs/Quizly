@@ -7,20 +7,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Create or Take a Quiz</title>
 </head>
-<%!
-private void listQuizzes(){
-	ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes();
-}
-%>
 <body>
 <form id= "initialize_quiz" action="CreateQuiz" method="post">
 <input type = "hidden" name="formID" value ="initialize_quiz"/>
 <input type="submit" value="Create new Quiz"/>
 </form>
 
-<form action ="TakeQuiz" method="post">
-Take Quiz: 
-<% listQuizzes(); %>
+<form action ="DisplayQuiz" method="post">
+<input type = "hidden" name="formID" value ="list_quizzes"/>
 <input type="submit" value="Take Quiz"/>
 </form>
 

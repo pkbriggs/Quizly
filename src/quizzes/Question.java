@@ -18,11 +18,16 @@ public class Question {
 	private int type ;
 	private String html;
 	private String answer;
-	private int questionIndex;
+	private String question;
+	private HttpServletRequest request;
+	
+	Question(HttpServletRequest request, int type){
+		this.request = request;
+		this.type= type;
+	}
 	
 	Question(ResultSet rs, int type, int questionIndex){
 		this.type = type;
-		this.questionIndex= questionIndex;
 		try {
 			this.answer = rs.getString("answer");
 		} catch (SQLException e) {
@@ -185,35 +190,34 @@ public class Question {
 		return html.toString();	
 	}
 	
-	public static void addQuestionToDatabase(HttpServletRequest request, int type){
-		switch(type){
+	public void saveToDatabase(int quizID){
+		switch(this.type){
 		case FILL_IN_THE_BLANK:
-			FillInTheBlankToDatabase(request);
+			FillInTheBlankToDatabase(quizID);
 			break;
 		case MULTIPLE_CHOICE:
-			MultipleChoiceToDatabase(request);
+			MultipleChoiceToDatabase(quizID);
 			break;
 		case PICTURE_RESPONSE:
-			PictureResponseToDatabase(request);
+			PictureResponseToDatabase(quizID);
 			break;
 		case QUESTION_RESPONSE:
-			QuestionResponseToDatabase(request);
+			QuestionResponseToDatabase(quizID);
 			break;
 		default:
 			break;
 		}
 	}
 	
-	public static void MultipleChoiceToDatabase(HttpServletRequest request){
-		DBConnection connection  = DBConnection.GetConnection(request);
-		Integer quizID = GetCurrentQuizID(request);
+	public void MultipleChoiceToDatabase(int quizID){
+		DBConnection connection  = DBConnection.GetConnection(this.request);
 		
-		String choice1 = request.getParameter("choice1");
-		String choice2 = request.getParameter("choice2");
-		String choice3 = request.getParameter("choice3");
-		String choice4 = request.getParameter("choice4");
-		String answer = request.getParameter("radio");
-		String question = request.getParameter("question");
+		String choice1 = this.request.getParameter("choice1");
+		String choice2 = this.request.getParameter("choice2");
+		String choice3 = this.request.getParameter("choice3");
+		String choice4 = this.request.getParameter("choice4");
+		String answer = this.request.getParameter("radio");
+		String question = this.request.getParameter("question");
 		System.out.println("Quiz ID = " + quizID); 
 		connection.executeQuery("INSERT INTO multiple_choice"
 				+ "(quizID, question, answer, choice1, choice2, choice3, choice4)"
@@ -226,12 +230,11 @@ public class Question {
 	 * Creates a new fill in the blank question for the quiz being created
 	 * @param request
 	 */
-	public static void FillInTheBlankToDatabase(HttpServletRequest request) {
-		DBConnection connection  = DBConnection.GetConnection(request);
-		Integer quizID = GetCurrentQuizID(request);
+	public void FillInTheBlankToDatabase(int quizID) {
+		DBConnection connection  = DBConnection.GetConnection(this.request);
 
-		String question = request.getParameter("question");
-		String answer = request.getParameter("answer");
+		String question = this.request.getParameter("question");
+		String answer = this.request.getParameter("answer");
 		
 		String query = "INSERT INTO fill_in_the_blank"
 				+ "(quizID, question, answer) VALUES("
@@ -244,16 +247,14 @@ public class Question {
 	 * Creates a new question-response question for the quiz being created
 	 * @param request
 	 */
-	public static void QuestionResponseToDatabase(HttpServletRequest request) {
-		DBConnection connection  = DBConnection.GetConnection(request);
-		Integer quizID = GetCurrentQuizID(request);
+	public void QuestionResponseToDatabase(int quizID) {
+		DBConnection connection  = DBConnection.GetConnection(this.request);
 
-		String question = request.getParameter("question");
-		String answer = request.getParameter("answer");
+		String question = this.request.getParameter("question");
+		String answer = this.request.getParameter("answer");
 		String query = "INSERT INTO question_response"
 				+ "(quizID, question, answer) VALUES("
 				+ "\""+String.valueOf(quizID)+"\", \""+question+"\", \""+answer+"\")";
-		System.out.println("Query " + query);
 		connection.executeQuery(query);
 		
 	}
@@ -262,26 +263,14 @@ public class Question {
 	 * Creates a new picture-response question for the quiz being created
 	 * @param request
 	 */
-	public static void PictureResponseToDatabase(HttpServletRequest request) {
-		DBConnection connection  = DBConnection.GetConnection(request);
-		Integer quizID = GetCurrentQuizID(request);
+	public void PictureResponseToDatabase(int quizID) {
+		DBConnection connection  = DBConnection.GetConnection(this.request);
 
-		String imageURL = request.getParameter("question");
-		String answer = request.getParameter("answer");
+		String imageURL = this.request.getParameter("question");
+		String answer = this.request.getParameter("answer");
 		
 		connection.executeQuery("INSERT INTO picture_response"
 				+ "(quizID, imageURL, answer) VALUES("
 				+ "\""+String.valueOf(quizID)+"\", \""+imageURL+"\", \""+answer+"\")");
 	}
-	
-	/**
-	 * Retrieves the quizID of the current quiz being created of this session
-	 * @param request
-	 * @return
-	 */
-	private static Integer GetCurrentQuizID(HttpServletRequest request){
-		Quiz quiz = (Quiz) DBConnection.GetSessionAttribute(request, "quiz_being_created");
-		return quiz.getID();
-	}
-
 }

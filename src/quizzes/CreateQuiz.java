@@ -52,20 +52,31 @@ public class CreateQuiz extends HttpServlet {
 		if(formID.equals("initialize_quiz")){
 			InitializeQuiz(request, connection);
 		}
-		if(formID.equals("quiz_info")){
+		
+		HttpSession session = request.getSession();
+		Quiz currQuiz = (Quiz) session.getAttribute("quiz_being_created");
+		
+		if(formID.equals("submit_quiz")){
 			AddQuizToDatabase(request, connection);
+			RequestDispatcher dispatch = request.getRequestDispatcher("TesterFile.jsp");
+			dispatch.forward(request, response);
+			return;
 		}
 		if(formID.equals("multiple_choice")){
-			Question.addQuestionToDatabase(request, Question.MULTIPLE_CHOICE);
+			Question question = new Question(request, Question.MULTIPLE_CHOICE);
+			currQuiz.addQuestion(question);
 		}
 		if(formID.equals("fill_in_the_blank")){
-			Question.addQuestionToDatabase(request, Question.FILL_IN_THE_BLANK);
+			Question question = new Question(request, Question.FILL_IN_THE_BLANK);
+			currQuiz.addQuestion(question);
 		}
 		if(formID.equals("question_response")){
-			Question.addQuestionToDatabase(request, Question.QUESTION_RESPONSE);
+			Question question = new Question(request, Question.QUESTION_RESPONSE);
+			currQuiz.addQuestion(question);
 		}
 		if(formID.equals("picture_response")){
-			Question.addQuestionToDatabase(request, Question.PICTURE_RESPONSE);
+			Question question = new Question(request, Question.PICTURE_RESPONSE);
+			currQuiz.addQuestion(question);
 		}
 		
 		RequestDispatcher dispatch = request.getRequestDispatcher("CreateQuiz.jsp");
@@ -96,7 +107,7 @@ public class CreateQuiz extends HttpServlet {
 	 * @param connection
 	 */
 	private void InitializeQuiz(HttpServletRequest request, DBConnection connection){
-		Quiz newQuiz = new Quiz(connection);
+		Quiz newQuiz = new Quiz();
 		HttpSession session = request.getSession();
 		session.setAttribute("quiz_being_created", newQuiz);
 	}
