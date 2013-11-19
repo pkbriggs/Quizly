@@ -9,7 +9,7 @@ $( document ).ready(function() {
 		$( "form[name='submit_quiz']" ).submit(function( event ) {
 			event.preventDefault();
 			
-			$("form").each(function() {			
+			$(".question").each(function() {			
 				alert( "Submitting form =" + this.name );
 
 				if(this.name != "submit_quiz"){

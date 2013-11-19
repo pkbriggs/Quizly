@@ -134,7 +134,7 @@ public class DisplayQuiz extends HttpServlet {
 	 */
 	private String questionHeader(int type, int questionID){
 		String html = "";
-		html+="<form name= 'question"+questionID+"' action='QuizRunner' method='post'>";
+		html+="<form name= 'question"+questionID+"' action='QuizRunner' method='post' class='question'>";
 		html+="<input type='hidden' name='questionID' value='"+questionID+"'/>";
 		html+="<input type='hidden' name='type' value='"+type+"'/>";
 		html+="<p>" + questionID + ") ";
