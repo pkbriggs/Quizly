@@ -6,15 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Create Quiz</title>
 </head>
-<script src="jquery.js"></script>
 <%@ page import="java.util.*, quizzes.Quiz" %>
-<%!
-
-private void createQuiz(){
-	
-	
-};
-%>
 <body>
 <h1>Create Quiz</h1>
 

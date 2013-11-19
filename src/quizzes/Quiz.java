@@ -81,6 +81,10 @@ public class Quiz{
 		this.id = id;
 	}
 	
+	public int numQuestions(){
+		return this.questions.size();
+	}
+	
 	/**
 	 * Sets the dateCreated of this quiz object to @date
 	 * @param date
