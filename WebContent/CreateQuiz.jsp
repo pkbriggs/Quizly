@@ -45,7 +45,7 @@ Choices: <p><input type="radio" name="radio" value="1"><input type="text" name="
 <h2>New Fill-In-The-Blank Question</h2>
 <p><em>Type in the question with a series of underscores like this: "______" to indicate where the participant should fill in their answer</em><p>
 Question: <input type="text" name="question" size="50"/><p>
-Answer: <input type="text" name="response" size="50"/><p>
+Answer: <input type="text" name="answer" size="50"/><p>
 <input type = "hidden" name="formID" value = "fill_in_the_blank"/>
 <input type="submit" value="Add Question"/>
 </form>
@@ -55,7 +55,7 @@ Answer: <input type="text" name="response" size="50"/><p>
 <h2>New Question-Response</h2>
 <p><em>Type in the question and then the correct response</em><p>
 Question: <input type="text" name="question" size="50"/><p>
-Response: <input type="text" name="response" size="50"/><p>
+Response: <input type="text" name="answer" size="50"/><p>
 <input type = "hidden" name="formID" value = "question_response"/>
 <input type="submit" value="Add Question"/>
 </form>
@@ -65,7 +65,7 @@ Response: <input type="text" name="response" size="50"/><p>
 <h2>New Picture-Response</h2>
 <p><em>Type in the URL of the photo and then the correct response</em><p>
 Photo URL: <input type="text" name="photo" size="50"/><p>
-Response: <input type="text" name="response" size="50"/><p>
+Response: <input type="text" name="answer" size="50"/><p>
 <input type = "hidden" name="formID" value = "picture_response"/>
 <input type="submit" value="Add Question"/>
 </form>

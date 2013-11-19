@@ -23,8 +23,9 @@ public class Quiz{
 
 	private String title;
 	private String description;
-	private ArrayList<Question> questions;
 	private ArrayList<Question> unsaved_questions;
+	private ArrayList<Question> questions;
+
 	private int id;
 	private String dateCreated;
 	private boolean inDatabase;
@@ -36,7 +37,7 @@ public class Quiz{
 		this.dateCreated = GetDate();
 		this.id= -1;
 		this.inDatabase = false;
-		this.unsaved_questions = new ArrayList<Question>();
+		unsaved_questions = new ArrayList<Question>();
 	}
 	
 	/*This constructor retrieves information from the database for the quizID
@@ -145,10 +146,10 @@ public class Quiz{
 	
 	/**
 	 * Adds a question to the list of questions 
-	 * @param Question question
+	 * @param QuestionOld question
 	 */
 	public void addQuestion(Question question){
-		questions.add(question);
+		unsaved_questions.add(question);
 	}
 	
 	/**
@@ -176,17 +177,6 @@ public class Quiz{
 	}
 	
 	/**
-	 * Adds a question that has not yet been sent to the database
-	 * to the list of unsaved questions
-	 * @param request
-	 */
-	
-	public void addQuestion(HttpServletRequest request, int type){
-		Question question = new Question(request, type);
-		unsaved_questions.add(question);	
-	}
-	
-	/**
 	 * Stores this quizzes information in the database
 	 * @param connection
 	 */
@@ -197,8 +187,7 @@ public class Quiz{
 			this.inDatabase = true;
 		}
 		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"' WHERE id=" + this.id);
-		saveQuestionsToDatabase(this.id);
-		
+		saveQuestionsToDatabase(connection, this.id);
 	}
 	
 	/**
@@ -206,7 +195,7 @@ public class Quiz{
 	 * makes Question objects out of them, and adds them to the quizzes 
 	 * array of questions so they can be printed
 	 */
-	private ArrayList<Question> findQuestionsInDatabase(DBConnection connection){
+	public ArrayList<Question> loadQuestionsFromDB(DBConnection connection){
 		ArrayList<Question> questions = new ArrayList<Question>();
 		
 		//Multiple Choice Questions
@@ -224,14 +213,30 @@ public class Quiz{
 		//Add the picture-response questions
 		rs = connection.executeQuery("SELECT * FROM picture_response WHERE quizID="+this.id);
 		AddQuestions(rs, questions, Question.PICTURE_RESPONSE);
+		
+		this.questions = questions;
 		return questions;
 	}
 	
 	private void AddQuestions(ResultSet rs, ArrayList<Question> questions,
 			int type) {
+		Question question  = null;
 		try {
 			while(rs.next()){
-				Question question = new Question(rs, type, rs.getRow());
+				switch(type){
+				case Question.MULTIPLE_CHOICE:
+					question = new MultipleChoice(rs, questions.size() + 1);
+					break;
+				case Question.FILL_IN_THE_BLANK:
+					question = new FillInTheBlank(rs, questions.size() + 1);
+					break;
+				case Question.PICTURE_RESPONSE:
+					question = new PictureResponse(rs, questions.size() + 1);
+					break;
+				case Question.QUESTION_RESPONSE:
+					question = new QuestionResponse(rs, questions.size() + 1);
+					break;
+				}
 				questions.add(question);
 			}
 		} catch (SQLException e) {
@@ -246,7 +251,7 @@ public class Quiz{
 	 * @param query, connection
 	 * @return
 	 */
-	private static ArrayList<Quiz> GetArrayOfQuizzes(String query, DBConnection connection){
+	public static ArrayList<Quiz> GetArrayOfQuizzes(String query, DBConnection connection){
 		ResultSet rs = connection.executeQuery(query);
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
 		try {
@@ -264,44 +269,11 @@ public class Quiz{
 		return quizzes;
 	}
 	
-	/**
-	 * Lists the quizzes searched according to @query and returns an 
-	 * html string 
-	 * @param query
-	 * @param request
-	 * @param response
-	 */
-	public static String quizzesToHTML(String query, HttpServletRequest request){
-		DBConnection connection = DBConnection.GetConnection(request);
-		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes(query, connection);
-		String html = "";
-		for(Quiz quiz: quizzes){
-			html+=("<a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + " HEERE</a><p>");
-		}
-		
-		return html;
-	}
 	
-	/**
-	 * Returns all the Questions of this Quiz in the form of an HTML String
-	 * that can be displayed on the screen.
-	 * @return 
-	 */
-	public String QuestionsToHTML( DBConnection connection){
-		ArrayList<Question> questions = this.findQuestionsInDatabase(connection);
-		System.out.println("Numquestoins = " +questions.size());
-		String html = "";
-		for(Question question: questions){
-			html+= question.getHTML();
-		}
-		
-		return html;
-	}
-	
-	
-	private void saveQuestionsToDatabase(int quizID){
+	private void saveQuestionsToDatabase(DBConnection connection, int quizID){
 		for(Question question: this.unsaved_questions){
-			question.saveToDatabase(quizID);
+			question.setQuizID(quizID);
+			question.saveToDatabase(connection);
 		}
 	}
 		

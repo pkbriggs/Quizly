@@ -63,19 +63,19 @@ public class CreateQuiz extends HttpServlet {
 			return;
 		}
 		if(formID.equals("multiple_choice")){
-			Question question = new Question(request, Question.MULTIPLE_CHOICE);
+			Question question = new MultipleChoice(request);
 			currQuiz.addQuestion(question);
 		}
 		if(formID.equals("fill_in_the_blank")){
-			Question question = new Question(request, Question.FILL_IN_THE_BLANK);
+			Question question = new FillInTheBlank(request);
 			currQuiz.addQuestion(question);
 		}
 		if(formID.equals("question_response")){
-			Question question = new Question(request, Question.QUESTION_RESPONSE);
+			Question question = new QuestionResponse(request);
 			currQuiz.addQuestion(question);
 		}
 		if(formID.equals("picture_response")){
-			Question question = new Question(request, Question.PICTURE_RESPONSE);
+			Question question = new PictureResponse(request);
 			currQuiz.addQuestion(question);
 		}
 		
