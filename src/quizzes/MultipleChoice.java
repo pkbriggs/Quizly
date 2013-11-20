@@ -24,7 +24,8 @@ public class MultipleChoice implements Question {
 		this.choices.add(request.getParameter("choice2"));
 		this.choices.add(request.getParameter("choice3"));
 		this.choices.add(request.getParameter("choice4"));
-		this.answer = request.getParameter("radio");
+		int checked = Integer.parseInt(request.getParameter("radio"));
+		this.answer = request.getParameter("choice"+ checked);
 		this.question = request.getParameter("question");
 	}
 	

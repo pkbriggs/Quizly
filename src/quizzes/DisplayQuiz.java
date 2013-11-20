@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import dbconnection.DBConnection;
 
@@ -41,7 +42,13 @@ public class DisplayQuiz extends HttpServlet {
 		if(quizID != null){
 			DBConnection connection = DBConnection.GetConnection(request);
 			Quiz quiz = new Quiz(Integer.parseInt(quizID), connection);
-			PrintQuizToScreen(quiz, connection, response);
+			ArrayList<Question> questions = quiz.loadQuestionsFromDB(connection);
+			
+			//Set the session attribute
+			HttpSession session = request.getSession();
+			session.setAttribute("curr_quiz_questions", questions);
+			
+			PrintQuizToScreen(questions, connection, response);
 		}
 	}
 
@@ -73,7 +80,7 @@ public class DisplayQuiz extends HttpServlet {
 		return html;
 	}
 
-	private void PrintQuizToScreen(Quiz quiz, DBConnection connection, HttpServletResponse response){
+	private void PrintQuizToScreen(ArrayList<Question> questions, DBConnection connection, HttpServletResponse response){
 		PrintWriter out = null;
 		
 		try {
@@ -88,21 +95,18 @@ public class DisplayQuiz extends HttpServlet {
 		out.println("<html xmlns='http://www.w3.org/1999/xhtml'>");
 		out.println("<head>");
 		out.println("<script src='jquery.js'></script>");
-		out.println("<script src='SubmitQuizHelpers.js'></script>");
 		out.println("<title>"+PAGE_TITLE+"</title>");
 		out.println("</head>");
 		out.println("<body>");
-		out.println("<form name='submit_quiz' id='submit_quiz' method='post'>");
-		out.println(QuestionsToHTML(quiz, connection));
-		out.println("<input type='hidden' name='num_questions' value='"+quiz.numQuestions()+"'/>");
+		out.println("<form name='submit_quiz' action='ScoreQuiz' method='post'>");
+		out.println(QuestionsToHTML(questions, connection));
 		out.println("<input type='hidden' name='question' value='submit'>");
 		out.println("<input type='submit' id='submit_button' value='Submit Quiz'/>");
 		out.println("</form>");
 
 	}
 	
-	private String QuestionsToHTML(Quiz quiz, DBConnection connection){
-		ArrayList<Question> questions = quiz.loadQuestionsFromDB(connection);
+	private String QuestionsToHTML(ArrayList<Question> questions, DBConnection connection){
 		System.out.println("Numquestions = " +questions.size());
 		String html = "";
 		for(Question question: questions){
@@ -122,7 +126,7 @@ public class DisplayQuiz extends HttpServlet {
 				break;
 			}
 		}
-		
+		System.out.println(html);
 		return html;
 	}
 	
@@ -134,17 +138,13 @@ public class DisplayQuiz extends HttpServlet {
 	 */
 	private String questionHeader(int type, int questionID){
 		String html = "";
-		html+="<form name= 'question"+questionID+"' action='QuizRunner' method='post' class='question'>";
-		html+="<input type='hidden' name='questionID' value='"+questionID+"'/>";
-		html+="<input type='hidden' name='type' value='"+type+"'/>";
+		html+="<div name= 'question"+questionID+"' class='question'>";
 		html+="<p>" + questionID + ") ";
 		return html;
 	}
 	
 	private String questionFooter(){
-		String html= "";
-		html +="</form><p>";
-		return html;
+		return "</div><p>";
 	}
 	
 	/**
@@ -157,9 +157,9 @@ public class DisplayQuiz extends HttpServlet {
 	private String FillInTheBlankToHtml(FillInTheBlank question){
 		StringBuilder html = new StringBuilder();
 		html.append(questionHeader(Question.QUESTION_RESPONSE, question.getQuestionID()));
+		
 		String questionStr =question.getQuestion();
-		System.out.println("question: " + question);
-		questionStr = questionStr.replaceAll(" _+", "<input type='text' name='answer'/>");
+		questionStr = questionStr.replaceAll(" _+", "<input type='text' name='answer"+question.getQuestionID()+"'/>");
 		
 		html.append(questionStr);
 		return html.toString();
@@ -184,10 +184,10 @@ public class DisplayQuiz extends HttpServlet {
 		String choice4 = choices.get(3);
 
 		html.append(questionStr + "<p>");
-		html.append("<input type='radio' value='"+choice1+"'/>"+choice1+"<p>" );
-		html.append("<input type='radio' value='"+choice2+"'/>"+choice2+"<p>" );
-		html.append("<input type='radio' value='"+choice3+"'/>"+choice3+"<p>" );
-		html.append("<input type='radio' value='"+choice4+"'/>"+choice4+"<p>" );
+		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice1+"'/>"+choice1+"<p>" );
+		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice2+"'/>"+choice2+"<p>" );
+		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice3+"'/>"+choice3+"<p>" );
+		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice4+"'/>"+choice4+"<p>" );
 		
 		html.append(questionFooter());
 		return html.toString();
@@ -205,7 +205,7 @@ public class DisplayQuiz extends HttpServlet {
 		html.append(questionHeader(Question.PICTURE_RESPONSE, question.getQuestionID()));
 		String imageURL = question.getQuestion();
 		html.append("<img src='"+imageURL+"'/>");
-		html.append("<input type='text' name='answer'/>");
+		html.append("<input type='text' name='answer"+question.getQuestionID()+"'/>");
 		html.append(questionFooter());
 
 		return html.toString();	
@@ -223,7 +223,7 @@ public class DisplayQuiz extends HttpServlet {
 		html.append(questionHeader(Question.QUESTION_RESPONSE, question.getQuestionID()));
 		String questionStr = question.getQuestion();
 		html.append(questionStr);
-		html.append("<input type='text' name='answer'/>");
+		html.append("<input type='text' name='answer"+question.getQuestionID()+"'/>");
 		html.append(questionFooter());
 
 		return html.toString();	
