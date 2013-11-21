@@ -55,19 +55,17 @@ public class ScoreQuiz extends HttpServlet {
 	private int ScoreQuestion(HttpServletRequest request, Question question){
 		int type = question.getType();
 		int questionID = question.getQuestionID();
-		String correctResponse = question.getAnswer();
 		String response = "";
 		System.out.println("Scoring question =" + question.getQuestion());
 		
 		if(type == Question.MULTIPLE_CHOICE){
 			response = request.getParameter("radio"+questionID);
-			System.out.println("response = "+ response + " correct response ="+ correctResponse);
 		}
 		else{
 			response = request.getParameter("answer"+questionID);
 		}
 		
-		int score =  (response.equals(correctResponse)) ? 1 : 0;
+		int score =  (question.isCorrect(response)) ? 1 : 0;
 		System.out.println("Score: "+ score);
 		return score;
 	}

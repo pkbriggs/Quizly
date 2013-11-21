@@ -1,6 +1,7 @@
 package quizzes;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -62,21 +63,29 @@ public class CreateQuiz extends HttpServlet {
 			dispatch.forward(request, response);
 			return;
 		}
-		if(formID.equals("multiple_choice")){
-			Question question = new MultipleChoice(request);
-			currQuiz.addQuestion(question);
-		}
-		if(formID.equals("fill_in_the_blank")){
-			Question question = new FillInTheBlank(request);
-			currQuiz.addQuestion(question);
-		}
-		if(formID.equals("question_response")){
-			Question question = new QuestionResponse(request);
-			currQuiz.addQuestion(question);
-		}
-		if(formID.equals("picture_response")){
-			Question question = new PictureResponse(request);
-			currQuiz.addQuestion(question);
+		try{
+			if(formID.equals("multiple_choice")){
+				Question question = new MultipleChoice(request);
+				currQuiz.addQuestion(question);
+			}
+			if(formID.equals("fill_in_the_blank")){
+				Question question = new FillInTheBlank(request);
+				currQuiz.addQuestion(question);
+			}
+			if(formID.equals("question_response")){
+				Question question = new QuestionResponse(request);
+				currQuiz.addQuestion(question);
+			}
+			if(formID.equals("picture_response")){
+				Question question = new PictureResponse(request);
+				currQuiz.addQuestion(question);
+			}
+		}catch(Exception e){
+			PrintWriter out = response.getWriter();
+			out.println("Whoopsie!");
+			out.println(e.getMessage());
+			out.println("Go back to try again");
+			return;
 		}
 		
 		RequestDispatcher dispatch = request.getRequestDispatcher("CreateQuiz.jsp");

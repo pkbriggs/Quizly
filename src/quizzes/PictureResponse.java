@@ -1,5 +1,6 @@
 package quizzes;
 
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -16,9 +17,15 @@ public class PictureResponse implements Question {
 	private int quizID;
 	private int questionID;
 	
-	PictureResponse(HttpServletRequest request){
-		this.imgURL = request.getParameter("question");
-		this.answer = request.getParameter("answer");
+	PictureResponse(HttpServletRequest request)
+		throws Exception{
+		try{
+			this.imgURL = SanitizeURL(request);
+			this.answer = SanitizeAnswer(request);
+		}catch(Exception e){
+			throw new Exception(e.getMessage());
+		}
+		
 	}
 	
 	PictureResponse(ResultSet rs, int questionID){
@@ -31,6 +38,29 @@ public class PictureResponse implements Question {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	private String SanitizeURL(HttpServletRequest request)
+		throws Exception{
+		String imgURL = request.getParameter("question");
+		try{
+			URL u = new URL(imgURL); 
+			u.toURI();
+		}catch(Exception e){
+			throw new Exception("Please enter a valid URL for the image location.");
+		}
+		return imgURL;
+	}
+	
+	/**
+	 * Takes in a @request and returns a sanitized answer
+	 * @param request
+	 * @return
+	 */
+	private String SanitizeAnswer(HttpServletRequest request){
+		String answer = request.getParameter("answer");
+		answer = answer.trim();
+		answer = answer.toLowerCase();
+		return answer;
 	}
 	
 	@Override
@@ -53,8 +83,10 @@ public class PictureResponse implements Question {
 	}
 
 	@Override
-	public String getAnswer() {
-		return this.answer;
+	public boolean isCorrect(String response) {
+		response = response.trim();
+		response = response.toLowerCase();
+		return this.answer.equals(response);
 	}
 
 	@Override

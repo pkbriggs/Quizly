@@ -18,15 +18,60 @@ public class MultipleChoice implements Question {
 	private int quizID;
 	private int questionID;
 	
-	MultipleChoice(HttpServletRequest request){
-		this.choices = new ArrayList<String>();
-		this.choices.add(request.getParameter("choice1"));
-		this.choices.add(request.getParameter("choice2"));
-		this.choices.add(request.getParameter("choice3"));
-		this.choices.add(request.getParameter("choice4"));
+	MultipleChoice(HttpServletRequest request)
+		throws Exception{
+		try{
+		this.choices = SanitizeChoices(request);
+		this.answer = SanitizeAnswer(request);		
+		this.question = SanitizeQuestion(request);
+		}catch(Exception e){
+			System.out.println("This is e: "+ e.getMessage());
+			throw new Exception(e.getMessage());
+		}
+	}
+
+	private String SanitizeQuestion(HttpServletRequest request) 
+		throws Exception{
+		String question = request.getParameter("question");
+		if(question.equals("")){
+			throw new Exception("No question provided. Please try again.");
+		}
+		return question;
+	}
+
+	private ArrayList<String> SanitizeChoices(HttpServletRequest request) 
+		throws Exception{
+		ArrayList<String >choices = new ArrayList<String>();
+		String choice1 = request.getParameter("choice1");
+		String choice2 = request.getParameter("choice2");
+		String choice3 = request.getParameter("choice3");
+		String choice4 = request.getParameter("choice4");
+
+		if(choice1.equals("") ||choice2.equals("")||choice3.equals("")||choice4.equals("")){
+			throw new Exception("One of the choices was left blank. Please try again.");
+		}
+		
+		choices.add(choice1);
+		choices.add(choice2);
+		choices.add(choice3);
+		choices.add(choice4);
+		return null;
+	}
+
+	/**
+	 * Takes in a @request and returns a sanitized answer
+	 * @param request
+	 * @return
+	 */
+	private String SanitizeAnswer(HttpServletRequest request)
+		throws Exception{
 		int checked = Integer.parseInt(request.getParameter("radio"));
-		this.answer = request.getParameter("choice"+ checked);
-		this.question = request.getParameter("question");
+		String answer = request.getParameter("choice"+ checked);
+		if(answer.equals(null))
+			throw new Exception("Correct answer for multiple choice question not selected. Please go back and try again.");
+		answer = answer.trim();
+		answer = answer.toLowerCase();
+		return answer;
 	}
 	
 	MultipleChoice(ResultSet rs, int questionID){
@@ -70,8 +115,10 @@ public class MultipleChoice implements Question {
 	}
 
 	@Override
-	public String getAnswer() {
-		return this.answer;
+	public boolean isCorrect(String response) {
+		response = response.trim();
+		response = response.toLowerCase();
+		return this.answer.equals(response);
 	}
 
 	public ArrayList<String> getChoices(){
