@@ -28,12 +28,6 @@ public interface Question {
 	public String getQuestion();
 	
 	/**
-	 * Returns the question associated with this question
-	 * @return
-	 */
-	public String getAnswer();
-	
-	/**
 	 * Returns the questionID associated with this question
 	 * @return
 	 */
@@ -44,4 +38,10 @@ public interface Question {
 	 * @return
 	 */
 	public int getType();
+	
+	/**
+	 * Returns whether the response is correct or not for this question
+	 * @return
+	 */
+	public boolean isCorrect(String response);
 }

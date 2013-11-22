@@ -35,9 +35,7 @@ public class DisplayQuiz extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("In the get");
 		String quizID = request.getParameter("id");
-		System.out.println("id="+ quizID);
 
 		if(quizID != null){
 			DBConnection connection = DBConnection.GetConnection(request);
@@ -49,6 +47,7 @@ public class DisplayQuiz extends HttpServlet {
 			session.setAttribute("curr_quiz_questions", questions);
 			
 			PrintQuizToScreen(questions, connection, response);
+			session.setAttribute("start_time", System.currentTimeMillis());
 		}
 	}
 

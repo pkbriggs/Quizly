@@ -5,6 +5,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Create Quiz</title>
+<script src='jquery.js'></script>
+<script src='CreateQuizHelpers.js'></script>
 </head>
 <%@ page import="java.util.*, quizzes.Quiz" %>
 <body>
@@ -37,8 +39,12 @@ Choices: <p><input type="radio" name="radio" value="1"><input type="text" name="
 <h2>New Fill-In-The-Blank Question</h2>
 <p><em>Type in the question with a series of underscores like this: "______" to indicate where the participant should fill in their answer</em><p>
 Question: <input type="text" name="question" size="50"/><p>
-Answer: <input type="text" name="answer" size="50"/><p>
+<div id='fib_answers'>
+<input type='hidden' id='fib_num_answers' name='fib_num_answers' value='1'/>
+Correct Answer(s): <input type="text" name="answer0" size="50"/><p>
+</div>
 <input type = "hidden" name="formID" value = "fill_in_the_blank"/>
+<input type="button" id='add_fib_answer' value="Add Another Answer"/>
 <input type="submit" value="Add Question"/>
 </form>
 
@@ -47,8 +53,12 @@ Answer: <input type="text" name="answer" size="50"/><p>
 <h2>New Question-Response</h2>
 <p><em>Type in the question and then the correct response</em><p>
 Question: <input type="text" name="question" size="50"/><p>
-Response: <input type="text" name="answer" size="50"/><p>
+<div id='qr_answers'>
+<input type='hidden' id='qr_num_answers' name='qr_num_answers' value='1'/>
+Correct Answer(s): <input type="text" name="answer0" size="50"/><p>
+</div>
 <input type = "hidden" name="formID" value = "question_response"/>
+<input type="button" id='add_qr_answer' value="Add Another Answer"/>
 <input type="submit" value="Add Question"/>
 </form>
 
@@ -57,8 +67,12 @@ Response: <input type="text" name="answer" size="50"/><p>
 <h2>New Picture-Response</h2>
 <p><em>Type in the URL of the photo and then the correct response</em><p>
 Photo URL: <input type="text" name="photo" size="50"/><p>
-Response: <input type="text" name="answer" size="50"/><p>
+<div id='pr_answers'>
+<input type='hidden' id='pr_num_answers' name='pr_num_answers' value='1'/>
+Correct Answer(s): <input type="text" name="answer0" size="50"/><p>
+</div>
 <input type = "hidden" name="formID" value = "picture_response"/>
+<input type="button" id='add_pr_answer' value="Add Another Answer"/>
 <input type="submit" value="Add Question"/>
 </form>
 </body>

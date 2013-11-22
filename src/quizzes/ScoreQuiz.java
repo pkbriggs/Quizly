@@ -46,28 +46,43 @@ public class ScoreQuiz extends HttpServlet {
 		}
 		double score = (double) numCorrect / questions.size();
 		
+		long seconds = GetTime(request);
+		System.out.println("num seconds:"+ seconds);
+		
+		int minutes = (int) seconds / 60;
+		System.out.println("num minutes:"+ minutes);
+		
+		if(minutes > 0)
+			seconds = seconds % minutes;
+		
 		PrintWriter out = response.getWriter();
 		out.println("You scored: " + score);
+		out.println("It took you "+ minutes + " minutes and " + seconds+ " seconds to complete this quiz");
 		out.println("Great Job!");
 
+	}
+	
+	private long GetTime(HttpServletRequest request){
+		HttpSession session = request.getSession();
+		long startTime = (Long) session.getAttribute("start_time");
+		long endTime = System.currentTimeMillis();
+		return (endTime - startTime)/1000;
 	}
 	
 	private int ScoreQuestion(HttpServletRequest request, Question question){
 		int type = question.getType();
 		int questionID = question.getQuestionID();
-		String correctResponse = question.getAnswer();
 		String response = "";
 		System.out.println("Scoring question =" + question.getQuestion());
 		
 		if(type == Question.MULTIPLE_CHOICE){
 			response = request.getParameter("radio"+questionID);
-			System.out.println("response = "+ response + " correct response ="+ correctResponse);
 		}
 		else{
 			response = request.getParameter("answer"+questionID);
 		}
 		
-		int score =  (response.equals(correctResponse)) ? 1 : 0;
+		int score =  (question.isCorrect(response)) ? 1 : 0;
 		System.out.println("Score: "+ score);
 		return score;
 	}
