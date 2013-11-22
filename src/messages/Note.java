@@ -5,19 +5,20 @@ import java.sql.SQLException;
 
 public class Note extends Message{
 
-	private boolean hasBeenRead;
+	private int hasBeenRead;
 	
-	public Note(int userIDFrom, int userIDTo, String message) {
-		super(userIDFrom, userIDTo, message);
+	public Note(int ID, int userIDFrom, int userIDTo, String message) {
+		super(ID, userIDFrom, userIDTo, message);
 		mType = 0;
-		hasBeenRead = false;
+		hasBeenRead = 0;
+		addToRecieved();
 	}
 	
-	public boolean getRead(){
+	public int getRead(){
 		return hasBeenRead;
 	}
 	
 	public void setRead(){
-		hasBeenRead = true;
+		hasBeenRead = 1;
 	}
 }
