@@ -1,8 +1,13 @@
 package messages;
 
-import users.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import dbconnection.DBConnection;
 
 
 /**
@@ -10,53 +15,77 @@ import java.sql.SQLException;
  * This is a static class that should be used to manage the messaging and challenging
  * functionality between 2 users.
  */
-public class Message{
-	protected String text;
-	protected int fromID;
-	protected int toID;
-	protected int quizID;
-	protected int mType;  //0 for text, 1 for challenge (maybe 2 for friend request)
+public class Message {        
+	public String username;        
+	public String recipientName;        
+	public String message;        
+	public String title;        
+	public String dateCreated;        
+	public Message(String username, String recipientName, String message, String title, String dateCreated) {                
+		this.username = username;                
+		this.recipientName = recipientName;                
+		this.message = message;                
+		this.title = title;                
+		this.dateCreated = dateCreated;        
+	}
+
+	public static void sendMessage(DBConnection conn, String username, String recipientName, String message, String title) {                
+		DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");                
+		Date date = new Date();                
+		String stringDate = dateFormat.format(date);                
+		String query = "INSERT into messages" + " (fromUser, toUser, message, title, dateCreated) VALUES ('" + 
+		username + "', '" + recipientName + "', '" + message + "', '" + title + "', '" + stringDate + "')";                                   
+		conn.executeQuery(query);                
+	}
+
+	public static ArrayList<Message> getSentMessagesFor(DBConnection conn, String username, int limit) {                
+		String query = "SELECT * FROM messages" + " WHERE fromUser = '" + username + "'";                
+		if (limit > 0) {                        
+			query += " LIMIT " + limit;                
+		}                
+		ArrayList<Message> messages = new ArrayList<Message>();                  
+		ResultSet rs = conn.executeQuery(query);                        
+		try {
+			while (rs.next()) {                                
+				messages.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));                        
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}                           
+		return messages;        
+	}
 	
+	public static ArrayList<Message> getMessagesFor(DBConnection conn, String username, int limit) {                
+		String query = "SELECT * FROM messages" + " WHERE toUser = '" + username + "'";                
+		if (limit > 0) {                        
+			query += " LIMIT " + limit;                
+		}                
+		ArrayList<Message> messages = new ArrayList<Message>();  
+		ResultSet rs = conn.executeQuery(query);
+		try {                                                
+			while (rs.next()) {                                
+				messages.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));                        
+			}                
+		} catch (SQLException e) {                        
+			e.printStackTrace();                
+		}                
+		return messages;        
+	}
 	
-	public static Message createMessage(String text, int userIDFrom, int userIDTo, int type, int quizID){
-		String sql = "INSERT into messages (fromUser, toUser, mType, message, quizID)" + " VALUES ('"
-				+ userIDFrom + "', '" + userIDTo + "', '" + type + "', '" + text + "', '" + quizID + "')";
-		Message m = null;
-		
-		if(type == 0){
-			m = new Note(userIDFrom, userIDTo, text);
+	public static ArrayList<Message> getMessagesFromTo(DBConnection conn, String From, String To, int limit){
+		String query = "SELECT * FROM messages" + " WHERE toUser = '" + To + "' AND fromUser = '" + From + "'";
+		if (limit > 0){
+			query += " LIMIT " + limit;
 		}
-		
-		else if(type == 1){
-			m = new Challenge(userIDFrom, userIDTo, text, quizID);
-		}
-		return m;
+		ArrayList<Message> messages = new ArrayList<Message>();
+		ResultSet rs = conn.executeQuery(query);
+		try{
+			while (rs.next()){
+				messages.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));
+			}
+		} catch (SQLException e) {                        
+			e.printStackTrace();                
+		}              
+		return messages;  
 	}
-	
-	public Message(int userIDFrom, int userIDTo, String message){
-		text = message;
-		fromID = userIDFrom;
-		toID = userIDTo;
-	}
-	
-	public void addToRecentActivity(){
-		
-	}
-	
-	public void addToRecieved(){
-		
-	}
-	
-	public String getMessage(){
-		return text;
-	}
-	
-	public int getUserFrom(){
-		return fromID;
-	}
-	
-	public int getUserTo(){
-		return toID;
-	}
-	
 }
