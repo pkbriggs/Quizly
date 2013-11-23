@@ -17,6 +17,12 @@
 <input type = "hidden" name="formID" value ="submit_quiz"/>
 Title: <textarea rows="1" cols="20" name="title"></textarea>
 <p>Description: <textarea rows="5" cols="50" name="description"></textarea>
+<p>Display on Multiple Pages: <input type='checkbox' name='multiple_pages' id='multiple_pages' value='multiple_pages'/>
+<div id='multiple_pages_section'>
+<label id='pages_label'>Number of questions per page:</label>
+<input type='text' id='questions_per_page' name='questions_per_page'/>
+</div>
+Number of questions so far: <label id='num_questions_so_far'>0</label>
 <input type="submit" value="Submit Quiz"/>
 </form>
 

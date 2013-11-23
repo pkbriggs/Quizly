@@ -2,7 +2,11 @@ package dbconnection;
 
 import java.io.*;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -155,5 +159,17 @@ public class DBConnection {
 		ServletContext context = request.getServletContext();
 		return (DBConnection) context.getAttribute("dbconnection");
 	}
+	
+	/**
+	 * Returns the current date in the form "yyyy-MM-dd HH:mm:ss"
+	 * Useful for getting a date string to place in database
+	 * @return
+	 */
+	public static String GetDate(){
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date currentTime = Calendar.getInstance().getTime();		
+		return dateFormat.format(currentTime);
+	}
+	
 
 }

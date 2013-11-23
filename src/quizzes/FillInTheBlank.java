@@ -151,4 +151,13 @@ public class FillInTheBlank implements Question {
 	public int getType() {
 		return type;
 	}
+	
+	@Override
+	public String toString(){
+		String str = "Question: " + this.question + " id: "+ this.questionID + " QuizID: "+ this.quizID;
+		for(int i = 0; i < this.answers.size();i++){
+			str += " Answer"+i+ " : "+ this.answers.get(i) + " \n";
+		}
+		return str;
+	}
 }

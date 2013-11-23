@@ -21,7 +21,7 @@ import dbconnection.DBConnection;
 @WebServlet("/DisplayQuiz")
 public class DisplayQuiz extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private static final String PAGE_TITLE = "Good luck with this Doozy!";
+    private static final String PAGE_TITLE = "Take Quiz";
     
     /**
      * @see HttpServlet#HttpServlet()
@@ -40,13 +40,12 @@ public class DisplayQuiz extends HttpServlet {
 		if(quizID != null){
 			DBConnection connection = DBConnection.GetConnection(request);
 			Quiz quiz = new Quiz(Integer.parseInt(quizID), connection);
-			ArrayList<Question> questions = quiz.loadQuestionsFromDB(connection);
+
+			PrintNextPage(quiz, connection, response);
 			
 			//Set the session attribute
 			HttpSession session = request.getSession();
-			session.setAttribute("curr_quiz_questions", questions);
-			
-			PrintQuizToScreen(questions, connection, response);
+			session.setAttribute("curr_quiz", quiz);
 			session.setAttribute("start_time", System.currentTimeMillis());
 		}
 	}
@@ -56,13 +55,22 @@ public class DisplayQuiz extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String formID = request.getParameter("formID");
-
 		if(formID != null && formID.equals("list_quizzes")){
 			PrintWriter out = response.getWriter();
 			
-			String outStr = listQuizzes(request);//Quiz.quizzesToHTML("SELECT * FROM quizzes" , request);
+			String outStr = listQuizzes(request);
 			out.println(outStr);	
 			return;
+		}
+		
+		//this is the case where the request has been forwarded from ScoreQuiz
+		else{
+			DBConnection connection = DBConnection.GetConnection(request);
+
+			HttpSession session = request.getSession();
+			Quiz quiz = (Quiz) session.getAttribute("curr_quiz");
+			
+			PrintNextPage(quiz, connection, response);
 		}
 
 	}
@@ -79,7 +87,8 @@ public class DisplayQuiz extends HttpServlet {
 		return html;
 	}
 
-	private void PrintQuizToScreen(ArrayList<Question> questions, DBConnection connection, HttpServletResponse response){
+	private void PrintNextPage(Quiz quiz, DBConnection connection, HttpServletResponse response){
+		ArrayList<Question> questions = quiz.getPageQuestions();
 		PrintWriter out = null;
 		
 		try {
@@ -98,9 +107,16 @@ public class DisplayQuiz extends HttpServlet {
 		out.println("</head>");
 		out.println("<body>");
 		out.println("<form name='submit_quiz' action='ScoreQuiz' method='post'>");
+		out.println("<h2>"+quiz.getTitle()+"</h2><p>");
+		out.println("<h2>Page: "+ quiz.getCurrPage()+"</h2><p>");
+		out.println("<em>"+quiz.getDescription()+"</em>");
+
+		out.println("Practice Mode: <input type='checkbox' name='practice_mode' value='practice_mode'/>");
 		out.println(QuestionsToHTML(questions, connection));
 		out.println("<input type='hidden' name='question' value='submit'>");
-		out.println("<input type='submit' id='submit_button' value='Submit Quiz'/>");
+		
+		String submit_text = (quiz.isLastPage()) ? "Submit Quiz" : "Next Page";
+		out.println("<input type='submit' id='submit_button' value='"+submit_text+"'/>");
 		out.println("</form>");
 
 	}
@@ -137,8 +153,8 @@ public class DisplayQuiz extends HttpServlet {
 	 */
 	private String questionHeader(int type, int questionID){
 		String html = "";
-		html+="<div name= 'question"+questionID+"' class='question'>";
-		html+="<p>" + questionID + ") ";
+		html+="<div name= 'question"+questionID +"' class='question'>";
+		html+="<p>" + (questionID + 1) + ") ";
 		return html;
 	}
 	

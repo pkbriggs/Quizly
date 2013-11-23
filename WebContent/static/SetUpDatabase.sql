@@ -9,7 +9,18 @@ CREATE TABLE quizzes (
     description TEXT,
     creator TINYTEXT,
     dateCreated DATETIME,
+    numPages INT,
     PRIMARY KEY(id)
+);
+
+CREATE TABLE scores (
+    pID int AUTO_INCREMENT,
+    username varchar(255),
+	quizID int,
+	time BIGINT,
+	score DOUBLE,
+	dateTaken DATETIME,
+	PRIMARY KEY(id)
 );
 
 /*Each question will have the quizID of the quiz it is associated with*/
