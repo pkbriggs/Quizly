@@ -1,17 +1,13 @@
 package messages;
 
-import users.*;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import dbconnection.DBConnection;
-import dbconnection.DBInfo;
 
 
 /**
@@ -19,83 +15,77 @@ import dbconnection.DBInfo;
  * This is a static class that should be used to manage the messaging and challenging
  * functionality between 2 users.
  */
-public class Message{
-	protected String text;
-	protected int fromID;
-	protected int toID;
-	protected int quizID;
-	protected int mType;  //0 for text, 1 for challenge, 2 for friend request
-	protected int ID;
-		
-	public static Message createMessage(DBConnection connection, String text, int userIDFrom, int userIDTo, int type, int quizID){
-		String sql = "INSERT INTO messages(fromUser, toUser, mType, message, quizID)" + " values ('"
-				+ userIDFrom + "', '" + userIDTo + "', '" + type + "', '" + text + "', '" + quizID + "')";
-		ResultSet rs = connection.executeQuery(sql);
-		int ID = -1;
+public class Message {        
+	public String username;        
+	public String recipientName;        
+	public String message;        
+	public String title;        
+	public String dateCreated;        
+	public Message(String username, String recipientName, String message, String title, String dateCreated) {                
+		this.username = username;                
+		this.recipientName = recipientName;                
+		this.message = message;                
+		this.title = title;                
+		this.dateCreated = dateCreated;        
+	}
+
+	public static void sendMessage(DBConnection conn, String username, String recipientName, String message, String title) {                
+		DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");                
+		Date date = new Date();                
+		String stringDate = dateFormat.format(date);                
+		String query = "INSERT into messages" + " (fromUser, toUser, message, title, dateCreated) VALUES ('" + 
+		username + "', '" + recipientName + "', '" + message + "', '" + title + "', '" + stringDate + "')";                                   
+		conn.executeQuery(query);                
+	}
+
+	public static ArrayList<Message> getSentMessagesFor(DBConnection conn, String username, int limit) {                
+		String query = "SELECT * FROM messages" + " WHERE fromUser = '" + username + "'";                
+		if (limit > 0) {                        
+			query += " LIMIT " + limit;                
+		}                
+		ArrayList<Message> messages = new ArrayList<Message>();                  
+		ResultSet rs = conn.executeQuery(query);                        
 		try {
-			if(rs.next()){
-				ID = rs.getInt(1);
+			while (rs.next()) {                                
+				messages.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));                        
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}                           
+		return messages;        
+	}
+	
+	public static ArrayList<Message> getMessagesFor(DBConnection conn, String username, int limit) {                
+		String query = "SELECT * FROM messages" + " WHERE toUser = '" + username + "'";                
+		if (limit > 0) {                        
+			query += " LIMIT " + limit;                
+		}                
+		ArrayList<Message> messages = new ArrayList<Message>();  
+		ResultSet rs = conn.executeQuery(query);
+		try {                                                
+			while (rs.next()) {                                
+				messages.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));                        
+			}                
+		} catch (SQLException e) {                        
+			e.printStackTrace();                
+		}                
+		return messages;        
+	}
+	
+	public static ArrayList<Message> getMessagesFromTo(DBConnection conn, String From, String To, int limit){
+		String query = "SELECT * FROM messages" + " WHERE toUser = '" + To + "' AND fromUser = '" + From + "'";
+		if (limit > 0){
+			query += " LIMIT " + limit;
 		}
-		Message m = null;
-		
-		if(type == 0){
-			m = new Note(ID, userIDFrom, userIDTo, text);
-		}
-		
-		else if(type == 1){
-			m = new Challenge(ID, userIDFrom, userIDTo, text, quizID);
-		}	
-		else if(type == 2){
-			//m = new FriendRequest(ID, userIDFrom, userIDTo, text, quizID);
-		}
-		return m;
+		ArrayList<Message> messages = new ArrayList<Message>();
+		ResultSet rs = conn.executeQuery(query);
+		try{
+			while (rs.next()){
+				messages.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));
+			}
+		} catch (SQLException e) {                        
+			e.printStackTrace();                
+		}              
+		return messages;  
 	}
-	
-	public Message(int id, int userIDFrom, int userIDTo, String message){
-		text = message;
-		fromID = userIDFrom;
-		toID = userIDTo;
-		this.ID = id;
-	}
-	
-	public void addToRecentActivity(){
-		
-	}
-	
-	/*
-	 * Get all the messages TO the given user. 
-	 * @param userIDTo
-	 */
-	public void addToRecieved(){
-		//User userTo = getUser(toID);
-		//List<Integer> messagesRecieved = userTo.getUserMessages();
-		//messagesRecieved.add(0, ID);
-		//userTo.setRecievedMessages(messagesRecieved);
-	}
-	
-	public String getMessage(){
-		return text;
-	}
-	
-	public int getUserFrom(){
-		return fromID;
-	}
-	
-	public int getUserTo(){
-		return toID;
-	}
-	
-	public int getType(){
-		return mType;
-	}
-
-	//public static void main(String[] args) {
-	//	DBConnection conn = new DBConnection("C:/Users/Sohung/Desktop/Quizly/WebContent");
-	//	Message myDB = createMessage(conn, "hello", 0, 1, 0, 2);
-	//}
-
 }
