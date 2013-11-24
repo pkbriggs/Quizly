@@ -20,7 +20,10 @@ import dbconnection.DBConnection;
  * to users
  */
 public class User {
-
+	
+	private List<Integer> recievedMessages;
+	private List<Integer> quizzesTaken;
+	
 	/**
 	 * Given a @userID, will compare the hashed @pass to the hashed password associated with the user's account.
 	 * @param userID
@@ -192,6 +195,17 @@ public class User {
 	
 	
 	// Private helper methods
+	public List<Integer> getUserMessages(){
+		return recievedMessages;
+	}
+	
+	public void setRecievedMessages(List<Integer> messages){
+		recievedMessages = messages;
+	}
+	
+	public List<Integer> getQuizzesTaken(){
+		return quizzesTaken;
+	}
 	
 	/**
 	 * Given a plan-text password, generates a SHA hash.
@@ -228,5 +242,7 @@ public class User {
 		}
 		return buff.toString();
 	}
+	
+	
 	
 }

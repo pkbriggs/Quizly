@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import dbconnection.DBConnection;
 
 /**
  * Servlet implementation class QuizRunner
@@ -36,37 +39,74 @@ public class ScoreQuiz extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		HttpSession session = request.getSession();
-		ArrayList<Question> questions = (ArrayList<Question>) session.getAttribute("curr_quiz_questions");
+		boolean practice_mode = request.getParameter("practice_mode")!= null;
 		
-		int numCorrect = 0;
-		for(int i = 0; i< questions.size(); i++){
-			numCorrect += ScoreQuestion(request, questions.get(i));
+		String username = (String) session.getAttribute("username");
+		Quiz quiz = (Quiz) session.getAttribute("curr_quiz");
+		
+		double score = quiz.scorePage(request);
+		
+		if(!quiz.finished()){
+			RequestDispatcher dispatch = request.getRequestDispatcher("DisplayQuiz.jsp");
+			dispatch.forward(request, response);
+			return;
+		}else{
+			
+			SuccessPage(request, response, quiz, practice_mode);		
+			if(!practice_mode){
+				RecordScore(request, username, quiz);
+			}
 		}
-		double score = (double) numCorrect / questions.size();
-		
-		PrintWriter out = response.getWriter();
-		out.println("You scored: " + score);
-		out.println("Great Job!");
+			
+	}
 
+	private void SuccessPage(HttpServletRequest request, HttpServletResponse response, Quiz quiz, boolean practice_mode){
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(practice_mode){
+			out.println("<h2>Practice Mode:</h2>");
+		}
+		out.println("You scored: " + quiz.getScore());
+		out.println("It took you "+ GetTimeStr(request) + " to complete this quiz");
+		out.println("Great Job!");
+		
+		if(!practice_mode){
+			out.println("<em>Your score has been recorded.</em>");
+		}
+		
 	}
 	
-	private int ScoreQuestion(HttpServletRequest request, Question question){
-		int type = question.getType();
-		int questionID = question.getQuestionID();
-		String response = "";
-		System.out.println("Scoring question =" + question.getQuestion());
+	private void RecordScore(HttpServletRequest request, String username, Quiz quiz) {
+		long time = GetTime(request);
+		DBConnection connection= DBConnection.GetConnection(request);
+
+		connection.executeQuery("INSERT INTO scores(username, quizID, score, time, dateTaken) "
+				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+quiz.getScore()+"\", \""+time+"\", \""+DBConnection.GetDate()+"\", ");
 		
-		if(type == Question.MULTIPLE_CHOICE){
-			response = request.getParameter("radio"+questionID);
-		}
-		else{
-			response = request.getParameter("answer"+questionID);
-		}
+	}
+
+	private String GetTimeStr(HttpServletRequest request){
+		long time = GetTime(request);
+		int minutes = (int) time / 60;
+		long seconds = time;
+		if(minutes > 0)
+			seconds = time % minutes;
 		
-		int score =  (question.isCorrect(response)) ? 1 : 0;
-		System.out.println("Score: "+ score);
-		return score;
+		return minutes + " minutes and " + seconds + " seconds";
+	}
+	
+	private long GetTime(HttpServletRequest request){
+		HttpSession session = request.getSession();
+		long startTime = (Long) session.getAttribute("start_time");
+		long endTime = System.currentTimeMillis();
+		long time = (endTime - startTime)/1000;
+		return time;
 	}
 }

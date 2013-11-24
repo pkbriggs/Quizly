@@ -55,7 +55,7 @@ public class MultipleChoice implements Question {
 		choices.add(choice2);
 		choices.add(choice3);
 		choices.add(choice4);
-		return null;
+		return choices;
 	}
 
 	/**
@@ -93,7 +93,8 @@ public class MultipleChoice implements Question {
 	}
 	@Override
 	public void saveToDatabase(DBConnection connection) {
-				
+			
+		
 		String query = "INSERT INTO multiple_choice"
 				+ "(quizID, question, answer, choice1, choice2, choice3, choice4)"
 				+ " VALUES(\""+String.valueOf(quizID)+"\", \""+question+"\", \""+answer+"\", "
@@ -133,6 +134,17 @@ public class MultipleChoice implements Question {
 	@Override
 	public int getType() {
 		return type;
+	}
+	
+	@Override
+	public String toString(){
+		String str = "Question: " + this.question + " id: "+ this.questionID + " QuizID: "+ this.quizID;
+		str += " Answers: " + this.answer + " \n";
+		str += " Choice1: " + this.choices.get(0);
+		str += " Choice2: " + this.choices.get(1);
+		str += " Choice3: " + this.choices.get(2);
+		str += " Choice4: " + this.choices.get(3);
+		return str;
 	}
 }
 

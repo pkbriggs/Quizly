@@ -100,15 +100,19 @@ public class CreateQuiz extends HttpServlet {
 		Quiz quiz = (Quiz) DBConnection.GetSessionAttribute(request, "quiz_being_created");
 		String description = request.getParameter("description");
 		String title = request.getParameter("title");
-
+		if(request.getParameter("multiple_pages") != null){
+			int questions_per_page = Integer.parseInt(request.getParameter("questions_per_page")); 
+			System.out.println("number of questions per page: " + questions_per_page);
+			quiz.setNumPages(questions_per_page);
+		}else{
+			quiz.setNumPages(quiz.numQuestions());
+		}
 		quiz.setDescription(description);
 		quiz.setTitle(title);
 		//TODO!! Store the creatorID as well once we have a login page
-		quiz.updateQuizInDB(connection);
-		
+		quiz.updateQuizInDB(connection);		
 	}
 
-	
 	/**
 	 * Creates a new quiz in the database, ready and prepared to be edited
 	 * and filled out with questions. 
