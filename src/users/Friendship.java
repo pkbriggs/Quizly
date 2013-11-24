@@ -2,6 +2,12 @@ package users;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+
+import dbconnection.DBConnection;
 
 /**
  * @class Friendship
@@ -9,12 +15,27 @@ import java.sql.SQLException;
  * between users.
  */
 public class Friendship {
+	private int userOne, userTwo;
+	private FriendshipStatus status;
 	
 	/**
 	 * An enum that allows for easy categorization of a friendship status
 	 * between two users. 
 	 */
 	public enum FriendshipStatus { FRIENDS, REQUEST_SENT, NOT_FRIENDS };
+	
+	
+	public Friendship(int userOne, int userTwo, FriendshipStatus status) {
+		this.userOne = userOne;
+		this.userTwo = userTwo;
+		this.status = status;
+	}
+	
+	public int getInitiatingUser() {
+		return userOne;
+	}
+	
+	// static methods
 
 	/**
 	 * Will "approve" a friend request sent from @otherID to @userID by
@@ -54,9 +75,10 @@ public class Friendship {
 	 * @param userID the id of the user initiating the friend request
 	 * @param otherID the id of the user receiving the request
 	 */
-	public static void sendFriendRequest(int userID, int otherID) {
-		String sql = String.format("INSERT INTO friendships (user1, user2, status) VALUES ('%s', '%s', '%s');", userID, otherID, FriendshipStatus.REQUEST_SENT.name());
-		// db.executeQuery(sql)
+	public static void sendFriendRequest(int userID, int otherID, ServletContext context) {
+		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
+		String sql = String.format("INSERT INTO friendships (user1, user2, status) VALUES ('%d', '%d', '%s');", userID, otherID, FriendshipStatus.REQUEST_SENT.name());
+		db.executeQuery(sql);
 	}
 	
 	/**
@@ -69,6 +91,7 @@ public class Friendship {
 	public static FriendshipStatus getFriendship(int userID, int otherID) {
 		String sql = String.format("SELECT status FROM friendships WHERE (user1 = '%d' AND user2 = '%d') OR (user1 = '%d' AND user2 = %d);", userID, otherID, otherID, userID);
 		ResultSet results = null; // db.executeQuery(sql)
+		// TODO: Finish me
 		
 		try {
 			if (results.next()) {
@@ -83,6 +106,5 @@ public class Friendship {
 			e.printStackTrace();
 		}
 		return FriendshipStatus.NOT_FRIENDS;
-	}
-	
+	}	
 }

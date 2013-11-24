@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
     pageEncoding="US-ASCII"%>
 <%@ page import="users.User" %>
-
+<%@ page import="users.Friendship" %>
+<%@ page import="java.util.List" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -11,13 +12,9 @@
 <link rel="stylesheet" href="css/index-page.css">
 
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Quizly | Home</title>
+<title>Quizly | Your Profile</title>
 </head>
 <body>
-
-
-
-
 
 <!-- Static navbar -->
     <div class="navbar navbar-default navbar-static-top" role="navigation">
@@ -49,6 +46,36 @@
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">FR <b class="caret"></b></a>
+            	<ul class="dropdown-menu" style="padding: 15px">
+	                  <li>
+	                     <div class="row">
+	                     </div>
+                     </li>
+                </ul>
+            </li>
+            
+            <li class="dropdown">
+            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">NO <b class="caret"></b></a>
+            	<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
+	                  <li>
+	                     <div class="row">
+	                     </div>
+                     </li>
+                </ul>
+            </li>
+            
+            <li class="dropdown">
+            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">CH <b class="caret"></b></a>
+            	<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
+	                  <li class="pull-right">
+	                     <div class="row">
+	                     </div>
+                     </li>
+                </ul>
+            </li>
             
             
             <% if (!User.isLoggedIn(session)) { %>
@@ -91,8 +118,16 @@
                   
             <% } else { %>
             
-           		<li><a href="/Quizly/profile.jsp"><%= session.getAttribute("username") %></a></li>
+           		<li><a href="#"><%= session.getAttribute("username") %></a></li>
             	<li><a href="Logout">Log out</a></li>
+            	
+            	<li id="dd" class="wrapper-dropdown-5" tabindex="1">John Doe
+				    <ul class="dropdown">
+				        <li><a href="#"><i class="icon-user"></i>Profile</a></li>
+				        <li><a href="#"><i class="icon-cog"></i>Settings</a></li>
+				        <li><a href="#"><i class="icon-remove"></i>Log out</a></li>
+				    </ul>
+				</li>
             
             <% } %>
             
@@ -108,45 +143,30 @@
 
     <div class="container">    
 		<% if (!User.isLoggedIn(session)) { %>
-			<!-- http://bootsnipp.com/snippets/featured/aboutme-login-style -->
-		
-			<div class="index-content">
-			<h1 class="index-header">Sign Up For Quizly:</h1>
-			
-			<div class="row">
-			  <div class="col-xs-6 col-sm-6 col-md-6">
-			    <a href="#" class="btn btn-lg btn-primary btn-block">Facebook</a>
-			  </div>
-			  <div class="col-xs-6 col-sm-6 col-md-6">
-			    <a href="#" class="btn btn-lg btn-info btn-block">Google</a>
-			  </div>
-			</div>
-			<div class="index-login-or">
-			  <hr class="index-hr-or">
-			  <span class="index-span-or">or</span>
-			</div>
-			
-			<form class="form" role="form" method="post" action="Register" accept-charset="UTF-8">
-			  <div class="form-group">
-			    <label for="username">Username</label>
-			    <input type="text" class="form-control" name="register-username">
-			  </div>
-			  <div class="form-group">
-			    <label for="password">Password</label>
-			    <input type="password" class="form-control" name="register-password">
-			  </div>
-			  <button type="submit" id="index-signup-button" class="btn btn-lg btn-primary btn-block">
-			    Sign Up
-			  </button>
-			</form>
-		</div>
-			
+			Please log in first.
 		<% } else { %>
-			<% String username = (String) session.getAttribute("username"); %>
-			<h1>Welcome, <%= username %></h1>
-			<a class="btn btn-lg btn-primary" href="#" role="button">Take a quiz &raquo;</a>
+			<h1>Welcome to your profile, <%= User.getUsername(session) %></h1>
+			<!-- <a class="btn btn-lg btn-primary" href="#" role="button">Take a quiz &raquo;</a> -->
+			
+			<h3>Friend Requests</h3>
+			<% List<Friendship> friendRequests = User.getFriendRequests(User.getUsername(session), getServletContext()); %>
+			
+			<% if (friendRequests.size() == 0) { %>
+				<p>You have no new friend requests.</p>
+			<% } else { %>
+			
+				<ul>
+				<% for (Friendship friendship: friendRequests) { %>
+					<li>
+						<%= User.getUsernameFromID(friendship.getInitiatingUser(), getServletContext()) %>
+						<button class="btn">Accept</button>
+						<button class="btn">Reject</button>
+					</li>
+				<% } %>
+				</ul>
+				
+			<% } %>
 		<% } %>
-		
     </div> <!-- /container -->
 
 
