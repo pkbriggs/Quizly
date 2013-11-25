@@ -5,6 +5,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Create Quiz</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 <script src='jquery.js'></script>
 <script src='CreateQuizHelpers.js'></script>
 </head>
@@ -81,5 +83,11 @@ Correct Answer(s): <input type="text" name="answer0" size="50"/><p>
 <input type="button" id='add_pr_answer' value="Add Another Answer"/>
 <input type="submit" value="Add Question"/>
 </form>
+
+<!-- JQuery and Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 </body>
 </html>

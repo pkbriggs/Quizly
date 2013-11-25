@@ -27,7 +27,7 @@
 		//Finds the correct quiz
 		while (rs.next()) {
 			if (rs.getString("quizID").equals(quizID)) {
-				quiz = Quiz.retrieveQuizFromDatabase(quizIDInt);
+				quiz = new Quiz(quizIDInt, db);
 				name = rs.getString("nameOfQuiz");
 				type = rs.getString("type");
 				creator = rs.getString("creator");
