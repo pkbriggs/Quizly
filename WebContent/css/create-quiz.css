@@ -1,0 +1,20 @@
+@CHARSET "UTF-8";
+.submitButton {
+	border: none;
+	background: none;
+	color: grey;
+	
+}
+
+.submitButton:hover {
+	color: #3B5998;
+}
+
+h1, h2 {
+	color: #3B5998;
+}
+
+.shiftRight {
+	position: relative;
+	left: 1%;
+}

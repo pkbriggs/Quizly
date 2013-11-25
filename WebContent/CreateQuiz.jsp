@@ -5,6 +5,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Create Quiz</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/create-quiz.css" />
 <script src='jquery.js'></script>
 <script src='CreateQuizHelpers.js'></script>
 </head>
@@ -22,8 +25,8 @@ Title: <textarea rows="1" cols="20" name="title"></textarea>
 <label id='pages_label'>Number of questions per page:</label>
 <input type='text' id='questions_per_page' name='questions_per_page'/>
 </div>
-Number of questions so far: <label id='num_questions_so_far'>0</label>
-<input type="submit" value="Submit Quiz"/>
+Number of questions so far: <label id='num_questions_so_far'>0</label><br>
+<input class = "submitButton" type="submit" value="+ Submit Quiz"/>
 </form>
 
 <!-- The form for creating a multiple choice question -->
@@ -31,12 +34,12 @@ Number of questions so far: <label id='num_questions_so_far'>0</label>
 <h2>New Multiple Choice Question</h2>
 <p><em>Type in the question, the choices, and then select the correct answer.</em><p>
 Question: <input type="text" name="question" size="40"/><p>
-Choices: <p><input type="radio" name="radio" value="1"><input type="text" name="choice1"/></input><p>
-<input type="radio" name="radio" value="2"><input type="text" name="choice2"/></input><p>
-<input type="radio" name="radio" value="3"><input type="text" name="choice3"/></input><p>
-<input type="radio" name="radio" value="4"><input type="text" name="choice4"/></input><p>
+Choices: <p><input type="radio" name="radio" value="1"><input class="shiftRight" type="text" name="choice1"/></input><p>
+<input type="radio" name="radio" value="2"><input class="shiftRight" type="text" name="choice2"/></input><p>
+<input type="radio" name="radio" value="3"><input class="shiftRight" type="text" name="choice3"/></input><p>
+<input type="radio" name="radio" value="4"><input class="shiftRight" type="text" name="choice4"/></input><p>
 <input type = "hidden" name="formID" value = "multiple_choice"/>
-<input type="submit" value="Add Question"/>
+<input class="submitButton" type="submit" value="+ Add Question"/>
 </form>
 
 
@@ -50,8 +53,8 @@ Question: <input type="text" name="question" size="50"/><p>
 Correct Answer(s): <input type="text" name="answer0" size="50"/><p>
 </div>
 <input type = "hidden" name="formID" value = "fill_in_the_blank"/>
-<input type="button" id='add_fib_answer' value="Add Another Answer"/>
-<input type="submit" value="Add Question"/>
+<input class="submitButton" type="button" id='add_fib_answer' value="+ Add Another Answer"/><br>
+<input class="submitButton" type="submit" value="+ Add Question"/>
 </form>
 
 <!-- The form for creating a question-response -->
@@ -64,8 +67,8 @@ Question: <input type="text" name="question" size="50"/><p>
 Correct Answer(s): <input type="text" name="answer0" size="50"/><p>
 </div>
 <input type = "hidden" name="formID" value = "question_response"/>
-<input type="button" id='add_qr_answer' value="Add Another Answer"/>
-<input type="submit" value="Add Question"/>
+<input class="submitButton" type="button" id='add_qr_answer' value="+ Add Another Answer"/><br>
+<input class="submitButton" type="submit" value="+ Add Question"/>
 </form>
 
 <!-- The form for creating a  picture-response -->
@@ -78,8 +81,14 @@ Photo URL: <input type="text" name="photo" size="50"/><p>
 Correct Answer(s): <input type="text" name="answer0" size="50"/><p>
 </div>
 <input type = "hidden" name="formID" value = "picture_response"/>
-<input type="button" id='add_pr_answer' value="Add Another Answer"/>
-<input type="submit" value="Add Question"/>
+<input class="submitButton" type="button" id='add_pr_answer' value="+ Add Another Answer"/><br>
+<input class="submitButton" type="submit" value="+ Add Question"/>
 </form>
+
+<!-- JQuery and Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 </body>
 </html>
