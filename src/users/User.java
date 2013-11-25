@@ -30,9 +30,9 @@ public class User {
 	 * @param pass the plain-text password
 	 * @return true if the password is correct, false otherwise
 	 */
-	public static boolean checkPassword(int userID, String pass, ServletContext context) {
+	public static boolean checkPassword(int userID, String pass) {
 		String sql = String.format("SELECT passwordhash FROM users WHERE id = %d;", userID);
-		return checkPasswordHelper(sql, pass, context);
+		return checkPasswordHelper(sql, pass);
 	}
 	
 	/**
@@ -59,11 +59,10 @@ public class User {
 			return null;
 	}
 	
-	public static String getUsernameFromID(int id, ServletContext context) {
-		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
+	public static String getUsernameFromID(int id) {
 		String sql = String.format("SELECT username FROM users WHERE id = '%d';", id);
 		
-		ResultSet results = db.executeQuery(sql);
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
 		
 		try {
 			if (results.next()) {
@@ -78,11 +77,10 @@ public class User {
 		return null;
 	}
 	
-	public static int getIDFromUsername(String username, ServletContext context) {
-		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
+	public static int getIDFromUsername(String username) {
 		String sql = String.format("SELECT id FROM users WHERE username = '%s';", username);
 		
-		ResultSet results = db.executeQuery(sql);
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
 		
 		try {
 			if (results.next()) {
@@ -103,9 +101,9 @@ public class User {
 	 * @param pass the plain-text password
 	 * @return true if the password is correct, false otherwise
 	 */
-	public static boolean checkPassword(String username, String pass, ServletContext context) {
+	public static boolean checkPassword(String username, String pass) {
 		String sql = String.format("SELECT passwordhash FROM users WHERE username = '%s';", username);
-		return checkPasswordHelper(sql, pass, context);
+		return checkPasswordHelper(sql, pass);
 	}
 	
 	/**
@@ -115,9 +113,8 @@ public class User {
 	 * @param pass the plain-text password
 	 * @return true if the password is correct, false otherwise
 	 */
-	private static boolean checkPasswordHelper(String sql, String pass, ServletContext context) {
-		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
-		ResultSet results = db.executeQuery(sql);
+	private static boolean checkPasswordHelper(String sql, String pass) {
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
 		
 		try {
 			if (results.next()) {
@@ -142,12 +139,16 @@ public class User {
 	 * @param username
 	 * @param pass
 	 */
-	public static void createUser(String username, String pass, ServletContext context) {
-		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
+	public static void createUser(String username, String pass) {
+		String check = String.format("SELECT * FROM users WHERE username = '%s';", username);
+		ResultSet results = DBConnection.getInstance().executeQuery(check);
+		if (results != null) {
+			String hashedPass = generatePasswordHash(pass);
+			String sql = String.format("INSERT INTO users (username, passwordhash) VALUES ('%s', '%s');", username, hashedPass);
+			DBConnection.getInstance().executeQuery(sql);
+		}
 		
-		String hashedPass = generatePasswordHash(pass);
-		String sql = String.format("INSERT INTO users (username, passwordhash) VALUES ('%s', '%s');", username, hashedPass);
-		db.executeQuery(sql);
+		
 	}
 	
 	/**
@@ -161,12 +162,11 @@ public class User {
 		// TODO: Finish me
 	}
 	
-	public static List<Friendship> getFriendRequests(String username, ServletContext context) {
-		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
-		int userID = User.getIDFromUsername(username, context);
+	public static List<Friendship> getFriendRequests(String username) {
+		int userID = User.getIDFromUsername(username);
 		String sql = String.format("SELECT * FROM friendships WHERE (user1 = '%d' OR user2 = '%d') AND (status = '%s');", userID, userID, FriendshipStatus.REQUEST_SENT);
 		
-		ResultSet results = db.executeQuery(sql);		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);		
 		List<Friendship> requests = new ArrayList<Friendship>();
 		try {
 			while (results.next()) {

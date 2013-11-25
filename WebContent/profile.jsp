@@ -6,10 +6,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> -->
 <link rel="stylesheet" href="css/index-page.css">
+
 
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Quizly | Your Profile</title>
@@ -30,10 +33,10 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/Quizly/">Home</a></li>
-            <li><a href="#">Quizzes</a></li>
+            <li><a href="/Quizly/">Home</a></li>
+            <li><a href="/Quizly/quizzes.jsp">Quizzes</a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <i class="fa fa-sort-asc"></i></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Action</a></li>
                 <li><a href="#">Another action</a></li>
@@ -45,44 +48,13 @@
               </ul>
             </li>
           </ul>
-          <ul class="nav navbar-nav navbar-right">
-            
-            <li class="dropdown">
-            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">FR <b class="caret"></b></a>
-            	<ul class="dropdown-menu" style="padding: 15px">
-	                  <li>
-	                     <div class="row">
-	                     </div>
-                     </li>
-                </ul>
-            </li>
-            
-            <li class="dropdown">
-            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">NO <b class="caret"></b></a>
-            	<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
-	                  <li>
-	                     <div class="row">
-	                     </div>
-                     </li>
-                </ul>
-            </li>
-            
-            <li class="dropdown">
-            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">CH <b class="caret"></b></a>
-            	<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
-	                  <li class="pull-right">
-	                     <div class="row">
-	                     </div>
-                     </li>
-                </ul>
-            </li>
-            
+          <ul class="nav navbar-nav navbar-right">            
             
             <% if (!User.isLoggedIn(session)) { %>
             
             	<!-- <li><a href="#">Register</a></li> -->
 	            <li class="dropdown">
-	               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Log in <b class="caret"></b></a>
+	               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Log in <i class="fa fa-sort-asc"></i></a>
 	               <ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
 	                  <li>
 	                     <div class="row">
@@ -102,7 +74,7 @@
 	                                 </label>
 	                              </div>
 	                              <div class="form-group">
-	                                 <button type="submit" class="btn btn-success btn-block">Sign in</button>
+	                                 <button type="submit" class="btn btn-success btn-block">Sign in &raquo;</button>
 	                              </div>
 	                           </form>
 	                        </div>
@@ -110,24 +82,52 @@
 	                  </li>
 	                  <li class="divider"></li>
 	                  <li>
-	                     <input class="btn btn-primary btn-block" type="button" id="sign-in-google" value="Sign In with Facebook">
-	                     <input class="btn btn-primary btn-block" type="button" id="sign-in-twitter" value="Sign In with Google">
+	                  	 <a href="#" class="btn btn-lg btn-facebook-small btn-block"><i class="fa fa-facebook social-register-button-icon"></i> Sign In with Facebook</a>
+	                     <a href="#" class="btn btn-lg btn-google-small btn-block"><i class="fa fa-google-plus social-register-button-icon"></i> Sign In with Google</a>
 	                  </li>
 	               </ul>
 	            </li>
                   
             <% } else { %>
             
-           		<li><a href="#"><%= session.getAttribute("username") %></a></li>
-            	<li><a href="Logout">Log out</a></li>
-            	
-            	<li id="dd" class="wrapper-dropdown-5" tabindex="1">John Doe
-				    <ul class="dropdown">
-				        <li><a href="#"><i class="icon-user"></i>Profile</a></li>
-				        <li><a href="#"><i class="icon-cog"></i>Settings</a></li>
-				        <li><a href="#"><i class="icon-remove"></i>Log out</a></li>
-				    </ul>
-				</li>
+            	<li class="dropdown">
+	            	<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users fa-2x"></i></a>
+	            	<ul class="dropdown-menu" style="padding: 15px">
+		                  <li>
+		                     <div class="row">
+		                     </div>
+	                     </li>
+	                </ul>
+	            </li>
+	            
+	            <li class="dropdown">
+	            	<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown"><i class="fa fa-comments fa-2x"></i></a>
+	            	<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
+		                  <li>
+		                     <div class="row">
+		                     </div>
+	                     </li>
+	                </ul>
+	            </li>
+	            
+	            <li class="dropdown">
+	            	<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-2x"></i></a>
+	            	<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
+		                  <li class="pull-right">
+		                     <div class="row">
+		                     </div>
+	                     </li>
+	                </ul>
+	            </li>
+        
+            	<li class="dropdown" id="user-dropdown">
+            		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= User.getUsername(session) %> <i class="fa fa-sort-asc"></i></a>
+	            	<ul class="dropdown-menu">
+	            		<li><a href="/Quizly/profile.jsp"><i class="fa fa-user fa-fw fa-lg"></i>Profile</a></li>
+				        <li><a href="#"><i class="fa fa-cog fa-fw fa-lg"></i>Settings</a></li>
+				        <li><a href="/Quizly/Logout"><i class="fa fa-sign-out fa-fw fa-lg"></i>Log out</a></li>
+	                </ul>
+            	</li>
             
             <% } %>
             
@@ -145,11 +145,11 @@
 		<% if (!User.isLoggedIn(session)) { %>
 			Please log in first.
 		<% } else { %>
-			<h1>Welcome to your profile, <%= User.getUsername(session) %></h1>
+			<h1>Welcome to your profile, <%= User.getUsername(session) %>!</h1>
 			<!-- <a class="btn btn-lg btn-primary" href="#" role="button">Take a quiz &raquo;</a> -->
 			
 			<h3>Friend Requests</h3>
-			<% List<Friendship> friendRequests = User.getFriendRequests(User.getUsername(session), getServletContext()); %>
+			<% List<Friendship> friendRequests = User.getFriendRequests(User.getUsername(session)); %>
 			
 			<% if (friendRequests.size() == 0) { %>
 				<p>You have no new friend requests.</p>
@@ -158,7 +158,7 @@
 				<ul>
 				<% for (Friendship friendship: friendRequests) { %>
 					<li>
-						<%= User.getUsernameFromID(friendship.getInitiatingUser(), getServletContext()) %>
+						<%= User.getUsernameFromID(friendship.getInitiatingUser()) %>
 						<button class="btn">Accept</button>
 						<button class="btn">Reject</button>
 					</li>

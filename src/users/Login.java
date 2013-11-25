@@ -40,13 +40,14 @@ public class Login extends HttpServlet {
 		String username = request.getParameter("login-username");
 		String password = request.getParameter("login-password");
 		
-		if (User.checkPassword(username, password, getServletContext())) {
+		if (User.checkPassword(username, password)) {
 			session.setAttribute("loggedin", true);
 			session.setAttribute("username", username);
 		}
 		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
-		dispatcher.forward(request, response);
+//		RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+//		dispatcher.forward(request, response);
+		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	}
 
 }

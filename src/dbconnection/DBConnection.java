@@ -11,7 +11,6 @@ import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSetMetaData;
 import com.mysql.jdbc.Statement;
@@ -22,6 +21,9 @@ import com.mysql.jdbc.Statement;
  * This class establishes a connection with the database. 
  */
 public class DBConnection {
+	
+	private static DBConnection instance = null;
+	private static String rootDirectory = null; // this is initialized in contextInitialized
 
 	private static String account= DBInfo.MYSQL_USERNAME;
 	private static String password= DBInfo.MYSQL_PASSWORD;
@@ -31,10 +33,20 @@ public class DBConnection {
 	private static java.sql.Connection connection;
 	private String rootPath;
 	
-	public DBConnection(String rootPath){
+	private DBConnection(String rootPath){
 		connection = null;
 		this.rootPath = rootPath;
 		OpenConnection();
+	}
+	
+	public static DBConnection getInstance() {
+		if (instance == null)
+			instance = new DBConnection(DBConnection.rootDirectory);
+		return instance;
+	}
+	
+	public static void setRootDirectory(String root) {
+		DBConnection.rootDirectory = root;
 	}
 	
 	private void OpenConnection(){
@@ -50,7 +62,7 @@ public class DBConnection {
 			*the connection. To maintain database info over several sessions
 			*simply comment it out.
 			*/
-			//SetUpDatabase();
+			// SetUpDatabase();
 		}catch(Exception e){
 			e.printStackTrace();
 			System.out.println("OpenConnection: Could not establish connection: " + e.getMessage());

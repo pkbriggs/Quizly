@@ -1,5 +1,3 @@
-USE c_cs108_lucyanne;
-
 DROP TABLE IF EXISTS quizzes, friends, users, friendships, multiple_choice, fill_in_the_blank, picture_response, question_response, messages;
 /* remove table if it already exists and start from scratch */
 

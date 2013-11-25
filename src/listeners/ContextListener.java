@@ -26,8 +26,7 @@ public class ContextListener implements ServletContextListener {
      */
     public void contextInitialized(ServletContextEvent arg0) {
          ServletContext servletContext = arg0.getServletContext();
-         connection = new DBConnection(servletContext.getRealPath("/"));
-         servletContext.setAttribute("dbconnection", connection);
+         DBConnection.setRootDirectory(servletContext.getRealPath("/"));
          servletContext.setAttribute("loggedin", false);
     }
 

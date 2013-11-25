@@ -40,7 +40,7 @@ public class Register extends HttpServlet {
 		String username = request.getParameter("register-username");
 		String password = request.getParameter("register-password");
 		
-		User.createUser(username, password, getServletContext());
+		User.createUser(username, password);
 		session.setAttribute("loggedin", true);
 		session.setAttribute("username", username);
 		session.setAttribute("testint", 5);
