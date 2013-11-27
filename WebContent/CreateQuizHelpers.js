@@ -9,8 +9,6 @@ $( document ).ready(function() {
 	
 	$("#multiple_pages").click( function()
 	{
-		var div = document.getElementById('multiple_pages_section');
-
 		if($("#multiple_pages").prop('checked')){
 			$("#multiple_pages_section").show();
 		}

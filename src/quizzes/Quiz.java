@@ -64,8 +64,12 @@ public class Quiz{
 	
 	private int getNumQuestionsPerPage(){
 		int numQuestions = this.questions.size();
+		System.out.println("Numquestions: "+ numQuestions + " this.numPages = " + this.numPages);
 		int remainder = (numQuestions % this.numPages == 0) ? 0 : 1;
-		return ((int)numQuestions / this.numPages) + remainder;
+		if(this.numPages == 0)
+			return 1;
+		else
+			return ((int)numQuestions / this.numPages) + remainder;
 	}
 	/**
 	 * Gets all the quiz info from the row the result set is currently pointing to 
@@ -79,7 +83,7 @@ public class Quiz{
 			quiz.setDescription(rs.getString("description"));
 			quiz.setDateCreated(rs.getString("dateCreated"));
 			quiz.setID(rs.getInt("id"));
-			quiz.setNumPages(rs.getInt("num_pages"));
+			quiz.setNumPages( rs.getInt("numPages"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -191,7 +195,8 @@ public class Quiz{
 			this.id = this.initializeQuizToDatabase(connection);
 			this.inDatabase = true;
 		}
-		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"', dateCreated='"+this.dateCreated+"' WHERE id=" + this.id);
+		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"' "
+				+ ", numPages='"+this.numPages+"' , dateCreated='"+this.dateCreated+"' WHERE id=" + this.id);
 		saveQuestionsToDatabase(connection, this.id);
 	}
 	
@@ -299,7 +304,7 @@ public class Quiz{
 	}
 	
 	public double scorePage(HttpServletRequest request){
-		for(int i = getStartIndex(); i<= getEndIndex(); i++){
+		for(int i = getStartIndex(); i< getEndIndex(); i++){
 			this.numCorrect += ScoreQuestion(request, this.questions.get(i));
 		}
 		
@@ -309,11 +314,16 @@ public class Quiz{
 	}
 	
 	private int getEndIndex() {
-		return (this.currPage+1)*getNumQuestionsPerPage() - 1;
+		int end = (this.currPage+1)*getNumQuestionsPerPage() ;
+		end = (end > this.questions.size()) ? this.questions.size(): end;
+		System.out.println("returning endIndex: "+ end);
+		return end;
 	}
 
 	private int getStartIndex() {
-		return this.currPage * getNumQuestionsPerPage();
+		int start = this.currPage * getNumQuestionsPerPage();
+		System.out.println("returning startIndex: "+ start);
+		return start;
 	}
 
 	private int ScoreQuestion(HttpServletRequest request, Question question){
@@ -334,8 +344,18 @@ public class Quiz{
 		return score;
 	}
 
-	public void setNumPages(int questions_per_page) {
-		this.numPages = (this.questions.size() % questions_per_page) + 1;
+	public void setNumPages(int num_pages) {
+		this.numPages = num_pages;
+		System.out.println("Just set numpages to : "+ this.numPages);
+	}
+	
+	public void setNumPagesFromNumQuestions(int questions_per_page){
+		if(this.questions.size() % questions_per_page == 0){
+			this.numPages= this.questions.size() / questions_per_page;
+		}else{
+			this.numPages = (this.questions.size() / questions_per_page) + 1;
+		}
+		System.out.println("Just set numpages from questions to : "+ this.numPages);
 	}
 	
 	public ArrayList<Question> getPageQuestions(){

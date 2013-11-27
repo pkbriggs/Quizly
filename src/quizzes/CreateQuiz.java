@@ -73,7 +73,11 @@ public class CreateQuiz extends HttpServlet {
 				currQuiz.addQuestion(question);
 			}
 			if(formID.equals("question_response")){
+				String questionstr = request.getParameter("question");
+				String answer = request.getParameter("answer0");
+				System.out.println("Making question question:" + questionstr+" response: "+ answer);
 				Question question = new QuestionResponse(request);
+				System.out.println("successfully made question");
 				currQuiz.addQuestion(question);
 			}
 			if(formID.equals("picture_response")){
@@ -103,7 +107,7 @@ public class CreateQuiz extends HttpServlet {
 		if(request.getParameter("multiple_pages") != null){
 			int questions_per_page = Integer.parseInt(request.getParameter("questions_per_page")); 
 			System.out.println("number of questions per page: " + questions_per_page);
-			quiz.setNumPages(questions_per_page);
+			quiz.setNumPagesFromNumQuestions(questions_per_page);
 		}else{
 			quiz.setNumPages(quiz.numQuestions());
 		}

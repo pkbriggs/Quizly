@@ -92,7 +92,7 @@ public class FillInTheBlank implements Question {
 		String question = request.getParameter("question");
 		question = question.trim();
 		question = question.toLowerCase();
-		Pattern regex = Pattern.compile(" [_]+");
+		Pattern regex = Pattern.compile("[_]+");
 		Matcher matcher = regex.matcher(question);
 		
 		//boolean blankFound = Pattern.matches(" _+", "aaaaab");

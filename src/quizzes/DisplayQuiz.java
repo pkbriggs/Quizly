@@ -122,7 +122,6 @@ public class DisplayQuiz extends HttpServlet {
 	}
 	
 	private String QuestionsToHTML(ArrayList<Question> questions, DBConnection connection){
-		System.out.println("Numquestions = " +questions.size());
 		String html = "";
 		for(Question question: questions){
 			int type = question.getType();
