@@ -48,17 +48,15 @@ public class CreateQuiz extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String formID = request.getParameter("formID");
-		ServletContext context = request.getServletContext();
-		DBConnection connection = (DBConnection) context.getAttribute("dbconnection");
 		if(formID.equals("initialize_quiz")){
-			InitializeQuiz(request, connection);
+			InitializeQuiz(request);
 		}
 		
 		HttpSession session = request.getSession();
 		Quiz currQuiz = (Quiz) session.getAttribute("quiz_being_created");
 		
 		if(formID.equals("submit_quiz")){
-			AddQuizToDatabase(request, connection);
+			AddQuizToDatabase(request);
 			RequestDispatcher dispatch = request.getRequestDispatcher("TesterFile.jsp");
 			dispatch.forward(request, response);
 			return;
@@ -96,21 +94,20 @@ public class CreateQuiz extends HttpServlet {
 	 * After finishing the quiz, this adds the quiz to the database
 	 * @param request
 	 */
-	private void AddQuizToDatabase(HttpServletRequest request, DBConnection connection) {
+	private void AddQuizToDatabase(HttpServletRequest request) {
 		Quiz quiz = (Quiz) DBConnection.GetSessionAttribute(request, "quiz_being_created");
 		String description = request.getParameter("description");
 		String title = request.getParameter("title");
 		if(request.getParameter("multiple_pages") != null){
 			int questions_per_page = Integer.parseInt(request.getParameter("questions_per_page")); 
-			System.out.println("number of questions per page: " + questions_per_page);
-			quiz.setNumPages(questions_per_page);
+			quiz.setNumPagesFromNumQuestions(questions_per_page);
 		}else{
 			quiz.setNumPages(quiz.numQuestions());
 		}
 		quiz.setDescription(description);
 		quiz.setTitle(title);
 		//TODO!! Store the creatorID as well once we have a login page
-		quiz.updateQuizInDB(connection);		
+		quiz.updateQuizInDB();		
 	}
 
 	/**
@@ -119,7 +116,7 @@ public class CreateQuiz extends HttpServlet {
 	 * @param request
 	 * @param connection
 	 */
-	private void InitializeQuiz(HttpServletRequest request, DBConnection connection){
+	private void InitializeQuiz(HttpServletRequest request){
 		Quiz newQuiz = new Quiz();
 		HttpSession session = request.getSession();
 		session.setAttribute("quiz_being_created", newQuiz);

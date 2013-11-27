@@ -13,7 +13,7 @@ public interface Question {
 	 * Saves the question's information to the database
 	 * @param connection
 	 */
-	public void saveToDatabase(DBConnection connection);
+	public void saveToDatabase();
 	
 	/**
 	 * Sets the quizID of the quiz this is associated with

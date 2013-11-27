@@ -24,6 +24,8 @@ public class QuestionResponse implements Question {
 		try{
 			this.question = SanitizeQuestion(request);
 			this.answers = SanitizeAnswer(request);
+			System.out.println("successfullly sanitized both");
+
 		}catch(Exception e){
 			throw new Exception(e.getMessage());
 		}
@@ -44,7 +46,13 @@ public class QuestionResponse implements Question {
 	
 	private String SanitizeQuestion(HttpServletRequest request) 
 			throws Exception{
-		String question = request.getParameter("question");
+		String question = "";
+		try{
+			question = request.getParameter("question");
+		}catch(Exception e){
+			System.out.println("in santizize question: "+e.getMessage());
+			throw new Exception(e.getMessage());
+		}
 		if(question.equals("")){
 			throw new Exception("No question provided. Please try again.");
 		}
@@ -70,24 +78,38 @@ public class QuestionResponse implements Question {
 	 */
 	private ArrayList<String> SanitizeAnswer(HttpServletRequest request)
 			throws Exception{
-			ArrayList<String> answers = new ArrayList<String>();
+		ArrayList<String> answers = new ArrayList<String>();
+
+		try{
 			int num_answers = Integer.parseInt(request.getParameter("qr_num_answers"));
-			System.out.println("numanswers for pr = "+ num_answers);
+			System.out.println("numanswers for qr = "+ num_answers);
 			for(int i = 0; i< num_answers;i++){
 				String answer = request.getParameter("answer"+i);
 				answer = answer.trim();
 				answer = answer.toLowerCase();
+
 				if(!answer.equals(""))
 					answers.add(answer);
 			}
-			if(answers.size() == 0){
-				throw new Exception("No answer provided. Please try again.");
-			}
-			return answers;
+		}catch(Exception e){
+			throw new Exception(e.getMessage());
 		}
+		boolean empty = false;
+		try{
+			empty = answers.size() == 0;
+		}catch(Exception e){
+			throw new Exception(e.getMessage());
+		}
+		if(empty){
+			throw new Exception("No answer provided. Please try again.");
+		}
+		return answers;
+	}
 	
 	@Override
-	public void saveToDatabase(DBConnection connection) {
+	public void saveToDatabase() {
+		DBConnection connection = DBConnection.getInstance();
+
 		String answer_str = GetAnswerString();
 		String query = "INSERT INTO question_response"
 				+ "(quizID, question, answer) VALUES("

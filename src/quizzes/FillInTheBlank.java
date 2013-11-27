@@ -92,7 +92,7 @@ public class FillInTheBlank implements Question {
 		String question = request.getParameter("question");
 		question = question.trim();
 		question = question.toLowerCase();
-		Pattern regex = Pattern.compile(" [_]+");
+		Pattern regex = Pattern.compile("[_]+");
 		Matcher matcher = regex.matcher(question);
 		
 		//boolean blankFound = Pattern.matches(" _+", "aaaaab");
@@ -103,7 +103,9 @@ public class FillInTheBlank implements Question {
 	}
 	
 	@Override
-	public void saveToDatabase(DBConnection connection) {
+	public void saveToDatabase() {
+		DBConnection connection = DBConnection.getInstance();
+
 		String answer_string = GetAnswerString();
 		String query = "INSERT INTO fill_in_the_blank"
 				+ "(quizID, question, answer) VALUES("

@@ -38,10 +38,9 @@ public class DisplayQuiz extends HttpServlet {
 		String quizID = request.getParameter("id");
 
 		if(quizID != null){
-			DBConnection connection = DBConnection.GetConnection(request);
-			Quiz quiz = new Quiz(Integer.parseInt(quizID), connection);
+			Quiz quiz = new Quiz(Integer.parseInt(quizID));
 
-			PrintNextPage(quiz, connection, response);
+			PrintNextPage(quiz,  response);
 			
 			//Set the session attribute
 			HttpSession session = request.getSession();
@@ -58,36 +57,27 @@ public class DisplayQuiz extends HttpServlet {
 		if(formID != null && formID.equals("list_quizzes")){
 			PrintWriter out = response.getWriter();
 			
-			String outStr = listQuizzes(request);
+			String outStr = Quiz.listQuizzes();
 			out.println(outStr);	
 			return;
 		}
 		
 		//this is the case where the request has been forwarded from ScoreQuiz
 		else{
-			DBConnection connection = DBConnection.GetConnection(request);
-
 			HttpSession session = request.getSession();
 			Quiz quiz = (Quiz) session.getAttribute("curr_quiz");
 			
-			PrintNextPage(quiz, connection, response);
+			PrintNextPage(quiz, response);
 		}
 
 	}
 	
 
-	private String listQuizzes(HttpServletRequest request){
-		DBConnection connection = DBConnection.GetConnection(request);
-		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes", connection);
-		String html = "";
-		for(Quiz quiz: quizzes){
-			html+=("<a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</a><p>");
-		}
-		
-		return html;
-	}
 
-	private void PrintNextPage(Quiz quiz, DBConnection connection, HttpServletResponse response){
+
+	private void PrintNextPage(Quiz quiz, HttpServletResponse response){
+		DBConnection connection = DBConnection.getInstance();
+
 		ArrayList<Question> questions = quiz.getPageQuestions();
 		PrintWriter out = null;
 		
@@ -122,7 +112,6 @@ public class DisplayQuiz extends HttpServlet {
 	}
 	
 	private String QuestionsToHTML(ArrayList<Question> questions, DBConnection connection){
-		System.out.println("Numquestions = " +questions.size());
 		String html = "";
 		for(Question question: questions){
 			int type = question.getType();

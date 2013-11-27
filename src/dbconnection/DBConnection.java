@@ -62,7 +62,7 @@ public class DBConnection {
 			*the connection. To maintain database info over several sessions
 			*simply comment it out.
 			*/
-			// SetUpDatabase();
+			SetUpDatabase();
 		}catch(Exception e){
 			e.printStackTrace();
 			System.out.println("OpenConnection: Could not establish connection: " + e.getMessage());

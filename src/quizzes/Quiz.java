@@ -47,7 +47,8 @@ public class Quiz{
 	/*This constructor retrieves information from the database for the quizID
 	 * provided and creates a new quiz object from that information
 	 */
-	Quiz(int id, DBConnection connection){
+	Quiz(int id){
+		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery("SELECT * FROM quizzes WHERE id="+id);
 		try {
 			rs.absolute(1);
@@ -58,14 +59,18 @@ public class Quiz{
 		FillWithInfoFromRow(this, rs);
 		this.inDatabase = true;
 		this.numCorrect = 0;
-		this.questions = loadQuestionsFromDB(connection);
+		this.questions = loadQuestionsFromDB();
 		this.currPage = 0;
 	}
 	
 	private int getNumQuestionsPerPage(){
 		int numQuestions = this.questions.size();
+		System.out.println("Numquestions: "+ numQuestions + " this.numPages = " + this.numPages);
 		int remainder = (numQuestions % this.numPages == 0) ? 0 : 1;
-		return ((int)numQuestions / this.numPages) + remainder;
+		if(this.numPages == 0)
+			return 1;
+		else
+			return ((int)numQuestions / this.numPages) + remainder;
 	}
 	/**
 	 * Gets all the quiz info from the row the result set is currently pointing to 
@@ -79,7 +84,7 @@ public class Quiz{
 			quiz.setDescription(rs.getString("description"));
 			quiz.setDateCreated(rs.getString("dateCreated"));
 			quiz.setID(rs.getInt("id"));
-			quiz.setNumPages(rs.getInt("num_pages"));
+			quiz.setNumPages( rs.getInt("numPages"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,7 +116,8 @@ public class Quiz{
 	 * @param connection
 	 * @return
 	 */
-	private int initializeQuizToDatabase(DBConnection connection){
+	private int initializeQuizToDatabase(){
+		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery("INSERT INTO quizzes(title, dateCreated) values(\""+this.title+"\" , \""+this.dateCreated+"\")");
 		int id = 0;
 		try {
@@ -185,14 +191,17 @@ public class Quiz{
 	 * Stores this quizzes information in the database
 	 * @param connection
 	 */
-	public void updateQuizInDB( DBConnection connection){
+	public void updateQuizInDB(){
+		DBConnection connection = DBConnection.getInstance();
+
 		//TODO update the creator as well
 		if(!this.inDatabase){
-			this.id = this.initializeQuizToDatabase(connection);
+			this.id = this.initializeQuizToDatabase();
 			this.inDatabase = true;
 		}
-		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"', dateCreated='"+this.dateCreated+"' WHERE id=" + this.id);
-		saveQuestionsToDatabase(connection, this.id);
+		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"' "
+				+ ", numPages='"+this.numPages+"' , dateCreated='"+this.dateCreated+"' WHERE id=" + this.id);
+		saveQuestionsToDatabase(this.id);
 	}
 	
 	/**
@@ -200,7 +209,8 @@ public class Quiz{
 	 * makes Question objects out of them, and adds them to the quizzes 
 	 * array of questions so they can be printed
 	 */
-	private ArrayList<Question> loadQuestionsFromDB(DBConnection connection){
+	private ArrayList<Question> loadQuestionsFromDB(){
+		DBConnection connection = DBConnection.getInstance();
 		ArrayList<Question> questions = new ArrayList<Question>();
 		
 		//Multiple Choice Questions
@@ -256,7 +266,8 @@ public class Quiz{
 	 * @param query, connection
 	 * @return
 	 */
-	public static ArrayList<Quiz> GetArrayOfQuizzes(String query, DBConnection connection){
+	public static ArrayList<Quiz> GetArrayOfQuizzes(String query){
+		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery(query);
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
 		try {
@@ -275,11 +286,12 @@ public class Quiz{
 	}
 	
 	
-	private void saveQuestionsToDatabase(DBConnection connection, int quizID){
+	private void saveQuestionsToDatabase(int quizID){
+
 		for(Question question: this.questions){
 			System.out.println("Saving this question: " + question.toString());
 			question.setQuizID(quizID);
-			question.saveToDatabase(connection);
+			question.saveToDatabase();
 		}
 	}
 	
@@ -299,7 +311,7 @@ public class Quiz{
 	}
 	
 	public double scorePage(HttpServletRequest request){
-		for(int i = getStartIndex(); i<= getEndIndex(); i++){
+		for(int i = getStartIndex(); i< getEndIndex(); i++){
 			this.numCorrect += ScoreQuestion(request, this.questions.get(i));
 		}
 		
@@ -309,11 +321,16 @@ public class Quiz{
 	}
 	
 	private int getEndIndex() {
-		return (this.currPage+1)*getNumQuestionsPerPage() - 1;
+		int end = (this.currPage+1)*getNumQuestionsPerPage() ;
+		end = (end > this.questions.size()) ? this.questions.size(): end;
+		System.out.println("returning endIndex: "+ end);
+		return end;
 	}
 
 	private int getStartIndex() {
-		return this.currPage * getNumQuestionsPerPage();
+		int start = this.currPage * getNumQuestionsPerPage();
+		System.out.println("returning startIndex: "+ start);
+		return start;
 	}
 
 	private int ScoreQuestion(HttpServletRequest request, Question question){
@@ -334,8 +351,18 @@ public class Quiz{
 		return score;
 	}
 
-	public void setNumPages(int questions_per_page) {
-		this.numPages = (this.questions.size() % questions_per_page) + 1;
+	public void setNumPages(int num_pages) {
+		this.numPages = num_pages;
+		System.out.println("Just set numpages to : "+ this.numPages);
+	}
+	
+	public void setNumPagesFromNumQuestions(int questions_per_page){
+		if(this.questions.size() % questions_per_page == 0){
+			this.numPages= this.questions.size() / questions_per_page;
+		}else{
+			this.numPages = (this.questions.size() / questions_per_page) + 1;
+		}
+		System.out.println("Just set numpages from questions to : "+ this.numPages);
 	}
 	
 	public ArrayList<Question> getPageQuestions(){
@@ -357,5 +384,15 @@ public class Quiz{
 
 	public boolean isLastPage() {
 		return this.currPage == this.numPages - 1 ;
+	}
+
+	public static String listQuizzes(){
+		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes");
+		String html = "";
+		for(Quiz quiz: quizzes){
+			html+=("<a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</a><p>");
+		}
+		
+		return html;
 	}
 }

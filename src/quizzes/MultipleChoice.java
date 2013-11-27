@@ -92,8 +92,8 @@ public class MultipleChoice implements Question {
 		}
 	}
 	@Override
-	public void saveToDatabase(DBConnection connection) {
-			
+	public void saveToDatabase() {
+		DBConnection connection = DBConnection.getInstance();
 		
 		String query = "INSERT INTO multiple_choice"
 				+ "(quizID, question, answer, choice1, choice2, choice3, choice4)"

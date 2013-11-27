@@ -49,7 +49,7 @@ public class ScoreQuiz extends HttpServlet {
 		double score = quiz.scorePage(request);
 		
 		if(!quiz.finished()){
-			RequestDispatcher dispatch = request.getRequestDispatcher("DisplayQuiz.jsp");
+			RequestDispatcher dispatch = request.getRequestDispatcher("DisplayQuiz");
 			dispatch.forward(request, response);
 			return;
 		}else{
@@ -78,7 +78,7 @@ public class ScoreQuiz extends HttpServlet {
 		out.println("Great Job!");
 		
 		if(!practice_mode){
-			out.println("<em>Your score has been recorded.</em>");
+			out.println("Your score has been recorded.");
 		}
 		
 	}

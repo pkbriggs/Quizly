@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
     pageEncoding="US-ASCII"%>
 <%@ page import="users.User" %>
+<%@ page import="quizzes.Quiz" %>
 <%@ page import="users.Friendship" %>
 <%@ page import="java.util.List" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -149,6 +150,8 @@
 			<h1>List of available quizzes:</h1>			
 			
 			<p>You can also <a href="/Quizly/CreateQuiz.jsp">create a quiz</a>.</p>
+			<% String quizzes = Quiz.listQuizzes(); %>
+			<%=quizzes %>
 		<% } %>
     </div> <!-- /container -->
 

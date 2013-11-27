@@ -1,4 +1,5 @@
-DROP TABLE IF EXISTS quizzes, friends, users, friendships, multiple_choice, fill_in_the_blank, picture_response, question_response, messages;
+
+DROP TABLE IF EXISTS scores, quizzes, friends, users, friendships, multiple_choice, fill_in_the_blank, picture_response, question_response, messages;
 /* remove table if it already exists and start from scratch */
 
 CREATE TABLE quizzes (
@@ -18,7 +19,7 @@ CREATE TABLE scores (
 	time BIGINT,
 	score DOUBLE,
 	dateTaken DATETIME,
-	PRIMARY KEY(id)
+	PRIMARY KEY(pID)
 );
 
 /*Each question will have the quizID of the quiz it is associated with*/
