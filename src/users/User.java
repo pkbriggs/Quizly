@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
+import users.Friendship.FriendshipStatus;
 import dbconnection.DBConnection;
 
 /**
@@ -28,9 +30,69 @@ public class User {
 	 * @param pass the plain-text password
 	 * @return true if the password is correct, false otherwise
 	 */
-	public static boolean checkPassword(int userID, String pass, ServletContext context) {
+	public static boolean checkPassword(int userID, String pass) {
 		String sql = String.format("SELECT passwordhash FROM users WHERE id = %d;", userID);
-		return checkPasswordHelper(sql, pass, context);
+		return checkPasswordHelper(sql, pass);
+	}
+	
+	/**
+	 * Given the current user's @session, will determine if the user is currently logged in.
+	 * @param session
+	 * @return true if the user is logged in, false otherwise
+	 */
+	public static boolean isLoggedIn(HttpSession session) {
+		if (session.getAttribute("loggedin") == null || (Boolean)session.getAttribute("loggedin") == false)
+			return false;
+		else
+			return true;
+	}
+	
+	/**
+	 * Given the current user's @session, will return their username if they are logged in. Otherwise, null is returned.
+	 * @param session
+	 * @return their username if they are logged in, null otherwise
+	 */
+	public static String getUsername(HttpSession session) {
+		if (User.isLoggedIn(session))
+			return (String) session.getAttribute("username");
+		else
+			return null;
+	}
+	
+	public static String getUsernameFromID(int id) {
+		String sql = String.format("SELECT username FROM users WHERE id = '%d';", id);
+		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
+		
+		try {
+			if (results.next()) {
+				return results.getString("username"); 
+			} else {
+				// this happens if there are no users with the specified ID, the function simply returns false
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static int getIDFromUsername(String username) {
+		String sql = String.format("SELECT id FROM users WHERE username = '%s';", username);
+		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
+		
+		try {
+			if (results.next()) {
+				return results.getInt("id"); 
+			} else {
+				// this happens if there are no users with the specified ID, the function simply returns false
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 	/**
@@ -39,9 +101,9 @@ public class User {
 	 * @param pass the plain-text password
 	 * @return true if the password is correct, false otherwise
 	 */
-	public static boolean checkPassword(String username, String pass, ServletContext context) {
+	public static boolean checkPassword(String username, String pass) {
 		String sql = String.format("SELECT passwordhash FROM users WHERE username = '%s';", username);
-		return checkPasswordHelper(sql, pass, context);
+		return checkPasswordHelper(sql, pass);
 	}
 	
 	/**
@@ -51,9 +113,8 @@ public class User {
 	 * @param pass the plain-text password
 	 * @return true if the password is correct, false otherwise
 	 */
-	private static boolean checkPasswordHelper(String sql, String pass, ServletContext context) {
-		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
-		ResultSet results = db.executeQuery(sql);
+	private static boolean checkPasswordHelper(String sql, String pass) {
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
 		
 		try {
 			if (results.next()) {
@@ -78,12 +139,16 @@ public class User {
 	 * @param username
 	 * @param pass
 	 */
-	public static void createUser(String username, String pass, ServletContext context) {
-		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
+	public static void createUser(String username, String pass) {
+		String check = String.format("SELECT * FROM users WHERE username = '%s';", username);
+		ResultSet results = DBConnection.getInstance().executeQuery(check);
+		if (results != null) {
+			String hashedPass = generatePasswordHash(pass);
+			String sql = String.format("INSERT INTO users (username, passwordhash) VALUES ('%s', '%s');", username, hashedPass);
+			DBConnection.getInstance().executeQuery(sql);
+		}
 		
-		String hashedPass = generatePasswordHash(pass);
-		String sql = String.format("INSERT INTO users (username, passwordhash) VALUES ('%s', '%s');", username, hashedPass);
-		db.executeQuery(sql);
+		
 	}
 	
 	/**
@@ -95,6 +160,27 @@ public class User {
 	 */
 	public static void setProfilePicture(int userID, String url) {
 		// TODO: Finish me
+	}
+	
+	public static List<Friendship> getFriendRequests(String username) {
+		int userID = User.getIDFromUsername(username);
+		String sql = String.format("SELECT * FROM friendships WHERE (user1 = '%d' OR user2 = '%d') AND (status = '%s');", userID, userID, FriendshipStatus.REQUEST_SENT);
+		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);		
+		List<Friendship> requests = new ArrayList<Friendship>();
+		try {
+			while (results.next()) {
+				int user1 = results.getInt("user1");
+				int user2 = results.getInt("user2");
+				FriendshipStatus status = FriendshipStatus.valueOf(results.getString("status"));
+				Friendship friendship = new Friendship(user1, user2, status);
+				requests.add(friendship);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return requests;
 	}
 	
 	//messages 

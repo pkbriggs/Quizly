@@ -15,7 +15,7 @@
 
 
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Quizly</title>
+<title>Quizly | Quizzes</title>
 </head>
 <body>
 
@@ -33,8 +33,8 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/Quizly/">Home</a></li>
-            <li><a href="/Quizly/quizzes.jsp">Quizzes</a></li>
+            <li><a href="/Quizly/">Home</a></li>
+            <li class="active"><a href="/Quizly/quizzes.jsp">Quizzes</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <i class="fa fa-sort-asc"></i></a>
               <ul class="dropdown-menu">
@@ -143,45 +143,11 @@
 
     <div class="container">    
 		<% if (!User.isLoggedIn(session)) { %>
-			<!-- http://bootsnipp.com/snippets/featured/aboutme-login-style -->
-		
-			<div class="index-content">
-			<h1 class="index-header">Sign Up For Quizly:</h1>
-			
-			<div class="row">
-			  <div class="col-xs-6 col-sm-6 col-md-6">
-			    <a href="#" class="btn btn-lg btn-facebook btn-block"><i class="fa fa-facebook fa-lg social-register-button-icon"></i> Facebook</a>
-			  </div>
-			  <div class="col-xs-6 col-sm-6 col-md-6">
-			    <a href="#" class="btn btn-lg btn-google btn-block"><i class="fa fa-google-plus fa-lg social-register-button-icon"></i> Google</a>
-			  </div>
-			</div>
-			<div class="index-login-or">
-			  <hr class="index-hr-or">
-			  <span class="index-span-or">or</span>
-			</div>
-			
-			<form class="form" role="form" method="post" action="Register" accept-charset="UTF-8">
-			  <div class="form-group">
-			    <label for="username">Username</label>
-			    <input type="text" class="form-control" name="register-username">
-			  </div>
-			  <div class="form-group">
-			    <label for="password">Password</label>
-			    <input type="password" class="form-control" name="register-password">
-			  </div>
-			  <button type="submit" id="index-signup-button" class="btn btn-lg btn-primary btn-block">
-			    Sign up &raquo;
-			  </button>
-			</form>
-		</div>
-			
+			Please log in first.
 		<% } else { %>
-			<% String username = (String) session.getAttribute("username"); %>
-			<h1>Welcome, <%= username %></h1>
-			<a class="btn btn-lg btn-primary" href="/Quizly/quizzes.jsp" role="button">Take a quiz &raquo;</a>
+			<h1>List of available quizzes:</h1>			
+			
 		<% } %>
-		
     </div> <!-- /container -->
 
 
