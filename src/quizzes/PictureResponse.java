@@ -92,7 +92,9 @@ public class PictureResponse implements Question {
 		}
 	
 	@Override
-	public void saveToDatabase(DBConnection connection) {
+	public void saveToDatabase() {
+		DBConnection connection = DBConnection.getInstance();
+
 		String answer_str = GetAnswerString();
 		String query = "INSERT INTO picture_response"
 				+ "(quizID, imageURL, answer) VALUES("

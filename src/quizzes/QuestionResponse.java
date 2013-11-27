@@ -107,7 +107,9 @@ public class QuestionResponse implements Question {
 	}
 	
 	@Override
-	public void saveToDatabase(DBConnection connection) {
+	public void saveToDatabase() {
+		DBConnection connection = DBConnection.getInstance();
+
 		String answer_str = GetAnswerString();
 		String query = "INSERT INTO question_response"
 				+ "(quizID, question, answer) VALUES("

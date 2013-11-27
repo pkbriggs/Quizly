@@ -27,14 +27,17 @@
 		//Finds the correct quiz
 		while (rs.next()) {
 			if (rs.getString("quizID").equals(quizID)) {
-				quiz = new Quiz(quizIDInt, db);
+				/*
+				quiz = new Quiz(quizIDInt);
 				name = rs.getString("nameOfQuiz");
 				type = rs.getString("type");
 				creator = rs.getString("creator");
 				dateCreated = rs.getString("dateCreated");
-				//Shoud match name in database
+				Shoud match name in database
 				serialized = rs.getString("serializedQuizObject");
 				break;
+				*/
+				
 			}
 		}
 		//Checks if quiz is never set

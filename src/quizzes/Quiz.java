@@ -47,7 +47,8 @@ public class Quiz{
 	/*This constructor retrieves information from the database for the quizID
 	 * provided and creates a new quiz object from that information
 	 */
-	Quiz(int id, DBConnection connection){
+	Quiz(int id){
+		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery("SELECT * FROM quizzes WHERE id="+id);
 		try {
 			rs.absolute(1);
@@ -58,7 +59,7 @@ public class Quiz{
 		FillWithInfoFromRow(this, rs);
 		this.inDatabase = true;
 		this.numCorrect = 0;
-		this.questions = loadQuestionsFromDB(connection);
+		this.questions = loadQuestionsFromDB();
 		this.currPage = 0;
 	}
 	
@@ -115,7 +116,8 @@ public class Quiz{
 	 * @param connection
 	 * @return
 	 */
-	private int initializeQuizToDatabase(DBConnection connection){
+	private int initializeQuizToDatabase(){
+		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery("INSERT INTO quizzes(title, dateCreated) values(\""+this.title+"\" , \""+this.dateCreated+"\")");
 		int id = 0;
 		try {
@@ -189,15 +191,17 @@ public class Quiz{
 	 * Stores this quizzes information in the database
 	 * @param connection
 	 */
-	public void updateQuizInDB( DBConnection connection){
+	public void updateQuizInDB(){
+		DBConnection connection = DBConnection.getInstance();
+
 		//TODO update the creator as well
 		if(!this.inDatabase){
-			this.id = this.initializeQuizToDatabase(connection);
+			this.id = this.initializeQuizToDatabase();
 			this.inDatabase = true;
 		}
 		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"' "
 				+ ", numPages='"+this.numPages+"' , dateCreated='"+this.dateCreated+"' WHERE id=" + this.id);
-		saveQuestionsToDatabase(connection, this.id);
+		saveQuestionsToDatabase(this.id);
 	}
 	
 	/**
@@ -205,7 +209,8 @@ public class Quiz{
 	 * makes Question objects out of them, and adds them to the quizzes 
 	 * array of questions so they can be printed
 	 */
-	private ArrayList<Question> loadQuestionsFromDB(DBConnection connection){
+	private ArrayList<Question> loadQuestionsFromDB(){
+		DBConnection connection = DBConnection.getInstance();
 		ArrayList<Question> questions = new ArrayList<Question>();
 		
 		//Multiple Choice Questions
@@ -261,7 +266,8 @@ public class Quiz{
 	 * @param query, connection
 	 * @return
 	 */
-	public static ArrayList<Quiz> GetArrayOfQuizzes(String query, DBConnection connection){
+	public static ArrayList<Quiz> GetArrayOfQuizzes(String query){
+		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery(query);
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
 		try {
@@ -280,11 +286,12 @@ public class Quiz{
 	}
 	
 	
-	private void saveQuestionsToDatabase(DBConnection connection, int quizID){
+	private void saveQuestionsToDatabase(int quizID){
+
 		for(Question question: this.questions){
 			System.out.println("Saving this question: " + question.toString());
 			question.setQuizID(quizID);
-			question.saveToDatabase(connection);
+			question.saveToDatabase();
 		}
 	}
 	
@@ -377,5 +384,15 @@ public class Quiz{
 
 	public boolean isLastPage() {
 		return this.currPage == this.numPages - 1 ;
+	}
+
+	public static String listQuizzes(){
+		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes");
+		String html = "";
+		for(Quiz quiz: quizzes){
+			html+=("<a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</a><p>");
+		}
+		
+		return html;
 	}
 }
