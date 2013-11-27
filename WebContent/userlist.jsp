@@ -11,12 +11,11 @@
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> -->
-<link rel="stylesheet" href="css/index-page.css">
 <link rel="stylesheet" href="css/style.css">
 
 
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Quizly</title>
+<title>Quizly | Users</title>
 </head>
 <body>
 
@@ -34,10 +33,10 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/Quizly/">Home</a></li>
+            <li><a href="/Quizly/">Home</a></li>
             <li><a href="/Quizly/quizzes.jsp">Quizzes</a></li>
-            <li><a href="/Quizly/userlist.jsp">Users</a></li>
-            <!-- <li class="dropdown">
+            <li class="active"><a href="/Quizly/userlist.jsp">Users</a></li>
+            <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <i class="fa fa-sort-asc"></i></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Action</a></li>
@@ -48,20 +47,8 @@
                 <li><a href="#">Separated link</a></li>
                 <li><a href="#">One more separated link</a></li>
               </ul>
-            </li> -->
-            
+            </li>
           </ul>
-          <div class="nav navbar-nav" id="nav-search">
-            
-				<form role="form">
-					<div class="form-group">
-				    	<input type="text" class="form-control input-xlarge" id="searchInput" placeholder="Search...">
-				  	</div>
-				</form>
-			
-            
-            
-          	</div>
           <ul class="nav navbar-nav navbar-right">            
             
             <% if (!User.isLoggedIn(session)) { %>
@@ -157,45 +144,12 @@
 
     <div class="container">    
 		<% if (!User.isLoggedIn(session)) { %>
-			<!-- http://bootsnipp.com/snippets/featured/aboutme-login-style -->
-		
-			<div class="index-content">
-			<h1 class="index-header">Sign Up For Quizly:</h1>
-			
-			<div class="row">
-			  <div class="col-xs-6 col-sm-6 col-md-6">
-			    <a href="#" class="btn btn-lg btn-facebook btn-block"><i class="fa fa-facebook fa-lg social-register-button-icon"></i> Facebook</a>
-			  </div>
-			  <div class="col-xs-6 col-sm-6 col-md-6">
-			    <a href="#" class="btn btn-lg btn-google btn-block"><i class="fa fa-google-plus fa-lg social-register-button-icon"></i> Google</a>
-			  </div>
-			</div>
-			<div class="index-login-or">
-			  <hr class="index-hr-or">
-			  <span class="index-span-or">or</span>
-			</div>
-			
-			<form class="form" role="form" method="post" action="Register" accept-charset="UTF-8">
-			  <div class="form-group">
-			    <label for="username">Username</label>
-			    <input type="text" class="form-control" name="register-username">
-			  </div>
-			  <div class="form-group">
-			    <label for="password">Password</label>
-			    <input type="password" class="form-control" name="register-password">
-			  </div>
-			  <button type="submit" id="index-signup-button" class="btn btn-lg btn-primary btn-block">
-			    Sign up &raquo;
-			  </button>
-			</form>
-		</div>
-			
+			Please log in first.
 		<% } else { %>
-			<% String username = (String) session.getAttribute("username"); %>
-			<h1>Welcome, <%= username %></h1>
-			<a class="btn btn-lg btn-primary" href="/Quizly/quizzes.jsp" role="button">Take a quiz &raquo;</a>
+			<h1>List of all users:</h1>			
+			
+			<% List<User> users = User.getAllUsers(); %>
 		<% } %>
-		
     </div> <!-- /container -->
 
 

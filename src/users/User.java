@@ -21,8 +21,18 @@ import dbconnection.DBConnection;
  */
 public class User {
 	
+	private int id;
+	private String username;
+	private String photoFilename;
+	
 	private List<Integer> recievedMessages;
 	private List<Integer> quizzesTaken;
+	
+	public User(int id, String username, String photoFilename) {
+		this.id = id;
+		this.username = username;
+		this.photoFilename = photoFilename;
+	}
 	
 	/**
 	 * Given a @userID, will compare the hashed @pass to the hashed password associated with the user's account.
@@ -181,6 +191,49 @@ public class User {
 			e.printStackTrace();
 		}
 		return requests;
+	}
+	
+	public static List<User> getAllUsers() {
+		String sql = "SELECT * FROM users;";
+		DBConnection.getInstance().executeQuery(sql);
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);	
+		
+		List<User> users = new ArrayList<User>();
+		try {
+			while (results.next()) {
+				int id = results.getInt("id");
+				String username = results.getString("username");
+				String photoFilename = results.getString("picturefile");
+				User user = new User(id, username, photoFilename);
+				users.add(user);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return users;
+	}
+	
+	public static List<User> search(String query) {
+		String sql = String.format("SELECT * FROM users WHERE USERNAME LIKE '%s%';", query);
+		DBConnection.getInstance().executeQuery(sql);
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);	
+		
+		List<User> searchResults = new ArrayList<User>();
+		try {
+			while (results.next()) {
+				int id = results.getInt("id");
+				String username = results.getString("username");
+				String photoFilename = results.getString("picturefile");
+				User user = new User(id, username, photoFilename);
+				searchResults.add(user);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return searchResults;
+		
 	}
 	
 	//messages 

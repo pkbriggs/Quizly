@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> -->
-<link rel="stylesheet" href="css/index-page.css">
+<link rel="stylesheet" href="css/style.css">
 
 
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
@@ -35,6 +35,7 @@
           <ul class="nav navbar-nav">
             <li><a href="/Quizly/">Home</a></li>
             <li class="active"><a href="/Quizly/quizzes.jsp">Quizzes</a></li>
+            <li><a href="/Quizly/userlist.jsp">Users</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <i class="fa fa-sort-asc"></i></a>
               <ul class="dropdown-menu">
@@ -147,6 +148,7 @@
 		<% } else { %>
 			<h1>List of available quizzes:</h1>			
 			
+			<p>You can also <a href="/Quizly/CreateQuiz.jsp">create a quiz</a>.</p>
 		<% } %>
     </div> <!-- /container -->
 
