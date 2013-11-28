@@ -75,10 +75,9 @@ public class Friendship {
 	 * @param userID the id of the user initiating the friend request
 	 * @param otherID the id of the user receiving the request
 	 */
-	public static void sendFriendRequest(int userID, int otherID, ServletContext context) {
-		DBConnection db = (DBConnection) context.getAttribute("dbconnection");
+	public static void sendFriendRequest(int userID, int otherID) {
 		String sql = String.format("INSERT INTO friendships (user1, user2, status) VALUES ('%d', '%d', '%s');", userID, otherID, FriendshipStatus.REQUEST_SENT.name());
-		db.executeQuery(sql);
+		DBConnection.getInstance().executeQuery(sql);
 	}
 	
 	/**

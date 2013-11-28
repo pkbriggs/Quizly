@@ -1,4 +1,6 @@
 <%@ page import="users.User" %>
+<%@ page import="users.Friendship" %>
+<%@ page import="java.util.List" %>
 
 <div class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container">
@@ -95,12 +97,27 @@
             <% } else { %>
             
             	<li class="dropdown">
-	            	<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users fa-2x"></i></a>
+            		<% if (User.isLoggedIn(session)) { //  User.getIDFromUsername(User.getUsername(session)) %>
+	            		<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown" data-currid="<%= User.getID(session) %>" id="user-dropdown"><i class="fa fa-users fa-2x"></i></a>
+	            	<% } else { %>
+	            		<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown" data-currid="-1" id="user-dropdown"><i class="fa fa-users fa-2x"></i></a>
+	            	<% } %>
 	            	<ul class="dropdown-menu" style="padding: 15px">
-		                  <li>
-		                     <div class="row">
-		                     </div>
-	                     </li>
+	            	
+	            		<% if (User.isLoggedIn(session)) { %>
+		            		<% List<Friendship> friendRequests = User.getFriendRequests(User.getUsername(session)); %>
+		            		<% for (Friendship req: friendRequests) { %>
+		            			<li>
+		            				<div class="row nomarginrow">
+		            				<a href="<%= "/Quizly/profile.jsp?id="+ req.getInitiatingUser() %>">
+		            					<%= User.getUsernameFromID(req.getInitiatingUser()) %>
+		            				</a>
+		            				<button class="btn btn-sm btn-success">Accept</button>
+		            				<button class="btn btn-sm btn-primary">Decline</button>
+		            				</div>
+		            			</li>
+		            		<% } %>
+	            		<% } %>
 	                </ul>
 	            </li>
 	            

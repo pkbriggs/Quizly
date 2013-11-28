@@ -81,6 +81,14 @@ public class User {
 			return null;
 	}
 	
+	public static int getID(HttpSession session) {
+		if (User.isLoggedIn(session))
+			return (Integer) session.getAttribute("userid");
+		else
+			return -1;
+		
+	}
+	
 	public static String getUsernameFromID(int id) {
 		String sql = String.format("SELECT username FROM users WHERE id = '%d';", id);
 		
@@ -115,6 +123,27 @@ public class User {
 			e.printStackTrace();
 		}
 		return -1;
+	}
+	
+	public static User getUserFromID(int id) {
+		String sql = String.format("SELECT * FROM users WHERE id = '%d';", id);
+		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
+		
+		try {
+			if (results.next()) {
+				String username = results.getString("username");
+				String photoFilename = results.getString("picturefile");
+				User user = new User(id, username, photoFilename);
+				return user;
+			} else {
+				// this happens if there are no users with the specified ID, the function simply returns false
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**

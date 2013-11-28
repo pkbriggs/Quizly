@@ -43,6 +43,7 @@ public class Register extends HttpServlet {
 		User.createUser(username, password);
 		session.setAttribute("loggedin", true);
 		session.setAttribute("username", username);
+		session.setAttribute("userid", User.getIDFromUsername(username));
 		
 //		RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
 //		dispatcher.forward(request, response);

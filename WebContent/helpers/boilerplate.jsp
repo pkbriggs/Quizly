@@ -8,8 +8,14 @@
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> -->
-<link rel="stylesheet" href="css/index-page.css">
 <link rel="stylesheet" href="css/style.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="js/global.js"></script>
+
+<% String cssInclude = request.getParameter("cssInclude"); %>
+<% if (cssInclude != null) { %>
+	<link rel="stylesheet" href="<%= cssInclude %>">
+<% } %>
 
 
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">

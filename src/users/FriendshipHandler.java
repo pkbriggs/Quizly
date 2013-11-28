@@ -1,26 +1,25 @@
 package users;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class Logout
+ * Servlet implementation class FriendshipHandler
  */
-@WebServlet("/Logout")
-public class Logout extends HttpServlet {
+@WebServlet("/FriendshipHandler")
+public class FriendshipHandler extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Logout() {
+    public FriendshipHandler() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -29,15 +28,17 @@ public class Logout extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
+		int userOne = Integer.parseInt(request.getParameter("user1"));
+		int userTwo = Integer.parseInt(request.getParameter("user2"));
+		String type = request.getParameter("type");
 		
-		session.setAttribute("loggedin", false);
-		session.setAttribute("username", null);
-		session.setAttribute("userid", -1);
+		PrintWriter out = response.getWriter(); 
 		
-//		RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
-//		dispatcher.forward(request, response);
-		response.sendRedirect(request.getContextPath() + "/index.jsp");
+		if (type.equals("REQUEST")) {
+			Friendship.sendFriendRequest(userOne, userTwo);
+			out.println("ok");
+		}
+		
 	}
 
 	/**
