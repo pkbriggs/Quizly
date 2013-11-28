@@ -1,20 +1,24 @@
 @CHARSET "UTF-8";
-.submitButton {
+/*.submitButton {
 	border: none;
 	background: none;
 	color: grey;
 	
-}
+}*/
 
-.submitButton:hover {
-	color: #3B5998;
+.btn-question:hover {
+	color: #ffb697;
 }
 
 h1, h2 {
-	color: #3B5998;
+	color: #6a8eab;
 }
 
 .shiftRight {
 	position: relative;
 	left: 1%;
+}
+
+.btn-question {
+	background: #256294;
 }
