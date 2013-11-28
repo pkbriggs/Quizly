@@ -12,6 +12,7 @@
 
 h1, h2 {
 	color: #6a8eab;
+	display: inline;
 }
 
 .shiftRight {
@@ -21,4 +22,10 @@ h1, h2 {
 
 .btn-question {
 	background: #256294;
+}
+
+.btn-expand {
+	background: #afd3f2;
+	position: relative;
+	float: left;
 }
