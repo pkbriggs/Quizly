@@ -34,6 +34,18 @@ public class User {
 		this.photoFilename = photoFilename;
 	}
 	
+	public int getID() {
+		return id;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getPhotoFilename() {
+		return photoFilename;
+	}
+	
 	/**
 	 * Given a @userID, will compare the hashed @pass to the hashed password associated with the user's account.
 	 * @param userID
@@ -215,7 +227,7 @@ public class User {
 	}
 	
 	public static List<User> search(String query) {
-		String sql = String.format("SELECT * FROM users WHERE USERNAME LIKE '%s%';", query);
+		String sql = String.format("SELECT * FROM users WHERE USERNAME LIKE '%s%%';", query);
 		DBConnection.getInstance().executeQuery(sql);
 		ResultSet results = DBConnection.getInstance().executeQuery(sql);	
 		
