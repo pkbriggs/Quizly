@@ -34,6 +34,18 @@ public class User {
 		this.photoFilename = photoFilename;
 	}
 	
+	public int getID() {
+		return id;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getPhotoFilename() {
+		return photoFilename;
+	}
+	
 	/**
 	 * Given a @userID, will compare the hashed @pass to the hashed password associated with the user's account.
 	 * @param userID
@@ -67,6 +79,14 @@ public class User {
 			return (String) session.getAttribute("username");
 		else
 			return null;
+	}
+	
+	public static int getID(HttpSession session) {
+		if (User.isLoggedIn(session))
+			return (Integer) session.getAttribute("userid");
+		else
+			return -1;
+		
 	}
 	
 	public static String getUsernameFromID(int id) {
@@ -103,6 +123,27 @@ public class User {
 			e.printStackTrace();
 		}
 		return -1;
+	}
+	
+	public static User getUserFromID(int id) {
+		String sql = String.format("SELECT * FROM users WHERE id = '%d';", id);
+		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
+		
+		try {
+			if (results.next()) {
+				String username = results.getString("username");
+				String photoFilename = results.getString("picturefile");
+				User user = new User(id, username, photoFilename);
+				return user;
+			} else {
+				// this happens if there are no users with the specified ID, the function simply returns false
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**
@@ -215,7 +256,7 @@ public class User {
 	}
 	
 	public static List<User> search(String query) {
-		String sql = String.format("SELECT * FROM users WHERE USERNAME LIKE '%s%';", query);
+		String sql = String.format("SELECT * FROM users WHERE USERNAME LIKE '%s%%';", query);
 		DBConnection.getInstance().executeQuery(sql);
 		ResultSet results = DBConnection.getInstance().executeQuery(sql);	
 		

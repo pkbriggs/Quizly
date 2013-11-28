@@ -110,11 +110,11 @@ body, h1, h2, h3, h4, h5, h6, p, span, div {
 }
 
 /* user dropdown */
-#user-dropdown .dropdown-menu li {
+#user-dropdown .dropdown-menu li, #search-results li {
 	padding: 0 10px;
 }
 
-#user-dropdown .dropdown-menu li a {
+#user-dropdown .dropdown-menu li a, #search-results li a {
 	display: block;
     text-decoration: none;
     color: #333;
@@ -123,18 +123,18 @@ body, h1, h2, h3, h4, h5, h6, p, span, div {
     border-bottom: 1px solid #e6e8ea;
 }
 
-#user-dropdown .dropdown-menu li:last-of-type a {
+#user-dropdown .dropdown-menu li:last-of-type a, #search-results li:last-of-type a {
     border: none;
     padding-bottom: 15px;
 }
 
-#user-dropdown .dropdown-menu li i {
+#user-dropdown .dropdown-menu li i, #search-results li i {
     margin-right: 5px;
     color: inherit;
     vertical-align: middle;
 }
 
-#user-dropdown .dropdown-menu {
+#user-dropdown .dropdown-menu, #search-results {
     /* Styles */
     background: #fff;
     color: #333;
@@ -147,7 +147,7 @@ body, h1, h2, h3, h4, h5, h6, p, span, div {
     padding-left: 15px;
 }
 
-#user-dropdown .dropdown-menu li:hover a {
+#user-dropdown .dropdown-menu li:hover a, #search-results li:hover a {
     color: #57a9d9;
     background-color: white;
 }
@@ -157,7 +157,7 @@ body, h1, h2, h3, h4, h5, h6, p, span, div {
 	margin-bottom: -9px; /* 0px */
 	padding-left: 10px;
 	/* padding-left: 7%; */
-	width: 50%;
+	/* width: 40%; */
 }
 
 #searchInput {
@@ -168,4 +168,13 @@ body, h1, h2, h3, h4, h5, h6, p, span, div {
 }
 #searchInput:focus {
 	width: 75%;
+}
+
+#search-results {
+	margin-top: -15px;
+}
+
+.nomarginrow {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
 }
