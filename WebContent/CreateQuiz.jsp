@@ -6,21 +6,21 @@
 <%@ include file="helpers/navbar.jsp" %>
 
 
-<h1>Create Quiz</h1>
+<h1>Create Quiz</h1><br><br>
 
 
 
 <!-- This form submits the basic quiz info to the database and redirects to the success page-->
 <form id= "quiz_info" action="CreateQuiz" method="post">
 <input type = "hidden" name="formID" value ="submit_quiz"/>
-Title: <textarea rows="1" cols="20" name="title"></textarea><br><br>
-<p>Description: <textarea rows="5" cols="50" name="description"></textarea>
-<p>Display on Multiple Pages: <input type='checkbox' name='multiple_pages' id='multiple_pages' value='multiple_pages'/>
+<h3>Title</h3> <textarea rows="1" cols="20" name="title"></textarea><br>
+<h3>Description</h3> <textarea rows="5" cols="50" name="description"></textarea>
+<p>Display on Multiple Pages <input type='checkbox' name='multiple_pages' id='multiple_pages' value='multiple_pages'/>
 <div id='multiple_pages_section'>
 <label id='pages_label'>Number of questions per page:</label>
 <input type='text' id='questions_per_page' name='questions_per_page'/>
 </div>
-Number of questions so far: <label id='num_questions_so_far'>0</label><br>
+<h3 id = "questionNum"># of Questions: </h3> <label id='num_questions_so_far'>0</label><br><br>
 <input class = "btn btn-question" type="submit" value="+ Submit Quiz"/><br><br>
 </form>
 
@@ -37,7 +37,7 @@ Choices: <p><input type="radio" name="radio" value="1"><input class="shiftRight"
 <input type="radio" name="radio" value="4"><input class="shiftRight" type="text" name="choice4"/></input><p>
 <input type = "hidden" name="formID" value = "multiple_choice"/>
 <input class="btn btn-question" type="submit" value="+ Add Question"/>
-</form>
+</form><br><br>
 
 
 <!-- The form for creating a fill in the blank question -->
@@ -53,7 +53,7 @@ Correct Answer(s): <input type="text" name="answer0" size="50"/><p>
 <input type = "hidden" name="formID" value = "fill_in_the_blank"/>
 <input class="btn btn-question" type="button" id='add_fib_answer' value="+ Add Another Answer"/><br><br>
 <input class="btn btn-question" type="submit" value="+ Add Question"/>
-</form>
+</form><br><br>
 
 <!-- The form for creating a question-response -->
 <button id = "questionResponseButton"class="btn btn-small btn-expand">+</button>
@@ -68,7 +68,7 @@ Correct Answer(s): <input type="text" name="answer0" size="50"/><p>
 <input type = "hidden" name="formID" value = "question_response"/>
 <input class="btn btn-question" type="button" id='add_qr_answer' value="+ Add Another Answer"/><br><br>
 <input class="btn btn-question" type="submit" value="+ Add Question"/>
-</form>
+</form><br><br>
 
 <!-- The form for creating a  picture-response -->
 <button id = "pictureResponseButton"class="btn btn-small btn-expand">+</button>

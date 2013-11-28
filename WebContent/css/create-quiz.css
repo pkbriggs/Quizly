@@ -1,10 +1,4 @@
 @CHARSET "UTF-8";
-/*.submitButton {
-	border: none;
-	background: none;
-	color: grey;
-	
-}*/
 
 .btn-question:hover {
 	color: #ffb697;
@@ -28,4 +22,17 @@ h1, h2 {
 	background: #afd3f2;
 	position: relative;
 	float: left;
+}
+
+#questionNum {
+	display: inline;
+}
+
+#num_questions_so_far {
+	font-size: 30px;	
+	color: #ff9e75;
+}
+
+h3 {
+	color: #bf8972;
 }
