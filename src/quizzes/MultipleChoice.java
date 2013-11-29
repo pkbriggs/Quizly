@@ -21,11 +21,12 @@ public class MultipleChoice implements Question {
 	MultipleChoice(HttpServletRequest request)
 		throws Exception{
 		try{
-		this.choices = SanitizeChoices(request);
-		this.answer = SanitizeAnswer(request);		
-		this.question = SanitizeQuestion(request);
+			System.out.println("Making MC question");
+			this.choices = SanitizeChoices(request);
+			this.answer = SanitizeAnswer(request);	
+			this.question = SanitizeQuestion(request);
+
 		}catch(Exception e){
-			System.out.println("This is e: "+ e.getMessage());
 			throw new Exception(e.getMessage());
 		}
 	}
@@ -65,12 +66,19 @@ public class MultipleChoice implements Question {
 	 */
 	private String SanitizeAnswer(HttpServletRequest request)
 		throws Exception{
-		int checked = Integer.parseInt(request.getParameter("radio"));
-		String answer = request.getParameter("choice"+ checked);
-		if(answer.equals(null))
-			throw new Exception("Correct answer for multiple choice question not selected. Please go back and try again.");
-		answer = answer.trim();
-		answer = answer.toLowerCase();
+		try{
+			String checkedStr = request.getParameter("radio");
+			if(checkedStr == null){
+				throw new Exception("Correct answer for multiple choice question not selected. Please go back and try again.");
+			}
+		
+			int checked = Integer.parseInt(checkedStr);		
+			String answer = request.getParameter("choice"+ checked);			
+			answer = answer.trim();
+			answer = answer.toLowerCase();
+		}catch(Exception e){
+			throw new Exception(e.getMessage());
+		}
 		return answer;
 	}
 	

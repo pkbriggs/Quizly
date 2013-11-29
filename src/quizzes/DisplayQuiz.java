@@ -98,6 +98,8 @@ public class DisplayQuiz extends HttpServlet {
 		out.println("<body>");
 		out.println("<form name='submit_quiz' action='ScoreQuiz' method='post'>");
 		out.println("<h2>"+quiz.getTitle()+"</h2><p>");
+		out.println("<em> Created By: "+quiz.getCreator()+"</em>");
+
 		out.println("<h2>Page: "+ quiz.getCurrPage()+"</h2><p>");
 		out.println("<em>"+quiz.getDescription()+"</em>");
 

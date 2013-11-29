@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import users.User;
 import dbconnection.DBConnection;
 
 /**
@@ -40,7 +41,7 @@ public class CreateQuiz extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		//get
 	}
 
 	/**
@@ -48,16 +49,17 @@ public class CreateQuiz extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String formID = request.getParameter("formID");
-		if(formID.equals("initialize_quiz")){
-			InitializeQuiz(request);
-		}
-		
+
 		HttpSession session = request.getSession();
 		Quiz currQuiz = (Quiz) session.getAttribute("quiz_being_created");
+		if(currQuiz == null){
+			InitializeQuiz(request);
+			currQuiz = (Quiz) session.getAttribute("quiz_being_created");
+		}
 		
 		if(formID.equals("submit_quiz")){
 			AddQuizToDatabase(request);
-			RequestDispatcher dispatch = request.getRequestDispatcher("TesterFile.jsp");
+			RequestDispatcher dispatch = request.getRequestDispatcher("Index.jsp");
 			dispatch.forward(request, response);
 			return;
 		}
@@ -80,7 +82,7 @@ public class CreateQuiz extends HttpServlet {
 			}
 		}catch(Exception e){
 			PrintWriter out = response.getWriter();
-			out.println("Whoopsie!");
+			out.println("Whoops!");
 			out.println(e.getMessage());
 			out.println("Go back to try again");
 			return;
@@ -98,6 +100,8 @@ public class CreateQuiz extends HttpServlet {
 		Quiz quiz = (Quiz) DBConnection.GetSessionAttribute(request, "quiz_being_created");
 		String description = request.getParameter("description");
 		String title = request.getParameter("title");
+		HttpSession session = request.getSession();
+		String username = User.getUsername(session);
 		if(request.getParameter("multiple_pages") != null){
 			int questions_per_page = Integer.parseInt(request.getParameter("questions_per_page")); 
 			quiz.setNumPagesFromNumQuestions(questions_per_page);
@@ -106,7 +110,7 @@ public class CreateQuiz extends HttpServlet {
 		}
 		quiz.setDescription(description);
 		quiz.setTitle(title);
-		//TODO!! Store the creatorID as well once we have a login page
+		quiz.setCreator(username);
 		quiz.updateQuizInDB();		
 	}
 
@@ -117,6 +121,7 @@ public class CreateQuiz extends HttpServlet {
 	 * @param connection
 	 */
 	private void InitializeQuiz(HttpServletRequest request){
+		System.out.println("Initializing the quiz!!");
 		Quiz newQuiz = new Quiz();
 		HttpSession session = request.getSession();
 		session.setAttribute("quiz_being_created", newQuiz);

@@ -180,6 +180,8 @@
 			<% String username = (String) session.getAttribute("username"); %>
 			<h1>Welcome, <%= username %></h1>
 			<a class="btn btn-lg btn-primary" href="/Quizly/quizzes.jsp" role="button">Take a quiz &raquo;</a>
+			<a class="btn btn-lg btn-primary" href="/Quizly/CreateQuiz.jsp" role="button">Make a new quiz &raquo;</a>
+			
 		<% } %>
 		
     </div> <!-- /container -->

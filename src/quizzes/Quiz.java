@@ -27,6 +27,7 @@ public class Quiz{
 	private int numCorrect;
 	private int numPages;
 	private int currPage;
+	private String creator;
 
 	private int id;
 	private String dateCreated;
@@ -41,6 +42,7 @@ public class Quiz{
 		this.inDatabase = false;
 		this.numCorrect = 0;
 		this.currPage = 0;
+		this.creator = "";
 		questions = new ArrayList<Question>();
 	}
 	
@@ -85,12 +87,18 @@ public class Quiz{
 			quiz.setDateCreated(rs.getString("dateCreated"));
 			quiz.setID(rs.getInt("id"));
 			quiz.setNumPages( rs.getInt("numPages"));
+			quiz.setCreator(rs.getString("creator"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+
 	/**
 	 * Sets this object's id to @id
 	 * @param id
@@ -152,6 +160,8 @@ public class Quiz{
 	 * @param QuestionOld question
 	 */
 	public void addQuestion(Question question){
+		System.out.println("Questions: "+ questions.toString());
+		System.out.println("Question: "+ question.toString());
 		questions.add(question);
 	}
 	
@@ -200,7 +210,7 @@ public class Quiz{
 			this.inDatabase = true;
 		}
 		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"' "
-				+ ", numPages='"+this.numPages+"' , dateCreated='"+this.dateCreated+"' WHERE id=" + this.id);
+				+ ", numPages='"+this.numPages+"' , dateCreated='"+this.dateCreated+"', creator='"+this.creator +"' WHERE id=" + this.id);
 		saveQuestionsToDatabase(this.id);
 	}
 	
@@ -394,5 +404,21 @@ public class Quiz{
 		}
 		
 		return html;
+	}
+	
+	public String getCreator(){
+		return this.creator;
+	}
+	
+	public String getDateCreated(){
+		return this.dateCreated;
+	}
+	
+	@Override
+	public String toString(){
+		if(this.questions == null){
+			return "questions == null";
+		}
+		return "Title: "+ this.title + " Creator: " + this.creator + " numQuestions:" + questions.size();
 	}
 }

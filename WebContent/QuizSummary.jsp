@@ -17,29 +17,12 @@
 		DBConnection db = (DBConnection) sContext.getAttribute("dbconnection");
 		String quizID = request.getParameter("id");
 		int quizIDInt = Integer.parseInt(quizID);
-		ResultSet rs = db.executeQuery("SELECT * FROM quizzes");
-		Quiz quiz = null;
-		String name = null;
-		String type = null;
-		String creator = null;
-		String dateCreated = null;
-		String serialized = null;
-		//Finds the correct quiz
-		while (rs.next()) {
-			if (rs.getString("quizID").equals(quizID)) {
-				/*
-				quiz = new Quiz(quizIDInt);
-				name = rs.getString("nameOfQuiz");
-				type = rs.getString("type");
-				creator = rs.getString("creator");
-				dateCreated = rs.getString("dateCreated");
-				Shoud match name in database
-				serialized = rs.getString("serializedQuizObject");
-				break;
-				*/
-				
-			}
-		}
+		Quiz quiz = new Quiz(quizIDInt);
+		String name = quiz.getTitle();
+		String creator = quiz.getCreator();
+		String dateCreated = quiz.getDateCreated();
+		String description = quiz.getDescription();
+
 		//Checks if quiz is never set
 		if (quiz == null) System.out.println("Invalid ID");
 		
