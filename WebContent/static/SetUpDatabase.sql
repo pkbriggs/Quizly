@@ -1,5 +1,5 @@
 
-DROP TABLE IF EXISTS scores, quizzes, friends, users, friendships, multiple_choice, fill_in_the_blank, picture_response, question_response, messages;
+DROP TABLE IF EXISTS scores, quizzes, friends, users, friendships, multiple_choice, fill_in_the_blank, picture_response, question_response, messages, achievements, userAchievements, challenges;
 /* remove table if it already exists and start from scratch */
 
 CREATE TABLE quizzes (
@@ -79,12 +79,38 @@ CREATE TABLE friendships (
 );
 
 CREATE TABLE messages (
-    pID int AUTO_INCREMENT,
+	id int AUTO_INCREMENT,
     fromUser varchar(255),
     toUser varchar(255), 
-    mType int,
     message TEXT,
+    title TEXT,
+    dateCreated varchar(255),
     seen TINYINT(1),
     quizID int,
-    PRIMARY KEY(pID)
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE achievements (
+	id int AUTO_INCREMENT,
+	name varchar(255),
+	description TEXT,
+	imageUrl varchar(255),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE userAchievements (
+	id int AUTO_INCREMENT,
+	username varchar(64),
+	achievement varchar(64),
+	dateCreated varchar(255),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE challenges (
+	id int AUTO_INCREMENT,
+	username varchar(64), 
+	challengedUser varchar(64),
+	quizID int,
+	quizName varchar(255),
+	PRIMARY KEY(id)
 );
