@@ -21,8 +21,30 @@ import dbconnection.DBConnection;
  */
 public class User {
 	
+	private int id;
+	private String username;
+	private String photoFilename;
+	
 	private List<Integer> recievedMessages;
 	private List<Integer> quizzesTaken;
+	
+	public User(int id, String username, String photoFilename) {
+		this.id = id;
+		this.username = username;
+		this.photoFilename = photoFilename;
+	}
+	
+	public int getID() {
+		return id;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getPhotoFilename() {
+		return photoFilename;
+	}
 	
 	/**
 	 * Given a @userID, will compare the hashed @pass to the hashed password associated with the user's account.
@@ -59,6 +81,14 @@ public class User {
 			return null;
 	}
 	
+	public static int getID(HttpSession session) {
+		if (User.isLoggedIn(session))
+			return (Integer) session.getAttribute("userid");
+		else
+			return -1;
+		
+	}
+	
 	public static String getUsernameFromID(int id) {
 		String sql = String.format("SELECT username FROM users WHERE id = '%d';", id);
 		
@@ -93,6 +123,27 @@ public class User {
 			e.printStackTrace();
 		}
 		return -1;
+	}
+	
+	public static User getUserFromID(int id) {
+		String sql = String.format("SELECT * FROM users WHERE id = '%d';", id);
+		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
+		
+		try {
+			if (results.next()) {
+				String username = results.getString("username");
+				String photoFilename = results.getString("picturefile");
+				User user = new User(id, username, photoFilename);
+				return user;
+			} else {
+				// this happens if there are no users with the specified ID, the function simply returns false
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**
@@ -181,6 +232,49 @@ public class User {
 			e.printStackTrace();
 		}
 		return requests;
+	}
+	
+	public static List<User> getAllUsers() {
+		String sql = "SELECT * FROM users;";
+		DBConnection.getInstance().executeQuery(sql);
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);	
+		
+		List<User> users = new ArrayList<User>();
+		try {
+			while (results.next()) {
+				int id = results.getInt("id");
+				String username = results.getString("username");
+				String photoFilename = results.getString("picturefile");
+				User user = new User(id, username, photoFilename);
+				users.add(user);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return users;
+	}
+	
+	public static List<User> search(String query) {
+		String sql = String.format("SELECT * FROM users WHERE USERNAME LIKE '%s%%';", query);
+		DBConnection.getInstance().executeQuery(sql);
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);	
+		
+		List<User> searchResults = new ArrayList<User>();
+		try {
+			while (results.next()) {
+				int id = results.getInt("id");
+				String username = results.getString("username");
+				String photoFilename = results.getString("picturefile");
+				User user = new User(id, username, photoFilename);
+				searchResults.add(user);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return searchResults;
+		
 	}
 	
 	//messages 

@@ -1,0 +1,34 @@
+
+.profile-picture {
+	/*margin-top: -20px;*/ /* to account for the nav-bar's 20px margin-bottom */
+	width: 250px;
+	border-bottom: 5px solid #4cbeff;
+}
+
+.profile-user-section {
+	width: 250px;
+	/* background: #efefef; */
+	color: white;
+	text-align: center;
+	/* padding-left: 15px; */
+	margin-top: -20px;
+}
+
+.profile-content-section {
+	width: 85%;
+	padding-left: 15px;
+}
+
+.profile-page {
+	display: table;
+	width: 100%;
+	margin-top: -20px;
+}
+
+.profile-page .row {
+    display: table-row;
+}
+
+.profile-page .profile-content-section, .profile-page .profile-user-section {
+	display: table-cell;
+}

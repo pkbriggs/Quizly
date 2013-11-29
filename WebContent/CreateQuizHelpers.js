@@ -6,14 +6,38 @@
 $( document ).ready(function() {
 	
 	$("#multiple_pages_section").hide();
+	$("#multiple_choice").hide();
+	$("#fill_in_the_blank").hide();
+	$("#question_response").hide();
+	$("#picture_response").hide();
+	
+	$("#multipleChoiceButton").click(function() {
+		if($("#multiple_choice").is(":visible")) $("#multiple_choice").slideUp();
+		else $("#multiple_choice").slideDown();
+	});
+	
+	$("#fillQuestionButton").click(function() {
+		if($("#fill_in_the_blank").is(":visible")) $("#fill_in_the_blank").slideUp();
+		else $("#fill_in_the_blank").slideDown();
+	});
+	
+	$("#questionResponseButton").click(function() {
+		if($("#question_response").is(":visible")) $("#question_response").slideUp();
+		else $("#question_response").slideDown();
+	});
+	
+	$("#pictureResponseButton").click(function() {
+		if($("#picture_response").is(":visible")) $("#picture_response").slideUp();
+		else $("#picture_response").slideDown();
+	});
 	
 	$("#multiple_pages").click( function()
 	{
 		if($("#multiple_pages").prop('checked')){
-			$("#multiple_pages_section").show();
+			$("#multiple_pages_section").slideDown();
 		}
 		else{
-			$("#multiple_pages_section").hide();
+			$("#multiple_pages_section").slideUp();
 
 		}
 	});

@@ -2,11 +2,7 @@ package messages;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-
 import dbconnection.DBConnection;
 
 
@@ -21,6 +17,7 @@ public class Message {
 	public String message;        
 	public String title;        
 	public String dateCreated;        
+	
 	public Message(String username, String recipientName, String message, String title, String dateCreated) {                
 		this.username = username;                
 		this.recipientName = recipientName;                
@@ -29,22 +26,33 @@ public class Message {
 		this.dateCreated = dateCreated;        
 	}
 
-	public static void sendMessage(DBConnection conn, String username, String recipientName, String message, String title) {                
-		DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");                
-		Date date = new Date();                
-		String stringDate = dateFormat.format(date);                
-		String query = "INSERT into messages" + " (fromUser, toUser, message, title, dateCreated) VALUES ('" + 
-		username + "', '" + recipientName + "', '" + message + "', '" + title + "', '" + stringDate + "')";                                   
-		conn.executeQuery(query);                
+	/**
+	 * Given details of a message, add to messages database.
+	 * @param user sending message
+	 * @param user receiving message
+	 * @param text of message
+	 * @param title of message
+	 */
+	public static void sendMessage(String username, String recipientName, String message, String title) {                            
+		String stringDate = DBConnection.GetDate();
+		String query = String.format("INSERT INTO messages (fromUser, toUser, message, title, dateCreated) VALUES ('%s', '%s', '%s', '%s', '%s');", username, recipientName, message, title, stringDate);
+		System.out.println(query);
+		DBConnection.getInstance().executeQuery(query);                
 	}
 
-	public static ArrayList<Message> getSentMessagesFor(DBConnection conn, String username, int limit) {                
-		String query = "SELECT * FROM messages" + " WHERE fromUser = '" + username + "'";                
+	/**
+	 * Return list of sent messages for a user
+	 * @param username
+	 * @param number of rows requested from the query (pass in 0 for all)
+	 * @return list of message objects sent by a user
+	 */
+	public static ArrayList<Message> getSentMessagesFor(String username, int limit) {                
+		String query = "SELECT * FROM messages WHERE fromUser = '" + username + "'";                
 		if (limit > 0) {                        
 			query += " LIMIT " + limit;                
 		}                
 		ArrayList<Message> messages = new ArrayList<Message>();                  
-		ResultSet rs = conn.executeQuery(query);                        
+		ResultSet rs = DBConnection.getInstance().executeQuery(query);                       
 		try {
 			while (rs.next()) {                                
 				messages.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));                        
@@ -55,13 +63,19 @@ public class Message {
 		return messages;        
 	}
 	
-	public static ArrayList<Message> getMessagesFor(DBConnection conn, String username, int limit) {                
-		String query = "SELECT * FROM messages" + " WHERE toUser = '" + username + "'";                
+	/**
+	 * Return a list of received messages for a user
+	 * @param username
+	 * @param number of rows requested from the query
+	 * @return list of message object sent to a user (pass in 0 for all)
+	 */
+	public static ArrayList<Message> getMessagesFor(String username, int limit) {                
+		String query = "SELECT * FROM messages WHERE toUser = '" + username + "'";                
 		if (limit > 0) {                        
 			query += " LIMIT " + limit;                
 		}                
 		ArrayList<Message> messages = new ArrayList<Message>();  
-		ResultSet rs = conn.executeQuery(query);
+		ResultSet rs = DBConnection.getInstance().executeQuery(query);
 		try {                                                
 			while (rs.next()) {                                
 				messages.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));                        
@@ -72,13 +86,19 @@ public class Message {
 		return messages;        
 	}
 	
-	public static ArrayList<Message> getMessagesFromTo(DBConnection conn, String From, String To, int limit){
-		String query = "SELECT * FROM messages" + " WHERE toUser = '" + To + "' AND fromUser = '" + From + "'";
+	/**
+	 * Return a conversation between two users. 
+	 * @param user1
+	 * @param user2 
+	 * @return ArrayList of messages from user1 to user2
+	 */
+	public static ArrayList<Message> getMessagesFromTo(String From, String To, int limit){
+		String query = String.format("SELECT * FROM messages WHERE toUser = '%s' AND fromUser = '%s'", To, From);
 		if (limit > 0){
 			query += " LIMIT " + limit;
 		}
 		ArrayList<Message> messages = new ArrayList<Message>();
-		ResultSet rs = conn.executeQuery(query);
+		ResultSet rs = DBConnection.getInstance().executeQuery(query);
 		try{
 			while (rs.next()){
 				messages.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));
