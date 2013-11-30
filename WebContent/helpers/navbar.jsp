@@ -1,6 +1,7 @@
 <%@ page import="users.User" %>
 <%@ page import="users.Friendship" %>
 <%@ page import="java.util.List" %>
+<%@ page import="quizzes.Quiz" %>
 
 <div class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container">

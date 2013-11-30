@@ -1,30 +1,52 @@
-
 <jsp:include page="/helpers/boilerplate.jsp">
   <jsp:param name="pageTitle" value="Quizly"/>
   <jsp:param name = "cssInclude" value = "css/create-quiz.css" />
 </jsp:include>
 <%@ include file="helpers/navbar.jsp" %>
 
-
 <h1>Create Quiz</h1><br><br>
 
-
-
-<!-- This form submits the basic quiz info to the database and redirects to the success page-->
+<!--form submits the quiz to the database-->
 <form id= "quiz_info" action="CreateQuiz" method="post">
-<input type = "hidden" name="formID" value ="submit_quiz"/>
-<h3>Title</h3> <textarea rows="1" cols="20" name="title"></textarea><br>
-<h3>Description</h3> <textarea rows="5" cols="50" name="description"></textarea>
-<p>Display on Multiple Pages <input type='checkbox' name='multiple_pages' id='multiple_pages' value='multiple_pages'/>
-<div id='multiple_pages_section'>
-<label id='pages_label'>Number of questions per page:</label>
-<input type='text' id='questions_per_page' name='questions_per_page'/>
-</div>
-<h3 id = "questionNum"># of Questions: </h3> <label id='num_questions_so_far'>0</label><br><br>
-<input class = "btn btn-question" type="submit" value="+ Submit Quiz"/><br><br>
+	<input type = "hidden" name="formID" value ="submit_quiz"/>
+		
+	<!-- Title of the Quiz -->
+	<h3>Title:</h3> 
+	<textarea rows="1" cols="20" name="title"></textarea><br>
+	
+	<!-- Description of the Quiz -->
+	<h3>Description</h3> 
+	<textarea rows="5" cols="50" name="description"></textarea>
+	
+	<!-- Option to display Quiz on multiple pages-->
+	<br>Display on Multiple Pages 
+	<input type='checkbox' name='multiple_pages' id='multiple_pages' value='multiple_pages'/>
+	<div id='multiple_pages_section'>
+		<label id='pages_label'>Number of questions per page:</label>
+		<input type='text' id='questions_per_page' name='questions_per_page'/>
+	</div>
+	
+	<h3 id = "questionNum">Number of Questions: </h3> 
+	
+	<% 
+		int num_questions = 0;
+		session = request.getSession();
+		Quiz currQuiz = (Quiz) session.getAttribute("quiz_being_created");
+		if(currQuiz != null)
+			num_questions = currQuiz.getAllQuestions().size();
+		else
+			System.out.println("curreQuiz still null");
+	%>
+	
+	<label id='num_questions_so_far'><%=num_questions %></label>
+	<br>
+	<br>
+	
+	<!--Submits Quiz -->
+	<input class = "btn btn-question" type="submit" value="+ Submit Quiz"/><br><br>
 </form>
 
-<!-- The form for creating a multiple choice question -->
+<!-- To Create a multiple choice question -->
 <button id = "multipleChoiceButton"class="btn btn-small btn-expand">+</button>
 <h2>New Multiple Choice Question</h2>
 

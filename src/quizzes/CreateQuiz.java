@@ -41,7 +41,12 @@ public class CreateQuiz extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//get
+		String formID = request.getParameter("formID");
+		if(formID.equals("initialize_quiz"))
+			InitializeQuiz(request);
+		
+		RequestDispatcher dispatch = request.getRequestDispatcher("CreateQuiz.jsp");
+		dispatch.forward(request, response);
 	}
 
 	/**
@@ -52,10 +57,9 @@ public class CreateQuiz extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		Quiz currQuiz = (Quiz) session.getAttribute("quiz_being_created");
-		if(currQuiz == null){
-			InitializeQuiz(request);
-			currQuiz = (Quiz) session.getAttribute("quiz_being_created");
-		}
+		
+		if(currQuiz ==null)
+			System.out.println("ERROR occured somewhere. Quiz not initialized");
 		
 		if(formID.equals("submit_quiz")){
 			AddQuizToDatabase(request);
