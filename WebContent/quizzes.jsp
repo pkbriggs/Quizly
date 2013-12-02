@@ -14,7 +14,8 @@
 <% } else { %>
 	<h1>List of available quizzes:</h1>			
 	
-	<p>You can also <a href="/Quizly/CreateQuiz.jsp">create a quiz</a>.</p>
+	<p>You can also <a href="/Quizly/CreateQuiz?formID=initialize_quiz">create a quiz</a>.</p>
+	
 	<% String quizzes = Quiz.listQuizzes(); %>
 	<%= quizzes %>
 <% } %>

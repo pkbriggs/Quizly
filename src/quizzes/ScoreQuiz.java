@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import users.User;
 import dbconnection.DBConnection;
 
 /**
@@ -43,9 +44,11 @@ public class ScoreQuiz extends HttpServlet {
 		HttpSession session = request.getSession();
 		boolean practice_mode = request.getParameter("practice_mode")!= null;
 		
-		String username = (String) session.getAttribute("username");
+		String username = User.getUsername(session);
 		Quiz quiz = (Quiz) session.getAttribute("curr_quiz");
-		
+		if(quiz== null){
+			System.out.println("dude wtf?");
+		}
 		double score = quiz.scorePage(request);
 		
 		if(!quiz.finished()){
@@ -73,8 +76,10 @@ public class ScoreQuiz extends HttpServlet {
 		if(practice_mode){
 			out.println("<h2>Practice Mode:</h2>");
 		}
+		long time = GetTime(request);
+		String timeStr = GetTimeStr(request);
 		out.println("You scored: " + quiz.getScore());
-		out.println("It took you "+ GetTimeStr(request) + " to complete this quiz");
+		out.println("It took you "+ timeStr + " to complete this quiz");
 		out.println("Great Job!");
 		
 		if(!practice_mode){
@@ -85,11 +90,11 @@ public class ScoreQuiz extends HttpServlet {
 	
 	private void RecordScore(HttpServletRequest request, String username, Quiz quiz) {
 		long time = GetTime(request);
-		DBConnection connection= DBConnection.GetConnection(request);
-
-		connection.executeQuery("INSERT INTO scores(username, quizID, score, time, dateTaken) "
-				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+quiz.getScore()+"\", \""+time+"\", \""+DBConnection.GetDate()+"\", ");
-		
+		DBConnection connection= DBConnection.getInstance();
+		String query = "INSERT INTO scores (username, quizID, score, time, dateTaken) "
+				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+quiz.getScore()+"\", \""+time+"\", \""+DBConnection.GetDate()+"\")";
+		connection.executeQuery(query);
+		System.out.println("Just did query:" +query);
 	}
 
 	private String GetTimeStr(HttpServletRequest request){

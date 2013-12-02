@@ -45,6 +45,7 @@ public class DisplayQuiz extends HttpServlet {
 			//Set the session attribute
 			HttpSession session = request.getSession();
 			session.setAttribute("curr_quiz", quiz);
+			System.out.println("just set attribute curr_quiz");
 			session.setAttribute("start_time", System.currentTimeMillis());
 		}
 	}
