@@ -63,7 +63,7 @@ public class CreateQuiz extends HttpServlet {
 		
 		if(formID.equals("submit_quiz")){
 			AddQuizToDatabase(request);
-			RequestDispatcher dispatch = request.getRequestDispatcher("Index.jsp");
+			RequestDispatcher dispatch = request.getRequestDispatcher("index.jsp");
 			dispatch.forward(request, response);
 			return;
 		}

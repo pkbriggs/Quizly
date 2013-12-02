@@ -191,10 +191,10 @@ public class DisplayQuiz extends HttpServlet {
 		String choice4 = choices.get(3);
 
 		html.append(questionStr + "<p>");
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice1+"'/>"+choice1+"<p>" );
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice2+"'/>"+choice2+"<p>" );
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice3+"'/>"+choice3+"<p>" );
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice4+"'/>"+choice4+"<p>" );
+		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice1+"'/>"+choice1+"<br>" );
+		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice2+"'/>"+choice2+"<br>" );
+		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice3+"'/>"+choice3+"<br>" );
+		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice4+"'/>"+choice4+"<br>" );
 		
 		html.append(questionFooter());
 		return html.toString();
