@@ -42,7 +42,7 @@ public class ScoreQuiz extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		HttpSession session = request.getSession();
-		boolean practice_mode = request.getParameter("practice_mode")!= null;
+		boolean practice_mode = isPracticeMode(request);
 		
 		String username = User.getUsername(session);
 		Quiz quiz = (Quiz) session.getAttribute("curr_quiz");
@@ -65,6 +65,30 @@ public class ScoreQuiz extends HttpServlet {
 			
 	}
 
+	private boolean isPracticeMode(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String checkBox = request.getParameter("practice_mode");
+		Object obj =  session.getAttribute("practice_mode");
+
+		if(checkBox == null){
+			if(obj == null ){
+				session.setAttribute("practice_mode", false);
+				return false;
+			}
+			
+			boolean practice_mode = (Boolean) obj;
+			if(practice_mode == false)
+				return false;
+			else
+				return true;
+		}
+		
+		else{
+			session.setAttribute("practice_mode", true);
+			return true;
+		}
+	}
+
 	private void SuccessPage(HttpServletRequest request, HttpServletResponse response, Quiz quiz, boolean practice_mode){
 		PrintWriter out = null;
 		try {
@@ -84,7 +108,9 @@ public class ScoreQuiz extends HttpServlet {
 		
 		if(!practice_mode){
 			out.println("Your score has been recorded.");
-		}
+		}else
+			out.println("That was just practice, so no score was recorded.");
+
 		
 	}
 	

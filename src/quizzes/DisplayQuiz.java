@@ -45,7 +45,6 @@ public class DisplayQuiz extends HttpServlet {
 			//Set the session attribute
 			HttpSession session = request.getSession();
 			session.setAttribute("curr_quiz", quiz);
-			System.out.println("just set attribute curr_quiz");
 			session.setAttribute("start_time", System.currentTimeMillis());
 		}
 	}
@@ -101,10 +100,13 @@ public class DisplayQuiz extends HttpServlet {
 		out.println("<h2>"+quiz.getTitle()+"</h2><p>");
 		out.println("<em> Created By: "+quiz.getCreator()+"</em>");
 
-		out.println("<h2>Page: "+ quiz.getCurrPage()+"</h2><p>");
+		out.println("<h2>Page: "+ (quiz.getCurrPage() + 1)+"</h2><p>");
 		out.println("<em>"+quiz.getDescription()+"</em>");
 
-		out.println("Practice Mode: <input type='checkbox' name='practice_mode' value='practice_mode'/>");
+		if(quiz.getCurrPage() == 0){
+			out.println("Practice Mode: <input type='checkbox' name='practice_mode' value='practice_mode'/>");
+		}
+		
 		out.println(QuestionsToHTML(questions, connection));
 		out.println("<input type='hidden' name='question' value='submit'>");
 		
