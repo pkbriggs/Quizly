@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,7 +23,15 @@ import dbconnection.DBConnection;
 public class DisplayQuiz extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private static final String PAGE_TITLE = "Take Quiz";
+    public static final String HEADER = "<%@ page language=\"java\" contentType=\"text/html;"
+    		+ " charset=ISO-8859-1\" pageEncoding=\"ISO-8859-1\"%>"
+    		+ "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
+    		+ "<jsp:include page=\"/helpers/boilerplate.jsp\"> " 
+    + "<jsp:param name=\"pageTitle\" value=\"Quizly\"/>"
+    + "<jsp:param name=\"cssInclude\" value=\"css/index-page.css\" />"
+    + "</jsp:include><%@ include file=\"helpers/navbar.jsp\" %>";
     
+    public static final String FOOTER = "<%@ include file=\"helpers/end_boilerplate.jsp\" %>";
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -37,204 +46,41 @@ public class DisplayQuiz extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String quizID = request.getParameter("id");
 
+		//If this is from a link wanting to initialize the quiz
 		if(quizID != null){
-			Quiz quiz = new Quiz(Integer.parseInt(quizID));
-
-			PrintNextPage(quiz,  response);
-			
-			//Set the session attribute
 			HttpSession session = request.getSession();
+			
+			Quiz quiz = new Quiz(Integer.parseInt(quizID));
+			quiz.setStartTime();
+			
 			session.setAttribute("curr_quiz", quiz);
-			session.setAttribute("start_time", System.currentTimeMillis());
+			
+			//Forward the request to print the next page
+			RequestDispatcher dispatch = request.getRequestDispatcher("DisplayQuizPage.jsp");
+			dispatch.forward(request, response);
+		
+		} else{
+			PrintWriter out = null ;
+			try {
+				out = response.getWriter();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			out.append("Error: please make sure you are calling DisplayQuiz correctly from the form.<br>"
+					+ "Please include a parameter called 'id' passed through the GET with value of the quiz"
+					+ "you want to display.");
 		}
 	}
 
+/*
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String formID = request.getParameter("formID");
-		if(formID != null && formID.equals("list_quizzes")){
-			PrintWriter out = response.getWriter();
-			
-			String outStr = Quiz.listQuizzes();
-			out.println(outStr);	
-			return;
-		}
-		
-		//this is the case where the request has been forwarded from ScoreQuiz
-		else{
-			HttpSession session = request.getSession();
-			Quiz quiz = (Quiz) session.getAttribute("curr_quiz");
-			
-			PrintNextPage(quiz, response);
-		}
+		System.out.println("This never should have been reached!");
 
 	}
 	
-
-
-
-	private void PrintNextPage(Quiz quiz, HttpServletResponse response){
-		DBConnection connection = DBConnection.getInstance();
-
-		ArrayList<Question> questions = quiz.getPageQuestions();
-		PrintWriter out = null;
-		
-		try {
-			out = response.getWriter();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		out.println("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
-		out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""
-				      + " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-		out.println("<html xmlns='http://www.w3.org/1999/xhtml'>");
-		out.println("<head>");
-		out.println("<script src='jquery.js'></script>");
-		out.println("<title>"+PAGE_TITLE+"</title>");
-		out.println("</head>");
-		out.println("<body>");
-		out.println("<form name='submit_quiz' action='ScoreQuiz' method='post'>");
-		out.println("<h2>"+quiz.getTitle()+"</h2><p>");
-		out.println("<em> Created By: "+quiz.getCreator()+"</em>");
-
-		out.println("<h2>Page: "+ (quiz.getCurrPage() + 1)+"</h2><p>");
-		out.println("<em>"+quiz.getDescription()+"</em>");
-
-		if(quiz.getCurrPage() == 0){
-			out.println("Practice Mode: <input type='checkbox' name='practice_mode' value='practice_mode'/>");
-		}
-		
-		out.println(QuestionsToHTML(questions, connection));
-		out.println("<input type='hidden' name='question' value='submit'>");
-		
-		String submit_text = (quiz.isLastPage()) ? "Submit Quiz" : "Next Page";
-		out.println("<input type='submit' id='submit_button' value='"+submit_text+"'/>");
-		out.println("</form>");
-
-	}
-	
-	private String QuestionsToHTML(ArrayList<Question> questions, DBConnection connection){
-		String html = "";
-		for(Question question: questions){
-			int type = question.getType();
-			switch(type){
-			case Question.MULTIPLE_CHOICE:
-				html+= MultipleChoiceToHtml((MultipleChoice)question);
-				break;
-			case Question.FILL_IN_THE_BLANK:
-				html+= FillInTheBlankToHtml((FillInTheBlank)question);
-				break;
-			case Question.PICTURE_RESPONSE:
-				html+= PictureResponseToHtml((PictureResponse)question);
-				break;
-			case Question.QUESTION_RESPONSE:
-				html+= QuestionResponseToHtml((QuestionResponse)question);
-				break;
-			}
-		}
-		System.out.println(html);
-		return html;
-	}
-	
-	/**
-	 * Returns the html information that begins each question's form
-	 * @param questionIndex
-	 * @param type
-	 * @return
-	 */
-	private String questionHeader(int type, int questionID){
-		String html = "";
-		html+="<div name= 'question"+questionID +"' class='question'>";
-		html+="<p>" + (questionID + 1) + ") ";
-		return html;
-	}
-	
-	private String questionFooter(){
-		return "</div><p>";
-	}
-	
-	/**
-	 * Takes the information about a fill in the blank question 
-	 * from the row the result set @rs is pointing, and creates an
-	 * html representation of that question.
-	 * @param rs
-	 * @return
-	 */
-	private String FillInTheBlankToHtml(FillInTheBlank question){
-		StringBuilder html = new StringBuilder();
-		html.append(questionHeader(Question.QUESTION_RESPONSE, question.getQuestionID()));
-		
-		String questionStr =question.getQuestion();
-		questionStr = questionStr.replaceAll(" _+", "<input type='text' name='answer"+question.getQuestionID()+"'/>");
-		
-		html.append(questionStr);
-		return html.toString();
-	}
-	
-
-	/**
-	 * Takes the information about a multiple choice question 
-	 * from the row the result set @rs is pointing, and creates an
-	 * html representation of that question.
-	 * @param rs
-	 * @return
-	 */
-	private String MultipleChoiceToHtml(MultipleChoice question){
-		StringBuilder html = new StringBuilder();
-		html.append(questionHeader(Question.MULTIPLE_CHOICE, question.getQuestionID()));
-		String questionStr= question.getQuestion();
-		ArrayList<String> choices = question.getChoices();
-		String choice1 = choices.get(0);
-		String choice2 = choices.get(1);
-		String choice3 = choices.get(2);
-		String choice4 = choices.get(3);
-
-		html.append(questionStr + "<p>");
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice1+"'/>"+choice1+"<br>" );
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice2+"'/>"+choice2+"<br>" );
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice3+"'/>"+choice3+"<br>" );
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice4+"'/>"+choice4+"<br>" );
-		
-		html.append(questionFooter());
-		return html.toString();
-	}
-	
-	/**
-	 * Takes the information about a picture-response question 
-	 * from the row the result set @rs is pointing, and creates an
-	 * html representation of that question.
-	 * @param rs
-	 * @return
-	 */
-	private String PictureResponseToHtml(PictureResponse question){
-		StringBuilder html = new StringBuilder();
-		html.append(questionHeader(Question.PICTURE_RESPONSE, question.getQuestionID()));
-		String imageURL = question.getQuestion();
-		html.append("<img src='"+imageURL+"'/>");
-		html.append("<input type='text' name='answer"+question.getQuestionID()+"'/>");
-		html.append(questionFooter());
-
-		return html.toString();	
-	}
-	
-	/**
-	 * Takes the information about a question-response question 
-	 * from the row the result set @rs is pointing, and creates an
-	 * html representation of that question.
-	 * @param rs
-	 * @return
-	 */
-	private String QuestionResponseToHtml(QuestionResponse question){
-		StringBuilder html = new StringBuilder();
-		html.append(questionHeader(Question.QUESTION_RESPONSE, question.getQuestionID()));
-		String questionStr = question.getQuestion();
-		html.append(questionStr);
-		html.append("<input type='text' name='answer"+question.getQuestionID()+"'/>");
-		html.append(questionFooter());
-
-		return html.toString();	
-	}
 }

@@ -11,6 +11,7 @@ import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.mysql.jdbc.PreparedStatement;
 
@@ -30,6 +31,10 @@ public class Quiz{
 	private int currPage;
 	private String creator;
 	private int randomize;
+	private boolean practice_mode;
+	private long startTime;
+	private long endTime;
+
 
 	private int id;
 	private String dateCreated;
@@ -50,6 +55,9 @@ public class Quiz{
 		this.currPage = 0;
 		this.creator = "";
 		this.randomize = DBConnection.FALSE;
+		this.practice_mode = false;
+		this.startTime = 0;
+		this.endTime = 0;
 		questions = new ArrayList<Question>();
 	}
 	
@@ -70,6 +78,9 @@ public class Quiz{
 		this.numCorrect = 0;
 		this.questions = loadQuestionsFromDB();
 		this.currPage = 0;
+		this.practice_mode = false;
+		this.startTime = 0;
+		this.endTime= 0;
 	}
 	
 	private int getNumQuestionsPerPage(){
@@ -440,5 +451,51 @@ public class Quiz{
 			return "questions == null";
 		}
 		return "Title: "+ this.title + " Creator: " + this.creator + " numQuestions:" + questions.size();
+	}
+	
+	/**
+	 * returns whether this quiz should be recorded in the database or not
+	 * @param request
+	 * @return
+	 */
+	public boolean isPracticeMode(HttpServletRequest request) {
+		String checkBox = request.getParameter("practice_mode");
+
+		if(checkBox != null){
+			this.practice_mode = true;
+		}
+		
+		return this.practice_mode;
+	}
+	
+	/**
+	 * Sets the number of milliseconds this user took to complete this quiz
+	 * @param time
+	 */
+	public void setStartTime(){
+		this.startTime = System.currentTimeMillis();
+	}
+	
+	/**
+	 * Returns the number of seconds this quiz has been running
+	 * @return
+	 */
+	public long getTime(){
+		if(this.endTime == 0)
+			this.endTime = System.currentTimeMillis();
+		
+		long time = (this.endTime - this.startTime)/1000;
+		return time;
+	}
+	
+	
+	public String getTimeToString(){
+		long time = this.getTime();
+		int minutes = (int) time / 60;
+		long seconds = time;
+		if(minutes > 0)
+			seconds = time % minutes;
+		
+		return minutes + " minutes and " + seconds + " seconds";
 	}
 }
