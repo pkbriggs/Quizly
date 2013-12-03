@@ -17,7 +17,7 @@
 		DBConnection db = (DBConnection) sContext.getAttribute("dbconnection");
 		String quizID = request.getParameter("id");
 		int quizIDInt = Integer.parseInt(quizID);
-		Quiz quiz = new Quiz(quizIDInt);
+		Quiz quiz = Quiz.getQuiz(quizIDInt);
 		String name = quiz.getTitle();
 		String creator = quiz.getCreator();
 		String dateCreated = quiz.getDateCreated();

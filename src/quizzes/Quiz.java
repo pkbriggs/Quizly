@@ -34,7 +34,11 @@ public class Quiz{
 	private boolean inDatabase;
 	//TODO add the user info
 	
-	Quiz(){
+	public static Quiz getQuiz(int id){
+		return new Quiz(id);
+	}
+	
+	public Quiz(){
 		this.title = "";
 		this.description = "";
 		this.dateCreated = DBConnection.GetDate();
@@ -49,7 +53,7 @@ public class Quiz{
 	/*This constructor retrieves information from the database for the quizID
 	 * provided and creates a new quiz object from that information
 	 */
-	Quiz(int id){
+	public Quiz(int id){
 		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery("SELECT * FROM quizzes WHERE id="+id);
 		try {
