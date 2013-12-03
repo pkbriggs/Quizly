@@ -101,17 +101,26 @@ public class CreateQuiz extends HttpServlet {
 	 * @param request
 	 */
 	private void AddQuizToDatabase(HttpServletRequest request) {
+		System.out.println("Adding quiz to DB from CreateQuiz.java");
 		Quiz quiz = (Quiz) DBConnection.GetSessionAttribute(request, "quiz_being_created");
 		String description = request.getParameter("description");
 		String title = request.getParameter("title");
 		HttpSession session = request.getSession();
 		String username = User.getUsername(session);
+		
 		if(request.getParameter("multiple_pages") != null){
 			int questions_per_page = Integer.parseInt(request.getParameter("questions_per_page")); 
 			quiz.setNumPagesFromNumQuestions(questions_per_page);
 		}else{
 			quiz.setNumPages(quiz.numQuestions());
 		}
+		
+		if(request.getParameter("randomize") != null){
+			quiz.setRandomization(DBConnection.TRUE);
+		}else{
+			quiz.setRandomization(DBConnection.FALSE);
+		}
+		
 		quiz.setDescription(description);
 		quiz.setTitle(title);
 		quiz.setCreator(username);

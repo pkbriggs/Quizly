@@ -100,6 +100,7 @@ public class ScoreQuiz extends HttpServlet {
 		if(practice_mode){
 			out.println("<h2>Practice Mode:</h2>");
 		}
+		
 		long time = GetTime(request);
 		String timeStr = GetTimeStr(request);
 		out.println("You scored: " + quiz.getScore());

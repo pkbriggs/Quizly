@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.servlet.ServletContext;
@@ -20,7 +21,7 @@ import dbconnection.DBConnection;
  * can then 
  */
 public class Quiz{
-
+	
 	private String title;
 	private String description;
 	private ArrayList<Question> questions;
@@ -28,6 +29,7 @@ public class Quiz{
 	private int numPages;
 	private int currPage;
 	private String creator;
+	private int randomize;
 
 	private int id;
 	private String dateCreated;
@@ -47,6 +49,7 @@ public class Quiz{
 		this.numCorrect = 0;
 		this.currPage = 0;
 		this.creator = "";
+		this.randomize = DBConnection.FALSE;
 		questions = new ArrayList<Question>();
 	}
 	
@@ -92,12 +95,17 @@ public class Quiz{
 			quiz.setID(rs.getInt("id"));
 			quiz.setNumPages( rs.getInt("numPages"));
 			quiz.setCreator(rs.getString("creator"));
+			quiz.setRandomization(rs.getInt("randomize"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	void setRandomization(int randomize) {
+		this.randomize = randomize;
+	}
+
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
@@ -214,7 +222,7 @@ public class Quiz{
 			this.inDatabase = true;
 		}
 		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"' "
-				+ ", numPages='"+this.numPages+"' , dateCreated='"+this.dateCreated+"', creator='"+this.creator +"' WHERE id=" + this.id);
+				+ ", numPages='"+this.numPages+"' , dateCreated='"+this.dateCreated+"', creator='"+this.creator +"', randomize='"+this.randomize +"' WHERE id=" + this.id);
 		saveQuestionsToDatabase(this.id);
 	}
 	
@@ -244,6 +252,9 @@ public class Quiz{
 		AddQuestions(rs, questions, Question.PICTURE_RESPONSE);
 		
 		this.questions = questions;
+		
+		if(this.randomize == DBConnection.TRUE)
+			Collections.shuffle(questions);
 		return questions;
 	}
 	
@@ -360,7 +371,12 @@ public class Quiz{
 			response = request.getParameter("answer"+questionID);
 		}
 		
-		int score =  (question.isCorrect(response)) ? 1 : 0;
+		int score ;
+		if(response != null)		
+			score =  (question.isCorrect(response)) ? 1 : 0;
+		else
+			score = 0;
+		
 		System.out.println("Score: "+ score);
 		return score;
 	}
