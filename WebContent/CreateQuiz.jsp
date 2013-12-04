@@ -18,8 +18,12 @@
 	<h3>Description</h3> 
 	<textarea rows="5" cols="50" name="description"></textarea>
 	
+	<!-- Option to randomize Quiz questions-->
+	<br>Randomize Questions:
+	<input type='checkbox' name='randomize' value='randomize'/>
+	
 	<!-- Option to display Quiz on multiple pages-->
-	<br>Display on Multiple Pages 
+	<br>Display on Multiple Pages:
 	<input type='checkbox' name='multiple_pages' id='multiple_pages' value='multiple_pages'/>
 	<div id='multiple_pages_section'>
 		<label id='pages_label'>Number of questions per page:</label>

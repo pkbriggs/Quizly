@@ -42,54 +42,37 @@ public class ScoreQuiz extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		HttpSession session = request.getSession();
-		boolean practice_mode = request.getParameter("practice_mode")!= null;
 		
 		String username = User.getUsername(session);
 		Quiz quiz = (Quiz) session.getAttribute("curr_quiz");
+
 		if(quiz== null){
 			System.out.println("dude wtf?");
 		}
+		
+		boolean practice_mode = quiz.isPracticeMode(request);
 		double score = quiz.scorePage(request);
 		
 		if(!quiz.finished()){
-			RequestDispatcher dispatch = request.getRequestDispatcher("DisplayQuiz");
+			RequestDispatcher dispatch = request.getRequestDispatcher("DisplayQuizPage.jsp");
 			dispatch.forward(request, response);
 			return;
 		}else{
-			
-			SuccessPage(request, response, quiz, practice_mode);		
+				
 			if(!practice_mode){
 				RecordScore(request, username, quiz);
 			}
+			
+			RequestDispatcher dispatch = request.getRequestDispatcher("QuizSuccessPage.jsp");
+			dispatch.forward(request, response);
 		}
 			
 	}
 
-	private void SuccessPage(HttpServletRequest request, HttpServletResponse response, Quiz quiz, boolean practice_mode){
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if(practice_mode){
-			out.println("<h2>Practice Mode:</h2>");
-		}
-		long time = GetTime(request);
-		String timeStr = GetTimeStr(request);
-		out.println("You scored: " + quiz.getScore());
-		out.println("It took you "+ timeStr + " to complete this quiz");
-		out.println("Great Job!");
-		
-		if(!practice_mode){
-			out.println("Your score has been recorded.");
-		}
-		
-	}
+
 	
 	private void RecordScore(HttpServletRequest request, String username, Quiz quiz) {
-		long time = GetTime(request);
+		long time = quiz.getTime();
 		DBConnection connection= DBConnection.getInstance();
 		String query = "INSERT INTO scores (username, quizID, score, time, dateTaken) "
 				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+quiz.getScore()+"\", \""+time+"\", \""+DBConnection.GetDate()+"\")";
@@ -97,21 +80,4 @@ public class ScoreQuiz extends HttpServlet {
 		System.out.println("Just did query:" +query);
 	}
 
-	private String GetTimeStr(HttpServletRequest request){
-		long time = GetTime(request);
-		int minutes = (int) time / 60;
-		long seconds = time;
-		if(minutes > 0)
-			seconds = time % minutes;
-		
-		return minutes + " minutes and " + seconds + " seconds";
-	}
-	
-	private long GetTime(HttpServletRequest request){
-		HttpSession session = request.getSession();
-		long startTime = (Long) session.getAttribute("start_time");
-		long endTime = System.currentTimeMillis();
-		long time = (endTime - startTime)/1000;
-		return time;
-	}
 }

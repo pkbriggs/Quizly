@@ -21,6 +21,8 @@ import com.mysql.jdbc.Statement;
  * This class establishes a connection with the database. 
  */
 public class DBConnection {
+	public static final int TRUE = 1;
+	public static final int FALSE = 0;
 	
 	private static DBConnection instance = null;
 	private static String rootDirectory = null; // this is initialized in contextInitialized
@@ -62,7 +64,7 @@ public class DBConnection {
 			*the connection. To maintain database info over several sessions
 			*simply comment it out.
 			*/
-			// SetUpDatabase();
+			//SetUpDatabase();
 		}catch(Exception e){
 			e.printStackTrace();
 			System.out.println("OpenConnection: Could not establish connection: " + e.getMessage());
@@ -87,6 +89,7 @@ public class DBConnection {
 	 * @return
 	 */
 	public ResultSet executeQuery(String query){
+		System.out.println("executing query: " + query);
 		ResultSet rs= null;
 		try {
 			java.sql.Statement stmt = connection.createStatement();

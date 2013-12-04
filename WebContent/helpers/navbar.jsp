@@ -1,7 +1,9 @@
 <%@ page import="users.User" %>
 <%@ page import="users.Friendship" %>
-<%@ page import="java.util.List" %>
-<%@ page import="quizzes.Quiz" %>
+<%@ page import="java.util.*" %>
+<%@ page import="quizzes.*" %>
+<%@ page import="dbconnection.DBConnection" %>
+
 
 <div class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container">

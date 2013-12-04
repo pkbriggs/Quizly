@@ -9,6 +9,7 @@ CREATE TABLE quizzes (
     creator TINYTEXT,
     dateCreated DATETIME,
     numPages INT,
+    randomize TINYINT(1),
     PRIMARY KEY(id)
 );
 
