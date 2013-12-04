@@ -421,4 +421,54 @@ public class Quiz{
 		}
 		return "Title: "+ this.title + " Creator: " + this.creator + " numQuestions:" + questions.size();
 	}
+	
+	public static void delete(int quizID) {                                      
+		String query = "DELETE FROM quizzes WHERE id = " + quizID;  
+		DBConnection.getInstance().executeQuery(query);
+		String queryMul = "DELETE FROM multiple_choice WHERE quizID = " + quizID; 
+		DBConnection.getInstance().executeQuery(queryMul);
+		String queryFill = "DELETE FROM fill_in_the_blank WHERE quizID = " + quizID; 
+		DBConnection.getInstance().executeQuery(queryFill);
+		String queryPic = "DELETE FROM picture_response WHERE quizID = " + quizID; 
+		DBConnection.getInstance().executeQuery(queryPic);
+		String queryQ = "DELETE FROM question_response WHERE quizID = " + quizID;    
+		DBConnection.getInstance().executeQuery(queryQ);
+	}
+	
+	//returns list of stats in this order: numUsers, numQuizzes, numFriendships
+	public ArrayList<Integer> getStats(){
+		ArrayList<Integer> stats = new ArrayList<Integer>();
+		
+		String numUsers = "SELECT * FROM users";
+		ResultSet rs = DBConnection.getInstance().executeQuery(numUsers);
+		try {
+			rs.last();
+			int users = rs.getRow();
+			stats.add(users);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		String numQuizzes = "SELECT * FROM quizzes";
+		ResultSet rsQuizzes = DBConnection.getInstance().executeQuery(numQuizzes);
+		try {
+			rsQuizzes.last();
+			int quizzes = rsQuizzes.getRow();
+			stats.add(quizzes);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		String numFriends = "SELECT * FROM friendships";
+		ResultSet rsFriends = DBConnection.getInstance().executeQuery(numFriends);
+		try {
+			rsFriends.last();
+			int friends = rsFriends.getRow();
+			stats.add(friends);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return stats;
+	}
 }

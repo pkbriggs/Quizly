@@ -66,6 +66,7 @@ CREATE TABLE users (
     username varchar(255),
     passwordhash varchar(255),
     picturefile varchar(255),
+    isAdmin tinyint(4)
     PRIMARY KEY(id)
 );
 
@@ -112,5 +113,15 @@ CREATE TABLE challenges (
 	challengedUser varchar(64),
 	quizID int,
 	quizName varchar(255),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS announcements (
+	id int AUTO_INCREMENT,
+	announcement_id int(11)  
+	userID int(11),
+	posted varchar(255),  
+	subject text,  
+	body text,  
 	PRIMARY KEY(id)
 );
