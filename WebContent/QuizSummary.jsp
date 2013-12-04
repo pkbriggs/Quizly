@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="dbconnection.DBConnection, java.util.*, java.sql.*, quizzes.Quiz" %>
+<%@ page import="dbconnection.DBConnection, java.util.*, java.sql.*, quizzes.Quiz, java.util.Date" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -94,7 +94,11 @@
 		Collections.sort(attempts, new ScoreCompare());
 	%>
 	<h1>Highest of the Day</h1>
-	<% %>
+	<% 
+		Date date = new Date();
+		String today = date.toString().substring(20);//cuts off irrelevant information
+		
+	%>
 	<h1>Recent Performances</h1>
 	<% %>
 	<h1>Total Performance Summary</h1>
