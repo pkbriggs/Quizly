@@ -3,9 +3,6 @@
   <jsp:param name = "cssInclude" value = "css/create-quiz.css" />
 </jsp:include>
 <%@ include file="helpers/navbar.jsp" %>
-<%@ include file="jquery.js" %>
-<%@ include file="js/CreateQuiz.js" %>
-
 
 <h1>Create A Quiz</h1><br><br>
 
@@ -47,7 +44,7 @@
 		System.out.println("curreQuiz still null");
 %>
 
-<input class = "btn btn-small btn-expand" id='get_quiz_info' value="+ Submit Quiz"/>
+<button class = "btn btn-small btn-expand" id='get_quiz_info' >Submit Quiz</button>
 
 <br><br>
 <h4 id = "questionNum">Number of Questions So Far: </h4> <label id='num_questions_so_far'><%=num_questions %></label>
@@ -65,8 +62,8 @@
 	Question: <input type="text" name="question" size="40"/>
 	<br><br><b>Choices: </b>
 	<br>
-	<input type="checkbox" name='mc_multiple_responses' id='mc_multiple_responses'/>
-	
+	Multiple Answers: (<em>eg. 'Select all the following that are true'</em>)<input type="checkbox" name='mc_multiple_responses' id='mc_multiple_responses'/>
+	<br><br>
 	<!-- Checkbox buttons for choices -->
 	<input type="radio" name="answer" value="choice0">
 		<input class="shiftRight" type="text" name="choice0"/></input><br>
@@ -80,6 +77,7 @@
 	<input type = "hidden" name="formID" value = "multiple_choice"/>
 	<input type = "hidden" name="create_quiz" value = "create_quiz"/>
 	
+	<br>
 	<input class="btn btn-question" type="submit" value="+ Add Question"/>
 </form>
 <br>
@@ -168,6 +166,6 @@
 </form>
 
 <script src='jquery.js'></script>
-<script src='helpers/CreateQuiz.js'></script>
+<script src='js/CreateQuiz.js'></script>
 
 <%@ include file="helpers/end_boilerplate.jsp" %>
