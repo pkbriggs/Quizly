@@ -14,11 +14,13 @@
 		 * Gets the correct quiz and its values
 		 */
 		ServletContext sContext = getServletContext();
-		DBConnection db = (DBConnection) sContext.getAttribute("dbconnection");
-		String quizID = request.getParameter("id");
+		DBConnection db = DBConnection.getInstance();
+		//String quizID = request.getParameter("id");
+		String quizID = "1";
 		int quizIDInt = Integer.parseInt(quizID);
 		Quiz quiz = new Quiz(quizIDInt);
-		String user = (String)session.getAttribute("username");
+		//String user = (String)session.getAttribute("username");
+		String user = "stevenqian";
 		String name = quiz.getTitle();
 		String creator = quiz.getCreator();
 		String dateCreated = quiz.getDateCreated();
@@ -48,20 +50,20 @@
 			public void setDate(String date) {
 				this.date = date;
 			}
-			public int getScore() {
-				return Integer.parseInt(score); 
+			public double getScore() {
+				return Double.parseDouble(score); 
 			}
 		}
 		
 		List<Attempt> attempts = new Vector<Attempt>(); //vector of all attempts for this quiz
-		ResultSet rs2 = db.executeQuery("SELECT * FROM quizhistory");
+		ResultSet rs2 = db.executeQuery("SELECT * FROM scores");
 		while (rs2.next()) {
 			if (rs2.getString("quizID").equals(quizID)) {
 				Attempt curr = new Attempt();
-				curr.setUser(rs2.getString("userID"));
-				curr.setScore(rs2.getString("accuracy"));
+				curr.setUser(rs2.getString("username"));
+				curr.setScore(rs2.getString("score"));
 				curr.setTime(rs2.getString("time"));
-				curr.setDate(rs2.getString("date"));
+				curr.setDate(rs2.getString("dateTaken"));
 				attempts.add(curr);
 			}
 		}
@@ -80,7 +82,14 @@
 	<% 
 		List<Attempt> yourAttempts = new Vector<Attempt>();
 		for (Attempt attempt: attempts) {
-			if (attempt.user.equals(user)) yourAttempts.add(attempt);
+			System.out.println(user);
+			if (attempt.user.equals(user)) {
+				yourAttempts.add(attempt);
+				System.out.println("added");
+			}
+		}
+		for (Attempt attempt: yourAttempts) {
+			out.println("<p>score: " + attempt.getScore() + "</p>");
 		}
 	%>
 	<h1>Highest of All Time</h1>
@@ -88,10 +97,19 @@
 		class ScoreCompare implements Comparator<Attempt> {
 			@Override
 			public int compare(Attempt a1, Attempt a2) {
-				return a2.getScore() - a1.getScore();
+				double order = a2.getScore() - a1.getScore();
+				if (order < 0) return -1;
+				else if (order > 0) return 1;
+				else return 0;
 			}
 		}
 		Collections.sort(attempts, new ScoreCompare());
+		int limit = 5;
+		if (attempts.size() < 5) limit = attempts.size();
+		for (int i = 0; i < limit; i++) {
+			Attempt attempt = attempts.get(i);
+			out.println("<p>score: " + attempt.getScore() + "</p>");
+		}
 	%>
 	<h1>Highest of the Day</h1>
 	<% 
