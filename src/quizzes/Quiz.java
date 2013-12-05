@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import users.User;
 
 import com.mysql.jdbc.PreparedStatement;
 
@@ -472,5 +475,22 @@ public class Quiz{
 			seconds = time % minutes;
 		
 		return minutes + " minutes and " + seconds + " seconds";
+	}
+	
+	public static int getUsersTopScoreInQuiz(int quizID, String username) {
+		String sql = String.format("SELECT MAX(score) as score FROM scores WHERE username = '%s' AND quizID = '%d';", username, quizID);
+		
+		DBConnection.getInstance().executeQuery(sql);
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);	
+
+		try {
+			if (results.next()) {
+				return results.getInt("score");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 }

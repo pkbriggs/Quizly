@@ -40,6 +40,11 @@
 			    <input type="password" class="form-control" name="register-password">
 			</div>
 			
+			<!-- Submit button -->
+			<button type="submit" id="index-signup-button" class="btn btn-lg btn-primary btn-block">
+				Sign up &raquo;
+			</button>
+		</form>
 
 		<% } else { %>
 			<% String username = (String) session.getAttribute("username"); %>
@@ -48,11 +53,7 @@
 			<a class="btn btn-lg btn-primary" href="/Quizly/CreateQuiz?formID=initialize_quiz" role="button">Make a new quiz &raquo;</a>
 			
 		<% } %>
-			<!-- Submit button -->
-			<button type="submit" id="index-signup-button" class="btn btn-lg btn-primary btn-block">
-				Sign up &raquo;
-			</button>
-		</form>
+		
 	</div>
 
 
