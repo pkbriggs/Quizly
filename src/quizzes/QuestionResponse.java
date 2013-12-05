@@ -27,18 +27,22 @@ public class QuestionResponse implements Question {
 		try{
 			String num_responses_str = request.getParameter("num_responses");
 			System.out.println("Got the num_responses str" + num_responses_str);
-			if(num_responses_str.equals(null))
-				throw new Exception("Please indicate how many responses the question should ask for. Go back and try again.");
-			else
-				this.num_responses = Integer.parseInt(num_responses_str);
-			
-			String ordered_checked = request.getParameter("ordered");
-			System.out.println("Got the ordered_checked str : " + ordered_checked);
-
-			if(ordered_checked != null)
-				this.ordered = DBConnection.TRUE;
-			else
+			String multiple_responses = request.getParameter("multiple_responses");
+			if(multiple_responses != null){
+				if(num_responses_str.equals(null))
+					throw new Exception("Please indicate how many responses the question should ask for. Go back and try again.");
+				else
+					this.num_responses = Integer.parseInt(num_responses_str);
+				
+				String ordered_checked = request.getParameter("ordered");	
+				if(ordered_checked != null)
+					this.ordered = DBConnection.TRUE;
+				else
+					this.ordered = DBConnection.FALSE;
+			}else{
 				this.ordered = DBConnection.FALSE;
+				this.num_responses = 1;
+			}
 			
 			this.question = SanitizeQuestion(request);
 			System.out.println("Questions sanitized");

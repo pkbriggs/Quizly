@@ -22,8 +22,15 @@ $( document ).ready(function() {
 	});
 	
 	$("#questionResponseButton").click(function() {
-		if($("#question_response").is(":visible")) $("#question_response").slideUp();
-		else $("#question_response").slideDown();
+
+		if($("#question_response").is(":visible")) {
+			$("#question_response").slideUp();
+		}
+		else {
+			$("#add_qr_answer").hide();
+			$("#multiple_responses_section").hide();
+			$("#question_response").slideDown();
+		}
 	});
 	
 	$("#pictureResponseButton").click(function() {
@@ -35,9 +42,23 @@ $( document ).ready(function() {
 	{
 		if($("#multiple_pages").prop('checked')){
 			$("#multiple_pages_section").slideDown();
+
 		}
 		else{
 			$("#multiple_pages_section").slideUp();
+
+		}
+	});
+	
+	$("#multiple_responses").click( function()
+	{
+		alert("Im here!!");
+		if($("#multiple_responses").prop('checked')){
+			$("#multiple_responses_section").slideDown();
+			$("#add_qr_answer").slideDown();
+		}
+		else{
+			$("#multiple_responses_section").slideUp();
 
 		}
 	});
