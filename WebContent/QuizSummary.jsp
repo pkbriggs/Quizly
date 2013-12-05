@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="dbconnection.DBConnection, java.util.*, java.sql.*, quizzes.Quiz" %>
+<%@ page import="dbconnection.DBConnection, java.util.*, java.sql.*, quizzes.Quiz, java.util.Date" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -18,13 +18,12 @@
 		String quizID = request.getParameter("id");
 		int quizIDInt = Integer.parseInt(quizID);
 		Quiz quiz = Quiz.getQuiz(quizIDInt);
+		String user = (String)session.getAttribute("username");
 		String name = quiz.getTitle();
 		String creator = quiz.getCreator();
 		String dateCreated = quiz.getDateCreated();
 		String description = quiz.getDescription();
 
-		//Checks if quiz is never set
-		if (quiz == null) System.out.println("Invalid ID");
 		
 		/*
 		 * Class designed to keep track of an attempt
@@ -49,9 +48,12 @@
 			public void setDate(String date) {
 				this.date = date;
 			}
+			public int getScore() {
+				return Integer.parseInt(score); 
+			}
 		}
 		
-		Vector<Attempt> attempts = new Vector<Attempt>(); //vector of all attempts for this quiz
+		List<Attempt> attempts = new Vector<Attempt>(); //vector of all attempts for this quiz
 		ResultSet rs2 = db.executeQuery("SELECT * FROM quizhistory");
 		while (rs2.next()) {
 			if (rs2.getString("quizID").equals(quizID)) {
@@ -68,18 +70,35 @@
 	%>
 	<h1>Description</h1>
 	<% 
-		System.out.println("<p>" + quiz.getDescription() + "</p>");
+		out.println("<p>" + quiz.getDescription() + "</p>");
 	%>
 	<h1>Creator</h1>
 	<% 
-		System.out.println("<p>" + creator + "</p>");
+		out.println("<p>" + creator + "</p>");
 	%>
-	<h1>Past Performances</h1>
-	<% %>
+	<h1>Your Past Performances</h1>
+	<% 
+		List<Attempt> yourAttempts = new Vector<Attempt>();
+		for (Attempt attempt: attempts) {
+			if (attempt.user.equals(user)) yourAttempts.add(attempt);
+		}
+	%>
 	<h1>Highest of All Time</h1>
-	<% %>
+	<% 
+		class ScoreCompare implements Comparator<Attempt> {
+			@Override
+			public int compare(Attempt a1, Attempt a2) {
+				return a2.getScore() - a1.getScore();
+			}
+		}
+		Collections.sort(attempts, new ScoreCompare());
+	%>
 	<h1>Highest of the Day</h1>
-	<% %>
+	<% 
+		Date date = new Date();
+		String today = date.toString().substring(20);//cuts off irrelevant information
+		
+	%>
 	<h1>Recent Performances</h1>
 	<% %>
 	<h1>Total Performance Summary</h1>

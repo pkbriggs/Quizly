@@ -25,8 +25,6 @@ public class User {
 	private String username;
 	private String photoFilename;
 	
-	private List<Integer> recievedMessages;
-	private List<Integer> quizzesTaken;
 	
 	public User(int id, String username, String photoFilename) {
 		this.id = id;
@@ -287,18 +285,50 @@ public class User {
 	
 	//created quizzes
 	
-	
-	// Private helper methods
-	public List<Integer> getUserMessages(){
-		return recievedMessages;
+	public static void promoteUserToAdmin(int userID) {     
+		String query = "UPDATE user SET isAdmin = 1 WHERE id = " + userID;
+		DBConnection.getInstance().executeQuery(query);
 	}
-	
-	public void setRecievedMessages(List<Integer> messages){
-		recievedMessages = messages;
+
+	public static void demoteUserFromAdmin(int userID) {     
+		String query = "UPDATE user SET isAdmin = 0 WHERE id = " + userID;
+		DBConnection.getInstance().executeQuery(query);
 	}
-	
-	public List<Integer> getQuizzesTaken(){
-		return quizzesTaken;
+
+	public static ArrayList<User> getAdminUsers() {                
+		try {                        
+			ArrayList<User> results = new ArrayList<User>();                        
+			String query = "SELECT * FROM user WHERE is_admin=1 LIMIT 8";                                                
+			ResultSet r = DBConnection.getInstance().executeQuery(query);                        
+			while(r.next()) {                                
+				User u = new User(r.getInt("id"), r.getString("username"), r.getString("picturefile"));                                
+				results.add(u);                        
+			}                        
+			return results;                
+		} catch (SQLException e) {                        
+			return null;                
+		}        
+	}
+
+	public static void removeUser(User u) {
+		int userID = u.getID();                      
+		String deleteUser = "DELETE FROM users WHERE id = " + userID;
+		DBConnection.getInstance().executeQuery(deleteUser);    
+
+		String deleteAch = "DELETE FROM userAchievements WHERE username = " + getUsernameFromID(userID); 
+		DBConnection.getInstance().executeQuery(deleteAch);    
+
+		String deleteFriend = "DELETE FROM friendships WHERE user1 = " + userID + " OR `user2` = " + userID;                        
+		DBConnection.getInstance().executeQuery(deleteFriend);   
+
+		String deleteMsg = "DELETE FROM messages WHERE fromUser = " + userID + " OR toUser = " + userID;  
+		DBConnection.getInstance().executeQuery(deleteMsg);
+
+		String deleteCreator = "DELETE FROM quizzes WHERE creator = " + getUsernameFromID(userID);                      
+		DBConnection.getInstance().executeQuery(deleteCreator);
+
+		String deleteScore = "DELETE FROM scores WHERE username = " + getUsernameFromID(userID); 
+		DBConnection.getInstance().executeQuery(deleteScore);
 	}
 	
 	/**
