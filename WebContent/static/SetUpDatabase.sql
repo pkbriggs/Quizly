@@ -1,5 +1,5 @@
 
-DROP TABLE IF EXISTS scores, quizzes, friends, users, friendships, multiple_choice, fill_in_the_blank, picture_response, question_response, messages, achievements, userAchievements, challenges;
+DROP TABLE IF EXISTS scores, quizzes, friends, users, friendships, multiple_choice, fill_in_the_blank, picture_response, question_response, messages, achievements, userAchievements, challenges, announcements;
 /* remove table if it already exists and start from scratch */
 
 CREATE TABLE quizzes (
@@ -69,7 +69,7 @@ CREATE TABLE users (
     username varchar(255),
     passwordhash varchar(255),
     picturefile varchar(255),
-    isAdmin tinyint(4)
+    isAdmin tinyint(4),
     PRIMARY KEY(id)
 );
 
@@ -119,10 +119,10 @@ CREATE TABLE challenges (
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS announcements (
+CREATE TABLE announcements (
 	id int AUTO_INCREMENT,
-	announcement_id int(11)  
-	userID int(11),
+	announcement_id int,  
+	userID int,
 	posted varchar(255),  
 	subject text,  
 	body text,  
