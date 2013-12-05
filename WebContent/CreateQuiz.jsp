@@ -8,7 +8,7 @@
 
 <h1>Create A Quiz</h1><br><br>
 
-<button class = "btn btn-small btn-expand" id='get_quiz_info' >Submit Quiz</button>
+<button class = "btn btn-small btn-expand" id='get_quiz_info' >Enter Quiz Info and Submit</button>
 
 <!--form submits the quiz to the database-->
 <form id= "quiz_info" action="CreateQuiz" method="post">
