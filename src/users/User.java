@@ -334,10 +334,11 @@ public class User {
 	}
 	
 	//Get user's recently taken quizzes
+	/*
 	public ArrayList<Quiz> homepageGetUserRecentQuizzes(int userID){
 		ArrayList<Quiz> result = new ArrayList<Quiz>();
-		//String username = getUsernameFromID(userID);
-		String query = "SELECT dateCeated, COUNT(*) FROM quizzes WHERE username = " + username +  " ORDER BY COUNT(*) GROUP BY dateCreated LIMIT 10";
+		String username = getUsernameFromID(userID);
+		String query = "SELECT quizID, COUNT(*) FROM scores WHERE username = " + username +  " ORDER BY COUNT(*) GROUP BY dateCreated LIMIT 10";
 		ResultSet rs = DBConnection.getInstance().executeQuery(query);
 		try{
 			while(rs.next()){
@@ -349,6 +350,7 @@ public class User {
 		}
 		return result;
 	}
+	*/
 
 	//Get user's recently taken quizzes
 	public ArrayList<Quiz> homepageGetUserRecentCreated(int quizID){
