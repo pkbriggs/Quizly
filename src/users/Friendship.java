@@ -22,7 +22,7 @@ public class Friendship {
 	 * An enum that allows for easy categorization of a friendship status
 	 * between two users. 
 	 */
-	public enum FriendshipStatus { FRIENDS, REQUEST_SENT, NOT_FRIENDS };
+	public enum FriendshipStatus { FRIENDS, REQUEST_SENT, NOT_FRIENDS, REQUEST_RECEIVED };
 	
 	
 	public Friendship(int userOne, int userTwo, FriendshipStatus status) {
@@ -45,8 +45,8 @@ public class Friendship {
 	 * @param otherID the user that initiated the friend request
 	 */
 	public static void acceptFriendRequest(int userID, int otherID) {
-		String sql = String.format("UPDATE friendships SET status = '%s' WHERE user1 = '%d' AND user2 = '%d';", otherID, userID, FriendshipStatus.FRIENDS.name());
-		// TODO: Finish me
+		String sql = String.format("UPDATE friendships SET status = '%s' WHERE user1 = '%d' AND user2 = '%d';", FriendshipStatus.FRIENDS.name(), otherID, userID);
+		DBConnection.getInstance().executeQuery(sql);
 	}
 	
 	/**
@@ -58,7 +58,8 @@ public class Friendship {
 	 * @param otherID the user that initiated the friend request
 	 */
 	public static void rejectFriendRequest(int userID, int otherID) {
-		// TODO: Finish me
+		String sql = String.format("DELETE FROM friendships WHERE user1 = '%d' AND user2 = '%d';", otherID, userID);
+		DBConnection.getInstance().executeQuery(sql);
 	}
 	
 	/**
@@ -88,14 +89,17 @@ public class Friendship {
 	 * @return
 	 */
 	public static FriendshipStatus getFriendship(int userID, int otherID) {
-		String sql = String.format("SELECT status FROM friendships WHERE (user1 = '%d' AND user2 = '%d') OR (user1 = '%d' AND user2 = %d);", userID, otherID, otherID, userID);
-		ResultSet results = null; // db.executeQuery(sql)
-		// TODO: Finish me
+		String sql = String.format("SELECT status, user2 FROM friendships WHERE (user1 = '%d' AND user2 = '%d') OR (user1 = '%d' AND user2 = '%d');", userID, otherID, otherID, userID);
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
 		
 		try {
 			if (results.next()) {
-				String status = results.getString("status");
-				return FriendshipStatus.valueOf(status);
+				String statusStr = results.getString("status");
+				FriendshipStatus status = FriendshipStatus.valueOf(statusStr);
+				if (status == FriendshipStatus.REQUEST_SENT && results.getInt("user2") == userID) { // the current user received the request
+					return FriendshipStatus.REQUEST_RECEIVED;
+				} else
+					return status;
 			} else {
 				// this happens if there is no record of their friendship, thus the users are not friends
 				return FriendshipStatus.NOT_FRIENDS;
@@ -106,4 +110,14 @@ public class Friendship {
 		}
 		return FriendshipStatus.NOT_FRIENDS;
 	}	
+	
+	/**
+	 * Removes the friendship between two different users. Order of the users passed in does not matter.
+	 * @param userOne
+	 * @param userTwo
+	 */
+	public static void removeFriend(int userOne, int userTwo) {
+		String sql = String.format("DELETE FROM friendships WHERE (user1 = '%d' AND user2 = '%d') OR (user1 = '%d' AND user2 = '%d');", userOne, userTwo, userTwo, userOne);
+		DBConnection.getInstance().executeQuery(sql);
+	}
 }

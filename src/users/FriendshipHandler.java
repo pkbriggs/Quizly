@@ -37,6 +37,14 @@ public class FriendshipHandler extends HttpServlet {
 		if (type.equals("REQUEST")) {
 			Friendship.sendFriendRequest(userOne, userTwo);
 			out.println("ok");
+		} else if (type.equals("ACCEPT")) {
+			Friendship.acceptFriendRequest(userOne, userTwo);
+			out.println("accept success");
+		} else if (type.equals("REJECT")) {
+			Friendship.rejectFriendRequest(userOne, userTwo);
+			out.println("reject success");
+		} else if (type.equals("REMOVE")) {
+			Friendship.removeFriend(userOne, userTwo);
 		}
 		
 	}

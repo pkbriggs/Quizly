@@ -112,10 +112,10 @@
 		            		<% for (Friendship req: friendRequests) { %>
 		            			<li>
 		            				<div class="row nomarginrow">
-		            				<a href="<%= "/Quizly/profile.jsp?id="+ req.getInitiatingUser() %>">
-		            					<%= User.getUsernameFromID(req.getInitiatingUser()) %>
-		            				</a>
-		            				<a href="<%= "/Quizly/profile.jsp?id="+ req.getInitiatingUser() %>" class="btn btn-sm btn-primary">Respond</a>
+			            				<a href="<%= "/Quizly/profile.jsp?id="+ req.getInitiatingUser() %>">
+			            					<%= User.getUsernameFromID(req.getInitiatingUser()) %>
+			            				</a>
+			            				<a href="<%= "/Quizly/profile.jsp?id="+ req.getInitiatingUser() %>" class="btn btn-sm btn-primary">Respond</a>
 		            				</div>
 		            			</li>
 		            		<% } %>
