@@ -4,6 +4,8 @@
 </jsp:include>
 <%@ include file="helpers/navbar.jsp" %>
 
+<script src='js/CreateQuiz.js'></script>
+
 <h1>Create A Quiz</h1><br><br>
 
 <!--form submits the quiz to the database-->
@@ -27,7 +29,7 @@
 	<input type='checkbox' name='multiple_pages' id='multiple_pages' value='multiple_pages'/>
 	<div id='multiple_pages_section'>
 		<label id='pages_label'>Number of questions per page:</label>
-		<input type='text' id='questions_per_page' name='questions_per_page'/>
+		<input type='text' id='questions_per_page' name='questions_per_page' size='5'/>
 	</div>
 	
 	<!--Submits Quiz -->
@@ -62,7 +64,7 @@
 	Question: <input type="text" name="question" size="40"/>
 	<br><br><b>Choices: </b>
 	<br>
-	Multiple Answers: (<em>eg. 'Select all the following that are true'</em>)<input type="checkbox" name='mc_multiple_responses' id='mc_multiple_responses'/>
+	<b>Multiple Answers: </b>(<em>eg. 'Select all the following that are true'</em>)  <input type="checkbox" name='mc_multiple_responses' id='mc_multiple_responses'/>
 	<br><br>
 	<!-- Checkbox buttons for choices -->
 	<input type="radio" name="answer" value="choice0">
@@ -120,8 +122,8 @@
 	Question: <input type="text" name="question" size="50"/>
 	<br><br>
 	<div id='multiple_responses_section'>
-		Number of responses : <input type="text" name="num_responses" size="10" /> <em>(This is the number of responses the quiz-taker should give. So in the case of 'Name 5 US states' you would put 5 here, and then enter all 50 states as answers below.)</em>
-		Ordered: <input type = "checkbox" name="ordered" value="ordered"/> <em>(check this box if the responses should be given in a certain order, eg. 'Name the 5 most populous countries')</em>
+		<b>Number of responses : </b><input type="text" name="num_responses" size=5" /> <em>(This is the number of responses the quiz-taker should give. So in the case of 'Name 5 US states' you would put 5 here, and then enter all 50 states as answers below.)</em>
+		<br><br><b>Ordered: </b> <input type = "checkbox" name="ordered" value="ordered"/> <em>(check this box if the responses should be given in a certain order, eg. 'Name the 5 most populous countries')</em>
 	</div>
 	
 	<div id='qr_answers'>
@@ -164,8 +166,5 @@
 	<input type = "hidden" name="formID" value = "picture_response"/>
 	<input class="btn btn-question" type="submit" value="+ Add Question"/>
 </form>
-
-<script src='jquery.js'></script>
-<script src='js/CreateQuiz.js'></script>
 
 <%@ include file="helpers/end_boilerplate.jsp" %>
