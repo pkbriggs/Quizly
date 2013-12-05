@@ -42,6 +42,7 @@ $( document ).ready(function() {
 		}
 	});
 	
+	/*
 	$("#add_pr_answer").click( function()
 	{
 		var div = document.getElementById('pr_answers');
@@ -49,6 +50,7 @@ $( document ).ready(function() {
 		addResponse(div, num_answers);
 		
 	});
+	*/
 	
 	$("#add_qr_answer").click( function()
 	{
@@ -57,12 +59,14 @@ $( document ).ready(function() {
 		addResponse(div, num_answers);
 	});
 	
+	/*
 	$("#add_fib_answer").click( function()
 	{
 		var div = document.getElementById('fib_answers');
 		var num_answers = $("#fib_num_answers");
 		addResponse(div, num_answers);
 	});
+	*/
 
 	function addResponse(div, num_answers_elem){
 		var num_answers = parseInt(num_answers_elem.val());

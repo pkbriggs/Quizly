@@ -86,17 +86,13 @@
 <form id ="fill_in_the_blank" action ="CreateQuiz" method="post" class="new_question">
 	<br>
 	<em>Type in the question with a series of underscores like this: "______" to indicate where the participant should fill in their answer</em>
-	<br><b>If there are more than one possible correct answers to a question (for example, "MemChu" or "Memorial Church" might both be correct) separate them with a "|"
+	<br><b>If there are more than one possible correct answers to a question (for example, "MemChu" or "Memorial Church" might both be correct) separate them with a "|"</b>
 	<br>
-	Question: <input type="text" name="question" size="50"/><p>
+	Question: <input type="text" name="question" size="50"/><br>
 	
-	<div id='fib_answers'>
-		<input type='hidden' id='fib_num_answers' name='fib_num_answers' value='1'/>
-		
-		Correct Answer(s): 
-		<input type="text" name="answer" size="50"/>
-		<br>
-	</div>
+	Correct Answer(s): 
+	<input type="text" name="answer" size="50"/>
+	<br>
 	
 	<input type = "hidden" name="create_quiz" value = "create_quiz"/>
 	<input type = "hidden" name="formID" value = "fill_in_the_blank"/>
