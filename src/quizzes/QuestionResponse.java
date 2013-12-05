@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,17 +19,41 @@ public class QuestionResponse implements Question {
 	private ArrayList<String> answers;
 	private int quizID;
 	private int questionID;
+	private int num_responses;
+	private int ordered;
 	
 	QuestionResponse(HttpServletRequest request)
 		throws Exception{
 		try{
-			this.question = SanitizeQuestion(request);
-			this.answers = SanitizeAnswer(request);
-			System.out.println("successfullly sanitized both");
+			String num_responses_str = request.getParameter("num_responses");
+			System.out.println("Got the num_responses str" + num_responses_str);
+			if(num_responses_str.equals(null))
+				throw new Exception("Please indicate how many responses the question should ask for. Go back and try again.");
+			else
+				this.num_responses = Integer.parseInt(num_responses_str);
+			
+			String ordered_checked = request.getParameter("ordered");
+			System.out.println("Got the ordered_checked str : " + ordered_checked);
 
+			if(ordered_checked != null)
+				this.ordered = DBConnection.TRUE;
+			else
+				this.ordered = DBConnection.FALSE;
+			
+			this.question = SanitizeQuestion(request);
+			System.out.println("Questions sanitized");
+			this.answers = SanitizeAnswer(request);
+			System.out.println("successfully sanitized both");
+			
+			if(this.ordered == DBConnection.TRUE && this.num_responses != this.answers.size())
+				throw new Exception("For an ordered question, the number of responses you provide should be the same as the number of responses you provide in the number of responses text box.");
+			
+			
 		}catch(Exception e){
 			throw new Exception(e.getMessage());
 		}
+		
+		
 	}
 	
 	private ArrayList<String> ParseAnswers(ResultSet rs){
@@ -65,6 +90,8 @@ public class QuestionResponse implements Question {
 			this.answers = ParseAnswers(rs);
 			this.question = rs.getString("question");
 			this.quizID = rs.getInt("quizID");
+			this.ordered = rs.getInt("ordered");
+			this.num_responses = rs.getInt("num_responses");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,16 +108,9 @@ public class QuestionResponse implements Question {
 		ArrayList<String> answers = new ArrayList<String>();
 
 		try{
-			int num_answers = Integer.parseInt(request.getParameter("qr_num_answers"));
-			System.out.println("numanswers for qr = "+ num_answers);
-			for(int i = 0; i< num_answers;i++){
-				String answer = request.getParameter("answer"+i);
-				answer = answer.trim();
-				answer = answer.toLowerCase();
-
-				if(!answer.equals(""))
-					answers.add(answer);
-			}
+			answers = getParameters(request, "answer");
+			if(answers.size() == 0)
+				throw new Exception("No answer provided. Please try again.");
 		}catch(Exception e){
 			throw new Exception(e.getMessage());
 		}
@@ -112,9 +132,9 @@ public class QuestionResponse implements Question {
 
 		String answer_str = GetAnswerString();
 		String query = "INSERT INTO question_response"
-				+ "(quizID, question, answer) VALUES("
-				+ "\""+this.quizID+"\", \""+this.question+"\", \""+answer_str+"\")";
-		System.out.println("Question response query = "+ query);
+				+ "(quizID, question, answer, num_responses, ordered) VALUES("
+				+ "\""+this.quizID+"\", \""+this.question+"\", \""+answer_str+"\","
+						+ " \""+this.num_responses+"\", \""+this.ordered+"\")";
 		connection.executeQuery(query);
 	}
 	
@@ -140,13 +160,6 @@ public class QuestionResponse implements Question {
 	}
 
 	@Override
-	public boolean isCorrect(String response) {
-		response = response.trim();
-		response = response.toLowerCase();
-		return this.answers.contains(response);
-	}
-
-	@Override
 	public int getQuestionID() {
 		return this.questionID;
 	}
@@ -163,6 +176,89 @@ public class QuestionResponse implements Question {
 			str += " Answer"+i+ " : "+ this.answers.get(i) + " \n";
 		}
 		return str;
+	}
+	
+	@Override
+	public int score(HttpServletRequest request) {
+		ArrayList<String> responses = null;		
+		int points = 0;
+
+		try{
+			responses = getParameters(request, "answer"+questionID);
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			return 0;
+		}
+		
+		if(responses.size() > this.num_responses)
+			System.out.println("ERORR: number of responses provided larger than the number of responses for this question");
+				
+		ArrayList<String> already_seen = new ArrayList<String>();
+		for(int i = 0; i < responses.size(); i++){
+			String response = responses.get(i);
+			int start = (this.ordered == DBConnection.TRUE)? i : 0;
+			int end = (this.ordered == DBConnection.TRUE)? i+1 : this.answers.size();
+			
+			for(int j = start; j < end; j++){
+				ArrayList<String> correct_responses = GetCorrectResponses(this.answers.get(j));
+				if(correct_responses.contains(response) && !already_seen.contains(response)){
+					points++;
+					for(String variation: correct_responses){
+						already_seen.add(variation);
+						System.out.println("already_seen: " + already_seen.toString());
+					}
+				}
+			}
+		}
+		
+		System.out.println("returning score!" + points);
+		return points;
+	}
+	
+	private ArrayList<String> GetCorrectResponses(String string) {
+		return new ArrayList<String>(Arrays.asList(string.split("[|]")));
+	}
+
+	private ArrayList<String> getParameters(HttpServletRequest request, String id)
+		throws Exception{
+		ArrayList<String> array = new ArrayList<String>();
+		try{
+			String[] responses = request.getParameterValues(id);
+			
+			PrintParameterNames(request);
+			if(responses == null){
+				throw new Exception("No answers checked. Please try again.");
+			}
+			
+			for(int i = 0; i< responses.length;i++){
+				String response = responses[i];
+
+				if(response.equals(null))
+					throw new Exception("Response was null. strange. Error occured.");
+
+				response = response.trim();
+				response = response.toLowerCase();
+				if(!response.equals(""))
+					array.add(response);
+			}
+		}catch(Exception e){
+			throw new Exception(e.getMessage());
+		}
+		
+		return array;
+	}
+	
+	private void PrintParameterNames(HttpServletRequest request){
+		Enumeration<String> names = request.getParameterNames();
+		while(names.hasMoreElements()){
+			String name = names.nextElement();
+			System.out.println("name: " + name);
+		}
+	}
+
+	@Override
+	public int numAnswers() {
+		return this.num_responses;
 	}
 }
 

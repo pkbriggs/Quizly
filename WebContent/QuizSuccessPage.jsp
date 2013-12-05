@@ -11,10 +11,10 @@
 %>
 
 <% if(practice_mode){ %>
-	out.println("<h2>Practice Mode:</h2>");
+	<h2>Practice Mode:</h2>
 <% } %>
 
-<br>Total Score:  <%= quiz.getScore() %>
+<br>You recieved <b><%= quiz.getPoints() %></b> out of <b><%= quiz.getTotalPoints() %></b> total points 
 <br><br><em> It took you <%=timeStr %> to complete this quiz </em>
 
 <% if(!practice_mode){ %>

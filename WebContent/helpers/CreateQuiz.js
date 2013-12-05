@@ -69,7 +69,7 @@ $( document ).ready(function() {
 		var new_answer = document.createElement("input");
 		new_answer.setAttribute("type","text");
 		new_answer.setAttribute("size","50");
-		new_answer.setAttribute("name","answer" + num_answers );
+		new_answer.setAttribute("name","answer");
 		div.appendChild( new_answer );
 		
 		num_answers_elem.val(num_answers+1);

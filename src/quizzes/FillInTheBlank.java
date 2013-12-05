@@ -64,20 +64,10 @@ public class FillInTheBlank implements Question {
 	 */
 	private ArrayList<String> SanitizeAnswer(HttpServletRequest request)
 			throws Exception{
-			ArrayList<String> answers = new ArrayList<String>();
 			String num_answer_str = request.getParameter("fib_num_answers");
 			System.out.println("numanswers for fib = "+ num_answer_str);
-			int num_answers = Integer.parseInt(num_answer_str);
-			for(int i = 0; i< num_answers;i++){
-				String answer = request.getParameter("answer"+i);
-				answer = answer.trim();
-				answer = answer.toLowerCase();
-				if(!answer.equals(""))
-					answers.add(answer);
-			}
-			if(answers.size() == 0){
-				throw new Exception("No answer provided. Please try again.");
-			}
+			ArrayList<String> answers = getParameters(request, "answer");
+
 			return answers;
 		}
 	
@@ -138,13 +128,6 @@ public class FillInTheBlank implements Question {
 	}
 
 	@Override
-	public boolean isCorrect(String response) {
-		response = response.trim();
-		response = response.toLowerCase();
-		return this.answers.contains(response);
-	}
-
-	@Override
 	public int getQuestionID() {
 		return this.questionID;
 	}
@@ -161,5 +144,77 @@ public class FillInTheBlank implements Question {
 			str += " Answer"+i+ " : "+ this.answers.get(i) + " \n";
 		}
 		return str;
+	}
+
+	@Override
+	public int score(HttpServletRequest request) {
+		ArrayList<String> responses = null;		
+		try{
+			responses = getParameters(request, "answer"+questionID);
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			return 0;
+		}
+		
+		if(responses.size() != 1)
+			System.out.println("There was an issue. there should only be responses of size 1 ln 132");
+		
+		String response = responses.get(0);
+		ArrayList<String> correct_responses = GetCorrectResponses(response);
+		if(correct_responses.contains(response))
+			return 1;
+		else 
+			return 0;
+	}
+	
+	private ArrayList<String> GetCorrectResponses(String string) {
+		return new ArrayList<String>(Arrays.asList(string.split("[|]")));
+	}
+	
+	
+	private ArrayList<String> getParameters(HttpServletRequest request, String id)
+		throws Exception{
+		ArrayList<String> array = new ArrayList<String>();
+		try{
+			String[] responses = request.getParameterValues(id);
+
+			if(responses == null){
+				throw new Exception("No answers provided. Please try again.");
+			}
+			
+			System.out.println("Got the responses" + responses.toString());
+
+			for(int i = 0; i< responses.length;i++){
+				String response = responses[i];
+				
+				System.out.println("This is the value of the radio button " + i + " : " + response);
+				System.out.println("This response is being recorded: " + response);
+				if(response.equals(null)){
+					System.out.println("Response was null -- wrong id perhaps?");
+					break;
+				}
+
+				response = response.trim();
+				System.out.println("Trimmed the response");
+
+				response = response.toLowerCase();
+				System.out.println("lower cased the response");
+
+				if(!response.equals(""))
+					array.add(response);
+				
+				System.out.println("added the response");
+
+			}
+		}catch(Exception e){
+			throw new Exception(e.getMessage());
+		}
+		
+		return array;
+	}
+	
+	@Override
+	public int numAnswers() {
+		return this.answers.size();
 	}
 }
