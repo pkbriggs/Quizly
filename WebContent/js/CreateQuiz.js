@@ -19,7 +19,7 @@ $( document ).ready(function() {
 			$("#get_quiz_info").value("Submit Quiz");
 		}
 		else {
-			$("#multiple_choice").slideDown();
+			$("#quiz_info").slideDown();
 			$("#get_quiz_info").value("-");
 
 		}
