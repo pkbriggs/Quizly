@@ -6,7 +6,8 @@ $(document).ready(function() {
 	$("#searchInput").keyup(function(event) {
 		var query = $("#searchInput").val();
 		if ($.trim(query) == "") {
-			$("#search-results").fadeOut("fast");
+//			$("#search-results").fadeOut("fast");
+			$("#search-results").html("");
 			return;
 		}
 		console.log("Searching for '" + query + "'");
@@ -31,11 +32,12 @@ function updateSearchResults(results) {
 		console.log("blank results");
 	} else {
 		console.log("received non-blank results");
-		$("#search-results").html(results);
+//		$("#search-results").html(results);
 //		if (!$("#search-results").is(":visible")) {
 //			$("#search-results").fadeIn(50);
 //		}
 		
 	}
+	$("#search-results").html(results);
 	
 }

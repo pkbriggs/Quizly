@@ -213,7 +213,7 @@ public class User {
 	
 	public static List<Friendship> getFriendRequests(String username) {
 		int userID = User.getIDFromUsername(username);
-		String sql = String.format("SELECT * FROM friendships WHERE (user1 = '%d' OR user2 = '%d') AND (status = '%s');", userID, userID, FriendshipStatus.REQUEST_SENT);
+		String sql = String.format("SELECT * FROM friendships WHERE user2 = '%d' AND status = '%s';", userID, FriendshipStatus.REQUEST_SENT);
 		
 		ResultSet results = DBConnection.getInstance().executeQuery(sql);		
 		List<Friendship> requests = new ArrayList<Friendship>();
