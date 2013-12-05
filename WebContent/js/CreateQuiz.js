@@ -51,7 +51,7 @@ $( document ).ready(function() {
 			$("#multiple_responses_section").hide();
 			$("#question_response").slideDown();
 			alert("Use a "|" symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
-
+		}
 	});
 	
 	$("#pictureResponseButton").click(function() {
