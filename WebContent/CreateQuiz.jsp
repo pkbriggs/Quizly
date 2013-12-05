@@ -108,16 +108,20 @@
 	<em>Example 1 (Single Response): </em> "What is the church on Stanford's campus?" "Memorial Church | memchu"
 	<br><em>Example 2 (Multiple Response, unordered): </em> "Name five US states." In this case, enter all 50 states as possible correct responses
 	<br><em> Example 3 (Multiple Response, ordered): </em> "Name the 10 most populous countries." Enter all 10 countries as correct responses in the order they should appear in the quiz-taker's response.
-	
+	<br>Multiple Responses (eg. 'Name 5 US states'): <input type = "checkbox" id="multiple_responses" name="multiple_responses"/>
 	<br>
 	Question: <input type="text" name="question" size="50"/>
 	<br>
-	Number of responses (in the case of Example 2, this would be 5, but you will enter all 50 possible answers below): <input type="text" name="num_responses" size="10" />
-	Ordered? (check this box if the responses should be given in a certain order): <input type = "checkbox" name="ordered" value="ordered"/>
+	<div id='multiple_responses_section' name= 'multiple_responses_section'>
+		Number of responses : <input type="text" name="num_responses" size="10" /> <em>This is the number of responses the quiz-taker should give. So in the case of 'Name 5 US states' you would put 5 here, and then enter all 50 states as answers below.</em>
+		Ordered: <input type = "checkbox" name="ordered" value="ordered"/> <em>(check this box if the responses should be given in a certain order, eg. 'Name the 5 most populous countries')</em>
+	</div>
+	
 	<div id='qr_answers'>
 		<input type='hidden' id='qr_num_answers' name='qr_num_answers' value='1'/>
 		
-		Correct Answer(s): 
+		<br><b>Correct Answer(s): </b>
+		<br>
 		<input type="text" name="answer" size="50"/>
 		<br>
 	</div>
