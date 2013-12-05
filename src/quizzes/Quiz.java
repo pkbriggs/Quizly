@@ -1,4 +1,4 @@
-package quizzes;
+	package quizzes;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,6 +31,13 @@ public class Quiz{
 	private int numPages;
 	private int currPage;
 	private String creator;
+
+	private int randomize;
+	private boolean practice_mode;
+	private long startTime;
+	private long endTime;
+	private int points;
+	private int totalPoints;
 
 	private int id;
 	private String dateCreated;
@@ -312,25 +319,22 @@ public class Quiz{
 		return this.questions;
 	}
 		
-	public double getScore(){
-		return (double) this.numCorrect / numQuestionsAskedSoFar();
+	public double getPoints(){
+		return this.points;
 	}
 	
-	private int numQuestionsAskedSoFar(){
-		if(this.finished())
-			return this.questions.size();
-		
-		return (this.currPage+1) * getNumQuestionsPerPage();
+	public double getTotalPoints(){
+		return this.totalPoints;
 	}
-	
-	public double scorePage(HttpServletRequest request){
+
+	public void scorePage(HttpServletRequest request){
 		for(int i = getStartIndex(); i< getEndIndex(); i++){
-			this.numCorrect += ScoreQuestion(request, this.questions.get(i));
+			this.points += this.questions.get(i).score(request);
+			this.totalPoints += this.questions.get(i).numAnswers();
 		}
 		
 		//once a page is scored, go to the next page
 		this.currPage++;
-		return this.getScore();
 	}
 	
 	private int getEndIndex() {
@@ -344,24 +348,6 @@ public class Quiz{
 		int start = this.currPage * getNumQuestionsPerPage();
 		System.out.println("returning startIndex: "+ start);
 		return start;
-	}
-
-	private int ScoreQuestion(HttpServletRequest request, Question question){
-		int type = question.getType();
-		int questionID = question.getQuestionID();
-		String response = "";
-		System.out.println("Scoring question =" + question.getQuestion());
-		
-		if(type == Question.MULTIPLE_CHOICE){
-			response = request.getParameter("radio"+questionID);
-		}
-		else{
-			response = request.getParameter("answer"+questionID);
-		}
-		
-		int score =  (question.isCorrect(response)) ? 1 : 0;
-		System.out.println("Score: "+ score);
-		return score;
 	}
 
 	public void setNumPages(int num_pages) {
@@ -399,8 +385,8 @@ public class Quiz{
 		return this.currPage == this.numPages - 1 ;
 	}
 
-	public static String listQuizzes(){
-		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes");
+	public static String listQuizzes(String query){
+		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes(query);
 		String html = "";
 		for(Quiz quiz: quizzes){
 			html+=("<a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</a><p>");

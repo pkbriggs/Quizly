@@ -112,7 +112,7 @@ public class CreateQuiz extends HttpServlet {
 			int questions_per_page = Integer.parseInt(request.getParameter("questions_per_page")); 
 			quiz.setNumPagesFromNumQuestions(questions_per_page);
 		}else{
-			quiz.setNumPages(quiz.numQuestions());
+			quiz.setNumPages(1);
 		}
 		
 		if(request.getParameter("randomize") != null){

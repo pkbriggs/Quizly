@@ -1,5 +1,7 @@
 package quizzes;
 
+import javax.servlet.http.HttpServletRequest;
+
 import dbconnection.DBConnection;
 
 public interface Question {
@@ -40,8 +42,16 @@ public interface Question {
 	public int getType();
 	
 	/**
-	 * Returns whether the response is correct or not for this question
+	 * Returns the user's score for that particular question given their
+	 * response encoded in the @request
+	 * @param request
 	 * @return
 	 */
-	public boolean isCorrect(String response);
+	public int score(HttpServletRequest request);
+	
+	/**
+	 * Returns the total number of answers to this question
+	 * @return
+	 */
+	public int numAnswers();
 }

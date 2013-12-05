@@ -75,16 +75,8 @@ public class PictureResponse implements Question {
 	 */
 	private ArrayList<String> SanitizeAnswer(HttpServletRequest request)
 			throws Exception{
-			ArrayList<String> answers = new ArrayList<String>();
-			int num_answers = Integer.parseInt(request.getParameter("pr_num_answers"));
-			System.out.println("numanswers for pr = "+ num_answers);
-			for(int i = 0; i< num_answers;i++){
-				String answer = request.getParameter("answer"+i);
-				answer = answer.trim();
-				answer = answer.toLowerCase();
-				if(!answer.equals(""))
-					answers.add(answer);
-			}
+			ArrayList<String> answers = getParameters(request, "answer");
+
 			if(answers.size() == 0){
 				throw new Exception("No answer provided. Please try again.");
 			}
@@ -125,10 +117,61 @@ public class PictureResponse implements Question {
 	}
 
 	@Override
-	public boolean isCorrect(String response) {
-		response = response.trim();
-		response = response.toLowerCase();
-		return this.answers.contains(response);
+	public int score(HttpServletRequest request) {
+		ArrayList<String> responses = null;		
+		try{
+			responses = getParameters(request, "answer"+questionID);
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			return 0;
+		}
+		
+		if(responses.size() != 1)
+			System.out.println("There was an issue. there should only be responses of size 1 ln 132");
+		String response = responses.get(0);
+		ArrayList<String> correct_responses = GetCorrectResponses(response);
+		if(correct_responses.contains(response))
+			return 1;
+		else 
+			return 0;
+	}
+	
+	private ArrayList<String> GetCorrectResponses(String string) {
+		return new ArrayList<String>(Arrays.asList(string.split("[|]")));
+	}
+	
+	private ArrayList<String> getParameters(HttpServletRequest request, String id)
+		throws Exception{
+		ArrayList<String> array = new ArrayList<String>();
+		try{
+			String[] responses = request.getParameterValues(id);
+
+			if(responses == null){
+				throw new Exception("No answers checked. Please try again.");
+			}
+			
+			System.out.println("Got the responses" + responses.toString());
+
+			for(int i = 0; i< responses.length;i++){
+				String response = responses[i];
+				
+				if(response.equals(null)){
+					System.out.println("Response was null -- wrong id perhaps?");
+					break;
+				}
+
+				response = response.trim();
+				response = response.toLowerCase();
+
+				if(!response.equals(""))
+					array.add(response);
+				
+			}
+		}catch(Exception e){
+			throw new Exception(e.getMessage());
+		}
+		
+		return array;
 	}
 
 	@Override
@@ -148,5 +191,10 @@ public class PictureResponse implements Question {
 			str += " Answer"+i+ " : "+ this.answers.get(i) + " \n";
 		}
 		return str;
+	}
+	
+	@Override
+	public int numAnswers() {
+		return 1;
 	}
 }

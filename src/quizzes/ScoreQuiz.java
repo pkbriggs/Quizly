@@ -51,7 +51,8 @@ public class ScoreQuiz extends HttpServlet {
 		}
 		
 		boolean practice_mode = quiz.isPracticeMode(request);
-		double score = quiz.scorePage(request);
+		
+		quiz.scorePage(request);
 		
 		if(!quiz.finished()){
 			RequestDispatcher dispatch = request.getRequestDispatcher("DisplayQuizPage.jsp");
@@ -73,9 +74,10 @@ public class ScoreQuiz extends HttpServlet {
 	
 	private void RecordScore(HttpServletRequest request, String username, Quiz quiz) {
 		long time = quiz.getTime();
+		double score = (double) quiz.getPoints() /quiz.getTotalPoints();
 		DBConnection connection= DBConnection.getInstance();
 		String query = "INSERT INTO scores (username, quizID, score, time, dateTaken) "
-				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+quiz.getScore()+"\", \""+time+"\", \""+DBConnection.GetDate()+"\")";
+				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+score+"\", \""+time+"\", \""+DBConnection.GetDate()+"\")";
 		connection.executeQuery(query);
 		System.out.println("Just did query:" +query);
 	}

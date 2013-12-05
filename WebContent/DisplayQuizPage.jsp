@@ -59,7 +59,10 @@
 		html.append(questionHeader(Question.QUESTION_RESPONSE, question.getQuestionID()));
 		
 		String questionStr =question.getQuestion();
-		questionStr = questionStr.replaceAll(" _+", "<input type='text' name='answer"+question.getQuestionID()+"'/>");
+		
+		for(int i = 0; i< question.numAnswers(); i++){
+			questionStr = questionStr.replaceFirst(" _+", "<input type='text' name='answer"+question.getQuestionID()+i+"'/>");
+		}
 		
 		html.append(questionStr);
 		return html.toString();
@@ -82,12 +85,14 @@
 		String choice2 = choices.get(1);
 		String choice3 = choices.get(2);
 		String choice4 = choices.get(3);
-
-		html.append(questionStr + "<p>");
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice1+"'/>"+choice1+"<br>" );
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice2+"'/>"+choice2+"<br>" );
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice3+"'/>"+choice3+"<br>" );
-		html.append("<input type='radio' name='radio"+question.getQuestionID()+"' value='"+choice4+"'/>"+choice4+"<br>" );
+		
+		String type = (question.numAnswers() == 1) ? "radio" : "checkbox";
+				
+		html.append(questionStr + "<br>");
+		html.append("<input type='"+type+"' name='answer"+question.getQuestionID()+"' value='"+choice1+"'/>"+choice1+"<br>" );
+		html.append("<input type='"+type+"' name='answer"+question.getQuestionID()+"' value='"+choice2+"'/>"+choice2+"<br>" );
+		html.append("<input type='"+type+"' name='answer"+question.getQuestionID()+"' value='"+choice3+"'/>"+choice3+"<br>" );
+		html.append("<input type='"+type+"' name='answer"+question.getQuestionID()+"' value='"+choice4+"'/>"+choice4+"<br>" );
 		
 		html.append(questionFooter());
 		return html.toString();
@@ -123,7 +128,9 @@
 		html.append(questionHeader(Question.QUESTION_RESPONSE, question.getQuestionID()));
 		String questionStr = question.getQuestion();
 		html.append(questionStr);
-		html.append("<input type='text' name='answer"+question.getQuestionID()+"'/>");
+		for(int i = 0; i <question.numAnswers(); i++){
+			html.append("<input type='text' name='answer"+question.getQuestionID()+"'/>");
+		}
 		html.append(questionFooter());
 
 		return html.toString();	
@@ -151,8 +158,10 @@
 <h2> <%=title %> </h2><br>
 <em> Created By: <%=creator %> </em>
 
-<h2> Page: <%=(currPage+1) %> </h2><br>
+<h3> Page: <%=(currPage+1) %> </h3><br>
 <em> <%=description %> </em>
+
+<br><em> You've received <b><%=quiz.getPoints() %></b> points out of <b><%=quiz.getTotalPoints() %></b> points possible </em>
 
 <% if(currPage == 0) { %>
 	Practice Mode: <input type='checkbox' name='practice_mode' value='practice_mode'/>

@@ -58,6 +58,8 @@ CREATE TABLE question_response (
 	quizID int,
 	question TINYTEXT,
 	answer CHAR(64),
+	num_responses int,
+	ordered TINYINT(1),
 	PRIMARY KEY(id)
 );
 
