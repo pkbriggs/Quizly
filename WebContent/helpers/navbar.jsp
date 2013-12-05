@@ -115,8 +115,7 @@
 		            				<a href="<%= "/Quizly/profile.jsp?id="+ req.getInitiatingUser() %>">
 		            					<%= User.getUsernameFromID(req.getInitiatingUser()) %>
 		            				</a>
-		            				<button class="btn btn-sm btn-success">Accept</button>
-		            				<button class="btn btn-sm btn-primary">Decline</button>
+		            				<a href="<%= "/Quizly/profile.jsp?id="+ req.getInitiatingUser() %>" class="btn btn-sm btn-primary">Respond</a>
 		            				</div>
 		            			</li>
 		            		<% } %>
@@ -124,14 +123,8 @@
 	                </ul>
 	            </li>
 	            
-	            <li class="dropdown">
-	            	<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown"><i class="fa fa-comments fa-2x"></i></a>
-	            	<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
-		                  <li>
-		                     <div class="row">
-		                     </div>
-	                     </li>
-	                </ul>
+	            <li>
+	            	<a href="/Quizly/messages.jsp" class="user-action-icon dropdown-toggle" data-toggle="dropdown"><i class="fa fa-comments fa-2x"></i></a>
 	            </li>
 	            
 	            <li class="dropdown">
