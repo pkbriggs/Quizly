@@ -29,9 +29,7 @@
 		<label id='pages_label'>Number of questions per page:</label>
 		<input type='text' id='questions_per_page' name='questions_per_page'/>
 	</div>
-	
-	<h3 id = "questionNum">Number of Questions: </h3> 
-	
+		
 	<% 
 		int num_questions = 0;
 		session = request.getSession();
@@ -42,7 +40,7 @@
 			System.out.println("curreQuiz still null");
 	%>
 	
-	<label id='num_questions_so_far'><%=num_questions %></label>
+	<br><h4 id = "questionNum">Number of Questions: </h4> <label id='num_questions_so_far'><%=num_questions %></label>
 	<br>
 	<br>
 	
