@@ -13,7 +13,7 @@
 	<% for (Challenge challenge: challenges) { %>
 		<li>
 			<a href="/Quizly/profile.jsp?id=<%= User.getIDFromUsername(challenge.username) %>"><%= challenge.username %></a>
-			 challenged you to <b><%= challenge.quizName %></b> (high score: ).
+			 challenged you to <b><%= challenge.quizName %></b> (high score: <%= Quiz.getUsersTopScoreInQuiz(challenge.quizId, challenge.username) %>).
 			<button class="btn btn-sm btn-success">Accept</button>
 		    <button class="btn btn-sm btn-primary">Decline</button>
 		</li>

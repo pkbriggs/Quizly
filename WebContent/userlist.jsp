@@ -7,14 +7,14 @@
 </jsp:include>
 <%@ include file="helpers/navbar.jsp" %>
 
+<h1>List of all users:</h1>			
 
-<% if (!User.isLoggedIn(session)) { %>
-	Please log in first.
-<% } else { %>
-	<h1>List of all users:</h1>			
-	
-	<% List<User> users = User.getAllUsers(); %>
+<% List<User> users = User.getAllUsers(); %>
+<ul>
+<% for (User user: users) { %>
+	<li><%= user.getUsername() %></li>
 <% } %>
+</ul>
 
 
 <%@ include file="helpers/end_boilerplate.jsp" %>
