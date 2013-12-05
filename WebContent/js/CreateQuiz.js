@@ -4,8 +4,6 @@
  */
 
 $( document ).ready(function() {
-	alert("got here!");
-
 	$("#multiple_pages_section").hide();
 	$("#multiple_choice").hide();
 	$("#fill_in_the_blank").hide();
@@ -17,11 +15,23 @@ $( document ).ready(function() {
 		if($("#quiz_info").is(":visible")){
 			$("#quiz_info").slideUp();
 			$("#get_quiz_info").value("Submit Quiz");
+			
+			$("#pr_title").show();
+			$("#fib_title").show();
+			$("#mc_title").show();
+			$("#qr_title").show();
 		}
 		else {
-			$("#multiple_choice").slideDown();
-			$("#get_quiz_info").value("-");
-
+			$("#quiz_info").slideDown();
+			
+			$("#pr_title").hide();
+			$("#fib_title").hide();
+			$("#mc_title").hide();
+			$("#qr_title").hide();
+			$("#get_quiz_info").hide();
+			
+			$("#get_quiz_info").removeAttr("value");
+			$("#get_quiz_info").prop('value', '-');
 		}
 	});
 	
@@ -91,14 +101,19 @@ $( document ).ready(function() {
 	
 	$("#mc_multiple_responses").click( function()
 	{
-		alert("Use a "|" symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
-		if($("#multiple_responses").prop('checked')){
-			$("#answer").slideDown();
-			$("#add_qr_answer").slideDown();
+		if($("#mc_multiple_responses").prop('checked')){
+			
+			$(".mc_answer").each(function(){
+				$(this).removeAttr("type");
+				$(this).prop('type', 'checkbox');
+			});
+			
 		}
 		else{
-			$("#multiple_responses_section").slideUp();
-
+			$(".mc_answer").each(function(){
+				$(this).removeAttr("type");
+				$(this).prop('type', 'radio');
+			});
 		}
 	});
 	
