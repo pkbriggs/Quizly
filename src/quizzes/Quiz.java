@@ -1,4 +1,4 @@
-	package quizzes;
+package quizzes;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,10 +6,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.mysql.jdbc.PreparedStatement;
 
@@ -20,7 +22,7 @@ import dbconnection.DBConnection;
  * can then 
  */
 public class Quiz{
-
+	
 	private String title;
 	private String description;
 	private ArrayList<Question> questions;
@@ -28,7 +30,6 @@ public class Quiz{
 	private int numPages;
 	private int currPage;
 	private String creator;
-
 	private int randomize;
 	private boolean practice_mode;
 	private long startTime;
@@ -41,7 +42,11 @@ public class Quiz{
 	private boolean inDatabase;
 	//TODO add the user info
 	
-	Quiz(){
+	public static Quiz getQuiz(int id){
+		return new Quiz(id);
+	}
+	
+	public Quiz(){
 		this.title = "";
 		this.description = "";
 		this.dateCreated = DBConnection.GetDate();
@@ -50,13 +55,17 @@ public class Quiz{
 		this.numCorrect = 0;
 		this.currPage = 0;
 		this.creator = "";
+		this.randomize = DBConnection.FALSE;
+		this.practice_mode = false;
+		this.startTime = 0;
+		this.endTime = 0;
 		questions = new ArrayList<Question>();
 	}
 	
 	/*This constructor retrieves information from the database for the quizID
 	 * provided and creates a new quiz object from that information
 	 */
-	Quiz(int id){
+	public Quiz(int id){
 		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery("SELECT * FROM quizzes WHERE id="+id);
 		try {
@@ -70,6 +79,9 @@ public class Quiz{
 		this.numCorrect = 0;
 		this.questions = loadQuestionsFromDB();
 		this.currPage = 0;
+		this.practice_mode = false;
+		this.startTime = 0;
+		this.endTime= 0;
 	}
 	
 	private int getNumQuestionsPerPage(){
@@ -95,12 +107,17 @@ public class Quiz{
 			quiz.setID(rs.getInt("id"));
 			quiz.setNumPages( rs.getInt("numPages"));
 			quiz.setCreator(rs.getString("creator"));
+			quiz.setRandomization(rs.getInt("randomize"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	void setRandomization(int randomize) {
+		this.randomize = randomize;
+	}
+
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
@@ -217,7 +234,7 @@ public class Quiz{
 			this.inDatabase = true;
 		}
 		connection.executeQuery("UPDATE quizzes SET title='"+this.title+"', description='"+this.description+"' "
-				+ ", numPages='"+this.numPages+"' , dateCreated='"+this.dateCreated+"', creator='"+this.creator +"' WHERE id=" + this.id);
+				+ ", numPages='"+this.numPages+"' , dateCreated='"+this.dateCreated+"', creator='"+this.creator +"', randomize='"+this.randomize +"' WHERE id=" + this.id);
 		saveQuestionsToDatabase(this.id);
 	}
 	
@@ -247,6 +264,9 @@ public class Quiz{
 		AddQuestions(rs, questions, Question.PICTURE_RESPONSE);
 		
 		this.questions = questions;
+		
+		if(this.randomize == DBConnection.TRUE)
+			Collections.shuffle(questions);
 		return questions;
 	}
 	
@@ -408,53 +428,49 @@ public class Quiz{
 		return "Title: "+ this.title + " Creator: " + this.creator + " numQuestions:" + questions.size();
 	}
 	
-	public static void delete(int quizID) {                                      
-		String query = "DELETE FROM quizzes WHERE id = " + quizID;  
-		DBConnection.getInstance().executeQuery(query);
-		String queryMul = "DELETE FROM multiple_choice WHERE quizID = " + quizID; 
-		DBConnection.getInstance().executeQuery(queryMul);
-		String queryFill = "DELETE FROM fill_in_the_blank WHERE quizID = " + quizID; 
-		DBConnection.getInstance().executeQuery(queryFill);
-		String queryPic = "DELETE FROM picture_response WHERE quizID = " + quizID; 
-		DBConnection.getInstance().executeQuery(queryPic);
-		String queryQ = "DELETE FROM question_response WHERE quizID = " + quizID;    
-		DBConnection.getInstance().executeQuery(queryQ);
+	/**
+	 * returns whether this quiz should be recorded in the database or not
+	 * @param request
+	 * @return
+	 */
+	public boolean isPracticeMode(HttpServletRequest request) {
+		String checkBox = request.getParameter("practice_mode");
+
+		if(checkBox != null){
+			this.practice_mode = true;
+		}
+		
+		return this.practice_mode;
 	}
 	
-	//returns list of stats in this order: numUsers, numQuizzes, numFriendships
-	public ArrayList<Integer> getStats(){
-		ArrayList<Integer> stats = new ArrayList<Integer>();
+	/**
+	 * Sets the number of milliseconds this user took to complete this quiz
+	 * @param time
+	 */
+	public void setStartTime(){
+		this.startTime = System.currentTimeMillis();
+	}
+	
+	/**
+	 * Returns the number of seconds this quiz has been running
+	 * @return
+	 */
+	public long getTime(){
+		if(this.endTime == 0)
+			this.endTime = System.currentTimeMillis();
 		
-		String numUsers = "SELECT * FROM users";
-		ResultSet rs = DBConnection.getInstance().executeQuery(numUsers);
-		try {
-			rs.last();
-			int users = rs.getRow();
-			stats.add(users);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		long time = (this.endTime - this.startTime)/1000;
+		return time;
+	}
+	
+	
+	public String getTimeToString(){
+		long time = this.getTime();
+		int minutes = (int) time / 60;
+		long seconds = time;
+		if(minutes > 0)
+			seconds = time % minutes;
 		
-		String numQuizzes = "SELECT * FROM quizzes";
-		ResultSet rsQuizzes = DBConnection.getInstance().executeQuery(numQuizzes);
-		try {
-			rsQuizzes.last();
-			int quizzes = rsQuizzes.getRow();
-			stats.add(quizzes);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		String numFriends = "SELECT * FROM friendships";
-		ResultSet rsFriends = DBConnection.getInstance().executeQuery(numFriends);
-		try {
-			rsFriends.last();
-			int friends = rsFriends.getRow();
-			stats.add(friends);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return stats;
+		return minutes + " minutes and " + seconds + " seconds";
 	}
 }
