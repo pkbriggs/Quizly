@@ -22,17 +22,14 @@ $( document ).ready(function() {
 	});
 	
 	$("#questionResponseButton").click(function() {
-		alert("in qestion response button");
 
 		if($("#question_response").is(":visible")) {
 			$("#question_response").slideUp();
 		}
 		else {
-			alert("here I am!");
 			$("#add_qr_answer").hide();
 			$("#multiple_responses_section").hide();
 			$("#question_response").slideDown();
-			alert("Finished!");
 		}
 	});
 	
