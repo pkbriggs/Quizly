@@ -179,16 +179,42 @@
 	%>
 	<h1>Total Performance Summary</h1>
 	<% 
-		out.println("<p>Average: </p>");
-		out.println("<p>Median: </p>");
-		out.println("<p>Standard Deviation: </p>");
+		/*
+		 * Compute the avergae
+		 */
+		double average;
+		double denom = quiz.getTotalPoints();
+		double num = 0;
+		for (Attempt attempt: attempts) {
+			num += attempt.getScore();
+		}
+		if (denom != 0) {
+			average = num/denom;
+			out.println("<p>Average: " + average + "</p>");
+		}
+		else out.println("<p>Average: N/A </p>");
+		/*
+		 * Compute the median
+		 */
+		if (attempts.size() > 0) {
+			int position = attempts.size()/2;
+			Attempt median = attempts.get(position);
+			out.println("<p>Median: " + median.getScore() + "</p>");		
+		}
+		else out.println("<p>Median: N/A </p>");
 	%>
 	<h1>Take Quiz</h1>
-	<% %>
+	<% 
+	
+	%>
 	<h1>Practice Quiz</h1>
-	<% %>
+	<% 
+	
+	%>
 	<h1>Edit Quiz</h1>
-	<% %>
+	<% 
+	
+	%>
 	
 	
 <%@ include file="helpers/end_boilerplate.jsp" %>
