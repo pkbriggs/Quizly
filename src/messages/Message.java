@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import users.User;
@@ -129,5 +130,21 @@ public class Message {
 			e.printStackTrace();                
 		}       
 		return conversations;
+	}
+	
+	public static List<Message> getConversation(String userOne, String userTwo) {
+		String sql = String.format("SELECT * FROM messages WHERE (toUser = '%s' AND fromUser='%s') OR (toUser = '%s' AND fromUser='%s') ORDER BY dateCreated ASC;", userOne, userTwo, userTwo, userOne);
+		List<Message> conversation = new ArrayList<Message>();
+		
+		ResultSet rs = DBConnection.getInstance().executeQuery(sql);
+		try{
+			while (rs.next()) {
+				conversation.add(new Message(rs.getString("fromUser"), rs.getString("toUser"), rs.getString("message"), rs.getString("title"), rs.getString("dateCreated")));
+			}
+		} catch (SQLException e) {                        
+			e.printStackTrace();                
+		}    
+		
+		return conversation;
 	}
 }

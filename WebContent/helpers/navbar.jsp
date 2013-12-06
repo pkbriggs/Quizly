@@ -124,17 +124,11 @@
 	            </li>
 	            
 	            <li>
-	            	<a href="/Quizly/messages.jsp" class="user-action-icon dropdown-toggle" data-toggle="dropdown"><i class="fa fa-comments fa-2x"></i></a>
+	            	<a href="/Quizly/messages.jsp" class="user-action-icon"><i class="fa fa-comments fa-2x"></i></a>
 	            </li>
 	            
-	            <li class="dropdown">
-	            	<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-2x"></i></a>
-	            	<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
-		                  <li class="pull-right">
-		                     <div class="row">
-		                     </div>
-	                     </li>
-	                </ul>
+	            <li>
+	            	<a href="/Quizly/challenges.jsp" class="user-action-icon"><i class="fa fa-bullhorn fa-2x"></i></a>
 	            </li>
         
             	<li class="dropdown" id="user-dropdown">

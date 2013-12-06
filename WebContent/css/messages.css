@@ -1,4 +1,92 @@
 
-.conversation-selector {
-	background-color: #efefef;
+.messages-page {
+	padding-top: 20px;
 }
+
+.messages-page h3 {
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #47adea;
+}
+
+.conversation-list {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.conversation-list li {
+	border-bottom: 1px solid #e6e8ea;
+	transition: all 0.1s ease-out;
+}
+
+.conversation-list li a {
+	transition: all 0.1s ease-out;
+	text-decoration: none;
+	color: inherit;
+	padding-left: 5px;
+	padding: 10px 10px;
+	
+	/* make the entire box clickable - http://stackoverflow.com/questions/8160494/how-to-make-a-whole-div-clickable-in-html-and-css-without-javascript */
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.conversation-list li:hover {
+	color: #57a9d9;
+	background-color: #f7f7f7;
+}
+
+.conversation-list li:last-of-type {
+	/* padding-bottom: 15px; */
+	border: none;
+}
+
+.conversation-list .selected, .conversation-list .selected:hover {
+	background-color: #79cdff;
+	color: white;
+	text-shadow: 0px 1px #66AEDA;
+}
+
+.conversation-list img {
+	margin-right: 10px; /* a little spacing between the image and the username */
+}
+
+.conversation-list li i {
+	margin-left: 5px;
+}
+
+/* ---------- */
+.message-list {
+	padding-top: 10px;
+	list-style: none;
+	padding-left: 0;
+	height: 400px;
+	overflow: scroll;
+	margin-bottom: 0;
+}
+
+.message-list li {
+	border-bottom: 1px solid #e6e8ea;
+	transition: all 0.1s ease-out;
+	padding: 10px 10px;
+}
+
+.message-list li:last-of-type {
+	border: none;
+}
+
+.message-list li a {
+	text-decoration: none;
+}
+
+.message-input-container {
+	border-top: 2px solid #47adea;
+}
+
+#message-input {
+	margin-top: 10px;
+}
+

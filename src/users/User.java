@@ -146,6 +146,27 @@ public class User {
 		return null;
 	}
 	
+	public static User getUserFromUsername(String username) {
+		String sql = String.format("SELECT * FROM users WHERE username = '%s';", username);
+		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
+		
+		try {
+			if (results.next()) {
+				int id = results.getInt("id");
+				String photoFilename = results.getString("picturefile");
+				User user = new User(id, username, photoFilename);
+				return user;
+			} else {
+				// this happens if there are no users with the specified ID, the function simply returns false
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/**
 	 * Given a @username, will compare the hashed @pass to the hashed password associated with the user's account.
 	 * @param userID
@@ -232,6 +253,31 @@ public class User {
 			e.printStackTrace();
 		}
 		return requests;
+	}
+	
+	public static List<User> getFriends(int userID) {
+		String sql = String.format("SELECT * FROM friendships WHERE ((user1 = '%d') OR (user2 = '%d')) AND status = '%s';", userID, userID, FriendshipStatus.FRIENDS);
+		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);		
+		List<User> friends = new ArrayList<User>();
+		try {
+			while (results.next()) {
+				int user1 = results.getInt("user1");
+				int user2 = results.getInt("user2");
+				if (user1 != userID) {
+					User u = User.getUserFromID(user1);
+					friends.add(u);
+				}
+				if (user2 != userID) {
+					User u = User.getUserFromID(user2);
+					friends.add(u);
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return friends;
 	}
 	
 	public static List<User> getAllUsers() {

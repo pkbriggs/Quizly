@@ -1,0 +1,17 @@
+
+.challenges-page {
+	padding-top: 20px;
+}
+
+.challenges-page h3 {
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #47adea;
+}
+
+.challenge-list {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}

@@ -178,3 +178,13 @@ body, h1, h2, h3, h4, h5, h6, p, span, div {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 }
+
+/* ------------------ */
+
+.small-profile-picture {
+	width: 80px;
+}
+
+.xsmall-profile-picture {
+	width: 30px;
+}

@@ -88,7 +88,7 @@ CREATE TABLE messages (
     toUser varchar(255), 
     message TEXT,
     title TEXT,
-    dateCreated varchar(255),
+    dateCreated datetime,
     seen TINYINT(1),
     quizID int,
     PRIMARY KEY(id)
