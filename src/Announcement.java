@@ -1,6 +1,7 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import users.User;
 import dbconnection.DBConnection;
@@ -47,7 +48,7 @@ public class Announcement {
 	}
 	
 	public static void newAnnouncement(User u, String subject, String body) {                
-		String stringDate = DBConnection.GetDate();
+		String stringDate = DBConnection.GetDate(Calendar.getInstance().getTime());
 		String query = String.format("INSERT INTO announcements (userID, posted, subject, body) VALUES ('%d', '%s', '%s');", u.getID(), stringDate, subject, body);                     
 		DBConnection.getInstance().executeQuery(query);        
 	}

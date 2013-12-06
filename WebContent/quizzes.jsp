@@ -11,8 +11,12 @@
 	
 	<p>You can also <a href="/Quizly/CreateQuiz?formID=initialize_quiz">create a quiz</a>.</p>
 	
-	<% String quizzes = Quiz.listQuizzes("SELECT * FROM quizzes", "quizzes"); %>
-	<%= quizzes %>
+	<% ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes"); %>
+	<ul>
+		<% for(Quiz quiz: quizzes){ %>
+			<li><a href='DisplayQuiz?id="<%=quiz.getID()%>"' > <%= quiz.getTitle()%> </a> </li>
+		<% } %>
+	</ul>;
 <% } %>
 
 

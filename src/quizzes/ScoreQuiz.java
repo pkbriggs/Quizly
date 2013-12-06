@@ -3,6 +3,7 @@ package quizzes;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -76,7 +77,7 @@ public class ScoreQuiz extends HttpServlet {
 		double score = (double) quiz.getPoints() /quiz.getTotalPoints();
 		DBConnection connection= DBConnection.getInstance();
 		String query = "INSERT INTO scores (username, quizID, score, time, dateTaken) "
-				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+score+"\", \""+time+"\", \""+DBConnection.GetDate()+"\")";
+				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+score+"\", \""+time+"\", \""+DBConnection.GetDate(Calendar.getInstance().getTime())+"\")";
 		connection.executeQuery(query);
 	}
 

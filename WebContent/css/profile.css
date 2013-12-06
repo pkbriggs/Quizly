@@ -1,3 +1,16 @@
+
+h4 {
+	font-size: 12;
+	color: #6a8eab;
+	display: inline;
+}
+
+table{
+	width=100%;
+	text-align:center;
+	padding:15px;	
+}
+
 .btn-expand {
 	background: #afd3f2;
 	position: relative;

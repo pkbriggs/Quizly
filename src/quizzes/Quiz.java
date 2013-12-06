@@ -52,7 +52,7 @@ public class Quiz{
 	public Quiz(){
 		this.title = "";
 		this.description = "";
-		this.dateCreated = DBConnection.GetDate();
+		this.dateCreated = DBConnection.GetDate(Calendar.getInstance().getTime());
 		this.id= -1;
 		this.inDatabase = false;
 		this.numCorrect = 0;
@@ -400,8 +400,8 @@ public class Quiz{
 		return this.currPage == this.numPages - 1 ;
 	}
 
-	public static String listQuizzes(String query, String table){
-		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes(query, table);
+	public static String listQuizzes(String query){
+		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes(query);
 		String html = "<ul>";
 		for(Quiz quiz: quizzes){
 			html+=("<li><a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</li>");
@@ -569,6 +569,21 @@ public class Quiz{
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	public static String getQuizTitleFromID(int id){
+		String query = "SELECT title FROM quizzes WHERE id='"+id+"'";
+		ResultSet rs = DBConnection.getInstance().executeQuery(query);
+		String title = "";
+		try {
+			while(rs.next()){
+				title = rs.getString("title");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return title;
 	}
 	
 }

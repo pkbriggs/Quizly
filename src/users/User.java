@@ -115,6 +115,7 @@ public class User {
 	}
 	
 	public static int getIDFromUsername(String username) {
+		System.out.println("User.java 118: username = " + username);
 		String sql = String.format("SELECT id FROM users WHERE username = '%s';", username);
 		
 		ResultSet results = DBConnection.getInstance().executeQuery(sql);
