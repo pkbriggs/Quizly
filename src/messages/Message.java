@@ -40,7 +40,7 @@ public class Message {
 	 */
 	public static void sendMessage(String username, String recipientName, String message, String title) {                            
 		String stringDate = DBConnection.GetDate();
-		String query = String.format("INSERT INTO messages (fromUser, toUser, message, title, dateCreated) VALUES ('%s', '%s', '%s', '%s', '%s');", username, recipientName, message, title, stringDate);
+		String query = String.format("INSERT INTO messages (fromUser, toUser, message, title, dateCreated, seen) VALUES ('%s', '%s', '%s', '%s', '%s', '%d');", username, recipientName, message, title, stringDate, 0);
 		System.out.println(query);
 		DBConnection.getInstance().executeQuery(query);                
 	}
@@ -146,5 +146,25 @@ public class Message {
 		}    
 		
 		return conversation;
+	}
+
+	//returns 1 if seen, 0 if not seen
+	public int getSeen(int messageID){
+		String query = String.format("SELECT * FROM messages WHERE id = '%d'", messageID);
+		ResultSet rs = DBConnection.getInstance().executeQuery(query);
+		int seen = 0;
+		try{
+			while (rs.next()){
+				seen = rs.getInt("seen");
+			}
+		} catch (SQLException e) {                        
+			e.printStackTrace();                
+		}              
+		return seen;
+	}
+	
+	public void setSeen(int messageID){
+		String query = String.format("UPDATE messages SET seen = '%d' WHERE id = '%d'", 1, messageID);
+		DBConnection.getInstance().executeQuery(query);
 	}
 }
