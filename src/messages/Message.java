@@ -3,6 +3,10 @@ package messages;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import users.User;
 import dbconnection.DBConnection;
 
 
@@ -107,5 +111,23 @@ public class Message {
 			e.printStackTrace();                
 		}              
 		return messages;  
+	}
+	
+	public static Set<String> getConversationList(String username) {
+		String sql = String.format("SELECT * FROM messages WHERE (fromUser = '%s') OR (toUser = '%s');", username, username);
+		Set<String> conversations = new HashSet<String>();
+		
+		ResultSet results = DBConnection.getInstance().executeQuery(sql);
+		try {
+			while (results.next()){
+				String user1 = results.getString("fromUser");
+				String user2 = results.getString("toUser");
+				conversations.add(user1);
+				conversations.add(user2);
+			}
+		} catch (SQLException e) {                        
+			e.printStackTrace();                
+		}       
+		return conversations;
 	}
 }
