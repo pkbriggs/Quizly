@@ -20,12 +20,15 @@ public class FillInTheBlank implements Question {
 	private ArrayList<String> answers;
 	private int quizID;	
 	private int questionID;
+	private int score ;
+	private ArrayList<String> user_responses;
 	
 	FillInTheBlank(HttpServletRequest request)
 			throws Exception{
 		try{
 			this.question = SanitizeQuestion(request);
 			this.answers = SanitizeAnswer(request);
+			this.user_responses = new ArrayList<String>();
 		}catch(Exception e){
 			throw new Exception(e.getMessage());
 		}
@@ -38,6 +41,8 @@ public class FillInTheBlank implements Question {
 			this.question = rs.getString("question");
 			this.quizID = rs.getInt("quizID");
 			this.questionID = questionID;
+			this.score =0;
+			this.user_responses = new ArrayList<String>();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -153,18 +158,27 @@ public class FillInTheBlank implements Question {
 			responses = getParameters(request, "answer"+questionID);
 		}catch(Exception e){
 			System.out.println(e.getMessage());
-			return 0;
+			this.score = 0;
+			return this.score;
 		}
 		
-		if(responses.size() != 1)
+		if(responses.size() != 1){
 			System.out.println("There was an issue. there should only be responses of size 1 ln 132");
+			this.score = 0;
+			return this.score;
+		}
 		
 		String response = responses.get(0);
 		ArrayList<String> correct_responses = GetCorrectResponses(response);
-		if(correct_responses.contains(response))
-			return 1;
-		else 
-			return 0;
+		if(correct_responses.contains(response)){
+			this.score = 1;
+		}
+		else {
+			this.score = 0;
+		}
+		
+		return this.score;
+
 	}
 	
 	private ArrayList<String> GetCorrectResponses(String string) {
@@ -179,7 +193,7 @@ public class FillInTheBlank implements Question {
 			String[] responses = request.getParameterValues(id);
 
 			if(responses == null){
-				throw new Exception("No answers provided. Please try again.");
+				throw new Exception("FIB: No answers provided for: id = " + id + ". Please try again.");
 			}
 			
 			System.out.println("Got the responses" + responses.toString());
@@ -187,24 +201,19 @@ public class FillInTheBlank implements Question {
 			for(int i = 0; i< responses.length;i++){
 				String response = responses[i];
 				
-				System.out.println("This is the value of the radio button " + i + " : " + response);
-				System.out.println("This response is being recorded: " + response);
 				if(response.equals(null)){
 					System.out.println("Response was null -- wrong id perhaps?");
 					break;
 				}
 
 				response = response.trim();
-				System.out.println("Trimmed the response");
-
 				response = response.toLowerCase();
-				System.out.println("lower cased the response");
 
-				if(!response.equals(""))
+				if(!response.equals("")){
+					this.user_responses.add(response);
 					array.add(response);
+				}
 				
-				System.out.println("added the response");
-
 			}
 		}catch(Exception e){
 			throw new Exception(e.getMessage());
@@ -216,5 +225,38 @@ public class FillInTheBlank implements Question {
 	@Override
 	public int numAnswers() {
 		return this.answers.size();
+	}
+	
+	@Override
+	public String getCorrectResponses() {
+		String str = "";
+		
+		for(int i = 0; i < this.answers.size(); i++ ){
+			String answer = this.answers.get(i).replace("|", " OR ");
+			str += "[" + answer + "]";
+			
+			if(i < this.answers.size()-1)
+				str += " , ";
+		}
+		
+		return str;
+	}
+	
+	@Override
+	public String getUserResponses() {
+		String str = "";
+		for(int i = 0; i < this.user_responses.size(); i++ ){
+			str += "[" + this.user_responses.get(i) + "]";
+			
+			if(i < this.user_responses.size()-1)
+				str += " , ";
+		}
+		
+		return str;
+	}
+	
+	@Override
+	public int getScore(){
+		return this.score;
 	}
 }

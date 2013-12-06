@@ -39,7 +39,7 @@ $( document ).ready(function() {
 		if($("#multiple_choice").is(":visible")) $("#multiple_choice").slideUp();
 		else {
 			$("#multiple_choice").slideDown();
-			alert("Use a "|" symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
+			alert("Use a '|' symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
 		}
 	});
 	
@@ -47,7 +47,7 @@ $( document ).ready(function() {
 		if($("#fill_in_the_blank").is(":visible")) $("#fill_in_the_blank").slideUp();
 		else {
 			$("#fill_in_the_blank").slideDown();
-			alert("Use a "|" symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
+			alert("Use a '|' symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
 		}
 	});
 	
@@ -60,7 +60,7 @@ $( document ).ready(function() {
 			$("#add_qr_answer").hide();
 			$("#multiple_responses_section").hide();
 			$("#question_response").slideDown();
-			alert("Use a "|" symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
+			alert("Use the '|' symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
 		}
 	});
 	
@@ -70,7 +70,7 @@ $( document ).ready(function() {
 		}
 		else {
 			$("#picture_response").slideDown();
-			alert("Use a "|" symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
+			alert("Use the '|' symbol to separate between correct possible versions of the same response. For example ('Memorial Church | memchu')");
 		}
 	});
 	

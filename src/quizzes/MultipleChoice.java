@@ -18,17 +18,17 @@ public class MultipleChoice implements Question {
 	private ArrayList<String> choices;
 	private int quizID;
 	private int questionID;
+	private ArrayList<String> user_responses;
+	private int score;
+
 	
 	MultipleChoice(HttpServletRequest request)
 		throws Exception{
 		try{
-			System.out.println("Making MC question");
 			this.choices = SanitizeChoices(request);
-			System.out.println("Choices sanitized");
 			this.answers = SanitizeAnswers(request);
-			System.out.println("Answers sanitized");
-
 			this.question = SanitizeQuestion(request);
+			this.user_responses = new ArrayList<String>();
 
 		}catch(Exception e){
 			throw new Exception(e.getMessage());
@@ -87,6 +87,8 @@ public class MultipleChoice implements Question {
 			this.answers = ParseAnswers(rs);
 			this.question = rs.getString("question");
 			this.quizID = rs.getInt("quizID");
+			this.score = 0;
+			this.user_responses = new ArrayList<String>();
 			this.choices.add(rs.getString("choice1"));
 			this.choices.add(rs.getString("choice2"));
 			this.choices.add(rs.getString("choice3"));
@@ -165,8 +167,7 @@ public class MultipleChoice implements Question {
 					System.out.println("Problem removing response! This is a bug. ln163");
 			}
 		}
-		
-		System.out.println("returning score!" + points);
+		this.score = points;
 		return points;
 	}
 	
@@ -180,30 +181,25 @@ public class MultipleChoice implements Question {
 				throw new Exception("No answers checked. Please try again.");
 			}
 			
-			System.out.println("Got the responses" + responses.toString());
-
 			for(int i = 0; i< responses.length;i++){
 				String response = responses[i];
+				
 				if(request.getParameter("create_quiz") != null)
 					response = request.getParameter(responses[i]);
-				System.out.println("This is the value of the radio button " + i + " : " + response);
-				System.out.println("This response is being recorded: " + response);
+				
 				if(response.equals(null)){
 					System.out.println("Response was null -- wrong id perhaps?");
 					break;
 				}
 
 				response = response.trim();
-				System.out.println("Trimmed the response");
-
 				response = response.toLowerCase();
-				System.out.println("lower cased the response");
 
-				if(!response.equals(""))
+				if(!response.equals("")){
+					this.user_responses.add(response);
 					array.add(response);
+				}
 				
-				System.out.println("added the response");
-
 			}
 		}catch(Exception e){
 			throw new Exception(e.getMessage());
@@ -241,6 +237,39 @@ public class MultipleChoice implements Question {
 	@Override
 	public int numAnswers() {
 		return this.answers.size();
+	}
+
+	@Override
+	public String getCorrectResponses() {
+		String str = "";
+		
+		for(int i = 0; i < this.answers.size(); i++ ){
+			String answer = this.answers.get(i).replace("|", " OR ");
+			str += "[" + answer + "]";
+			
+			if(i < this.answers.size()-1)
+				str += "<br>";
+		}
+		
+		return str;
+	}
+	
+	@Override
+	public String getUserResponses() {
+		String str = "";
+		for(int i = 0; i < this.user_responses.size(); i++ ){
+			str += "[" + this.user_responses.get(i) + "]";
+			
+			if(i < this.user_responses.size()-1)
+				str += "<br>";
+		}
+		
+		return str;
+	}
+	
+	@Override
+	public int getScore(){
+		return this.score;
 	}
 }
 

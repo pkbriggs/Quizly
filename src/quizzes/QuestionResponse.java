@@ -21,13 +21,15 @@ public class QuestionResponse implements Question {
 	private int questionID;
 	private int num_responses;
 	private int ordered;
+	private ArrayList<String> user_responses;
+	private int score;
 	
 	QuestionResponse(HttpServletRequest request)
 		throws Exception{
 		try{
 			String num_responses_str = request.getParameter("num_responses");
-			System.out.println("Got the num_responses str" + num_responses_str);
 			String multiple_responses = request.getParameter("multiple_responses");
+			
 			if(multiple_responses != null){
 				if(num_responses_str.equals(null))
 					throw new Exception("Please indicate how many responses the question should ask for. Go back and try again.");
@@ -45,9 +47,8 @@ public class QuestionResponse implements Question {
 			}
 			
 			this.question = SanitizeQuestion(request);
-			System.out.println("Questions sanitized");
 			this.answers = SanitizeAnswer(request);
-			System.out.println("successfully sanitized both");
+			this.user_responses = new ArrayList<String>();
 			
 			if(this.ordered == DBConnection.TRUE && this.num_responses != this.answers.size())
 				throw new Exception("For an ordered question, the number of responses you provide should be the same as the number of responses you provide in the number of responses text box.");
@@ -92,6 +93,8 @@ public class QuestionResponse implements Question {
 		this.questionID = questionID;
 		try {
 			this.answers = ParseAnswers(rs);
+			this.score = 0;
+			this.user_responses = new ArrayList<String>();
 			this.question = rs.getString("question");
 			this.quizID = rs.getInt("quizID");
 			this.ordered = rs.getInt("ordered");
@@ -191,7 +194,8 @@ public class QuestionResponse implements Question {
 			responses = getParameters(request, "answer"+questionID);
 		}catch(Exception e){
 			System.out.println(e.getMessage());
-			return 0;
+			this.score = 0;
+			return this.score;
 		}
 		
 		if(responses.size() > this.num_responses)
@@ -209,14 +213,13 @@ public class QuestionResponse implements Question {
 					points++;
 					for(String variation: correct_responses){
 						already_seen.add(variation);
-						System.out.println("already_seen: " + already_seen.toString());
 					}
 				}
 			}
 		}
 		
-		System.out.println("returning score!" + points);
-		return points;
+		this.score = points;
+		return this.score;
 	}
 	
 	private ArrayList<String> GetCorrectResponses(String string) {
@@ -242,8 +245,10 @@ public class QuestionResponse implements Question {
 
 				response = response.trim();
 				response = response.toLowerCase();
-				if(!response.equals(""))
+				if(!response.equals("")){
+					this.user_responses.add(response);
 					array.add(response);
+				}
 			}
 		}catch(Exception e){
 			throw new Exception(e.getMessage());
@@ -263,6 +268,48 @@ public class QuestionResponse implements Question {
 	@Override
 	public int numAnswers() {
 		return this.num_responses;
+	}
+	
+	@Override
+	public String getCorrectResponses() {
+		String str = "";
+		
+		for(int i = 0; i < this.answers.size(); i++ ){
+			String answer = this.answers.get(i).replace("|", " OR ");
+			
+			if(this.ordered == DBConnection.TRUE){
+				str += i+ ") ";
+			}
+			
+			str += "[" + answer + "]";
+			
+			if(i < this.answers.size()-1)
+				str += "<br>";
+		}
+		
+		return str;
+	}
+	
+	@Override
+	public String getUserResponses() {
+		String str = "";
+		for(int i = 0; i < this.user_responses.size(); i++ ){
+			if(this.ordered == DBConnection.TRUE){
+				str += i+ ") ";
+			}
+			
+			str += "[" + this.user_responses.get(i) + "]";
+			
+			if(i < this.user_responses.size()-1)
+				str += "<br>";
+		}
+		
+		return str;
+	}
+	
+	@Override
+	public int getScore(){
+		return this.score;
 	}
 }
 
