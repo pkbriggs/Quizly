@@ -19,10 +19,13 @@ public class PictureResponse implements Question {
 	private ArrayList<String> answers;
 	private int quizID;
 	private int questionID;
+	private ArrayList<String> user_responses;
+	private int score;
 	
 	PictureResponse(HttpServletRequest request)
 		throws Exception{
 		try{
+			this.user_responses = new ArrayList<String>();
 			this.imgURL = SanitizeURL(request);
 			this.answers = SanitizeAnswer(request);
 		}catch(Exception e){
@@ -34,9 +37,11 @@ public class PictureResponse implements Question {
 	PictureResponse(ResultSet rs, int questionID){
 		this.questionID = questionID;
 		try {
+			this.user_responses = new ArrayList<String>();
 			this.answers = ParseAnswers(rs);
 			this.imgURL = rs.getString("imageURL");
 			this.quizID = rs.getInt("quizID");
+			this.score = 0;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,12 +63,12 @@ public class PictureResponse implements Question {
 	
 	private String SanitizeURL(HttpServletRequest request)
 		throws Exception{
-		String imgURL = request.getParameter("question");
+		String imgURL = request.getParameter("photo");
 		try{
 			URL u = new URL(imgURL); 
 			u.toURI();
 		}catch(Exception e){
-			throw new Exception("Please enter a valid URL for the image location.");
+			throw new Exception("Please enter a valid URL for the image location. " + e.getMessage());
 		}
 		return imgURL;
 	}
@@ -123,17 +128,22 @@ public class PictureResponse implements Question {
 			responses = getParameters(request, "answer"+questionID);
 		}catch(Exception e){
 			System.out.println(e.getMessage());
-			return 0;
+			this.score = 0;
 		}
 		
-		if(responses.size() != 1)
+		if(responses.size() != 1){
 			System.out.println("There was an issue. there should only be responses of size 1 ln 132");
+			this.score = 0;
+			return this.score;
+		}
 		String response = responses.get(0);
 		ArrayList<String> correct_responses = GetCorrectResponses(response);
 		if(correct_responses.contains(response))
-			return 1;
+			this.score = 1;
 		else 
-			return 0;
+			this.score = 0;
+		
+		return this.score;
 	}
 	
 	private ArrayList<String> GetCorrectResponses(String string) {
@@ -163,8 +173,10 @@ public class PictureResponse implements Question {
 				response = response.trim();
 				response = response.toLowerCase();
 
-				if(!response.equals(""))
+				if(!response.equals("")){
 					array.add(response);
+					this.user_responses.add(response);
+				}
 				
 			}
 		}catch(Exception e){
@@ -197,4 +209,39 @@ public class PictureResponse implements Question {
 	public int numAnswers() {
 		return 1;
 	}
+	
+	
+	@Override
+	public String getCorrectResponses() {
+		String str = "";
+		
+		for(int i = 0; i < this.answers.size(); i++ ){
+			String answer = this.answers.get(i).replace("|", " OR ");
+			str += "[" + answer + "]";
+			
+			if(i < this.answers.size()-1)
+				str += "<br>";
+		}
+		
+		return str;
+	}
+	
+	@Override
+	public String getUserResponses() {
+		String str = "";
+		for(int i = 0; i < this.user_responses.size(); i++ ){
+			str += "[" + this.user_responses.get(i) + "]";
+			
+			if(i < this.user_responses.size()-1)
+				str += "<br>";
+		}
+		
+		return str;
+	}
+	
+	@Override
+	public int getScore(){
+		return this.score;
+	}
 }
+

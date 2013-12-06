@@ -89,7 +89,6 @@ public class Quiz{
 	
 	private int getNumQuestionsPerPage(){
 		int numQuestions = this.questions.size();
-		System.out.println("Numquestions: "+ numQuestions + " this.numPages = " + this.numPages);
 		int remainder = (numQuestions % this.numPages == 0) ? 0 : 1;
 		if(this.numPages == 0)
 			return 1;
@@ -339,11 +338,11 @@ public class Quiz{
 		return this.questions;
 	}
 		
-	public double getPoints(){
+	public int getPoints(){
 		return this.points;
 	}
 	
-	public double getTotalPoints(){
+	public int getTotalPoints(){
 		return this.totalPoints;
 	}
 
@@ -360,28 +359,25 @@ public class Quiz{
 	private int getEndIndex() {
 		int end = (this.currPage+1)*getNumQuestionsPerPage() ;
 		end = (end > this.questions.size()) ? this.questions.size(): end;
-		System.out.println("returning endIndex: "+ end);
 		return end;
 	}
 
 	private int getStartIndex() {
 		int start = this.currPage * getNumQuestionsPerPage();
-		System.out.println("returning startIndex: "+ start);
 		return start;
 	}
 
 	public void setNumPages(int num_pages) {
 		this.numPages = num_pages;
-		System.out.println("Just set numpages to : "+ this.numPages);
 	}
 	
 	public void setNumPagesFromNumQuestions(int questions_per_page){
+		
 		if(this.questions.size() % questions_per_page == 0){
 			this.numPages= this.questions.size() / questions_per_page;
 		}else{
 			this.numPages = (this.questions.size() / questions_per_page) + 1;
 		}
-		System.out.println("Just set numpages from questions to : "+ this.numPages);
 	}
 	
 	public ArrayList<Question> getPageQuestions(){

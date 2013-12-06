@@ -54,4 +54,23 @@ public interface Question {
 	 * @return
 	 */
 	public int numAnswers();
+	
+	/**
+	 * Returns the correct responses in the form of a list-like string
+	 * @return
+	 */
+	public String getCorrectResponses();
+	
+	/**
+	 * Returns all the responses the user provided to this question in 
+	 * a list-like string.
+	 * @return
+	 */
+	public String getUserResponses();
+	
+	/**
+	 * Returns the score the user got on this question
+	 * @return
+	 */
+	public int getScore();
 }

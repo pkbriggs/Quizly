@@ -1,0 +1,31 @@
+@CHARSET "UTF-8";
+
+table
+{
+border-collapse:collapse;
+}
+
+table, td, th
+{
+border:1px solid black;
+text-align:center;
+padding:15px;
+width: 100%;
+}
+
+th
+{
+background-color:green;
+color:white;
+}
+
+.image{
+	width:auto;
+	height:100px;
+}
+
+h1, h2 {
+	color: #6a8eab;
+	display: inline;
+	margin: 5px;
+}
