@@ -79,6 +79,18 @@
 				else return 0;
 			}
 		}
+		
+		/*
+		 *	Comparator that compare by time
+		 */
+		class TimeCompare implements Comparator<Attempt> {
+			@Override
+			public int compare(Attempt a1, Attempt a2) {
+				int time1 = Integer.parseInt(a1.time);
+				int time2 = Integer.parseInt(a2.time);
+				return time1 - time2;
+			}
+		}
 		 
 		List<Attempt> attempts = new Vector<Attempt>(); //vector of all attempts for this quiz
 		ResultSet rs2 = db.executeQuery("SELECT * FROM scores");
@@ -106,6 +118,7 @@
 	<h1>Your Past Performances</h1>
 	<button id="byScore">Score</button>
 	<button id="byDate">Date</button>
+	<button id="byTime">Time</button>
 	<div id = "scoreDiv">
 		<% 
 			List<Attempt> yourAttempts = new Vector<Attempt>();
@@ -124,8 +137,16 @@
 		<%
 			Collections.sort(yourAttempts, new DateCompare());
 			for (Attempt attempt: yourAttempts) {
-				out.println("<p>score: " + attempt.getScore() + "</p>");
+				out.println("<p>date: " + attempt.date + "</p>");
 			}
+		%>
+	</div>
+	<div id = "timeDiv">
+		<%
+			Collections.sort(yourAttempts, new TimeCompare());
+		for (Attempt attempt: yourAttempts) {
+			out.println("<p>time: " + attempt.time + "</p>");
+		}
 		%>
 	</div>
 	<h1>Highest of All Time</h1>
@@ -183,7 +204,8 @@
 		 * Compute the avergae
 		 */
 		double average;
-		double denom = quiz.getTotalPoints();
+		double denom = attempts.size();
+		System.out.println(quiz.getTotalPoints());
 		double num = 0;
 		for (Attempt attempt: attempts) {
 			num += attempt.getScore();
@@ -205,15 +227,7 @@
 	%>
 	<h1>Take Quiz</h1>
 	<% 
-	
-	%>
-	<h1>Practice Quiz</h1>
-	<% 
-	
-	%>
-	<h1>Edit Quiz</h1>
-	<% 
-	
+		out.println("<a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</a>");
 	%>
 	
 	
