@@ -9,7 +9,7 @@
 </jsp:include>
 <%@ include file="helpers/navbar.jsp" %>
 
-<h2>Admin</h2>
+<h2>Administation</h2>
 
 <div id='admin_users'>
 	Admin Users: 
@@ -41,7 +41,7 @@
 <div id= 'quizzes'>
 	
 	Quizzes: 
-	<% List<Quiz> quizzes = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes", "quizzes"); %>
+	<% List<Quiz> quizzes = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes"); %>
 	<ul>
 	<% for (Quiz quiz: quizzes) { %>
 		<li>
