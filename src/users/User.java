@@ -10,6 +10,8 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
+import quizzes.Quiz;
+
 import users.Friendship.FriendshipStatus;
 import dbconnection.DBConnection;
 
@@ -330,6 +332,43 @@ public class User {
 		String deleteScore = "DELETE FROM scores WHERE username = " + getUsernameFromID(userID); 
 		DBConnection.getInstance().executeQuery(deleteScore);
 	}
+	
+	//Get user's recently taken quizzes
+	/*
+	public ArrayList<Quiz> homepageGetUserRecentQuizzes(int userID){
+		ArrayList<Quiz> result = new ArrayList<Quiz>();
+		String username = getUsernameFromID(userID);
+		String query = "SELECT quizID, COUNT(*) FROM scores WHERE username = " + username +  " ORDER BY COUNT(*) GROUP BY dateCreated LIMIT 10";
+		ResultSet rs = DBConnection.getInstance().executeQuery(query);
+		try{
+			while(rs.next()){
+				result.add(new Quiz(rs.getInt("quizID")));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	*/
+
+	//Get user's recently taken quizzes
+	public ArrayList<Quiz> homepageGetUserRecentCreated(int quizID){
+		ArrayList<Quiz> result = new ArrayList<Quiz>();
+		String username = getUsernameFromID(quizID);
+		String query = "SELECT dateCeated, COUNT(*) FROM scores WHERE username = " + username +  " ORDER BY COUNT(*) GROUP BY dateCreated LIMIT 10";
+		ResultSet rs = DBConnection.getInstance().executeQuery(query);
+		try{
+			while(rs.next()){
+				result.add(new Quiz(rs.getInt("quizID")));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	
 	/**
 	 * Given a plan-text password, generates a SHA hash.

@@ -85,10 +85,10 @@ public class CreateQuiz extends HttpServlet {
 				currQuiz.addQuestion(question);
 			}
 		}catch(Exception e){
-			PrintWriter out = response.getWriter();
-			out.println("Whoops!");
-			out.println(e.getMessage());
-			out.println("Go back to try again");
+			RequestDispatcher dispatch = request.getRequestDispatcher("ErrorPage.jsp");
+			request.setAttribute("error_message", e.getMessage());
+			System.out.println("this is the error message that should have been recieved: "+ e.getMessage());
+			dispatch.forward(request, response);
 			return;
 		}
 		
@@ -101,7 +101,6 @@ public class CreateQuiz extends HttpServlet {
 	 * @param request
 	 */
 	private void AddQuizToDatabase(HttpServletRequest request) {
-		System.out.println("Adding quiz to DB from CreateQuiz.java");
 		Quiz quiz = (Quiz) DBConnection.GetSessionAttribute(request, "quiz_being_created");
 		String description = request.getParameter("description");
 		String title = request.getParameter("title");

@@ -20,6 +20,7 @@ import dbconnection.DBConnection;
  */
 @WebServlet("/ScoreQuiz")
 public class ScoreQuiz extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -47,7 +48,7 @@ public class ScoreQuiz extends HttpServlet {
 		Quiz quiz = (Quiz) session.getAttribute("curr_quiz");
 
 		if(quiz== null){
-			System.out.println("dude wtf?");
+			System.out.println("dude wtf? ln 50 scoreQuiz.java");
 		}
 		
 		boolean practice_mode = quiz.isPracticeMode(request);
@@ -69,8 +70,6 @@ public class ScoreQuiz extends HttpServlet {
 		}
 			
 	}
-
-
 	
 	private void RecordScore(HttpServletRequest request, String username, Quiz quiz) {
 		long time = quiz.getTime();
@@ -79,7 +78,6 @@ public class ScoreQuiz extends HttpServlet {
 		String query = "INSERT INTO scores (username, quizID, score, time, dateTaken) "
 				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+score+"\", \""+time+"\", \""+DBConnection.GetDate()+"\")";
 		connection.executeQuery(query);
-		System.out.println("Just did query:" +query);
 	}
 
 }
