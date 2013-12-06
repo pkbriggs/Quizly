@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="dbconnection.DBConnection, java.util.*, java.sql.*, quizzes.Quiz, java.util.Date" %>
+<%@ page import="dbconnection.DBConnection, java.util.*, java.sql.*, quizzes.Quiz, java.util.Date, java.text.SimpleDateFormat" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -113,12 +113,41 @@
 	%>
 	<h1>Highest of the Day</h1>
 	<% 
-		Date date = new Date();
-		String today = date.toString().substring(20);//cuts off irrelevant information
-		
+		List<Attempt> todayAttempts = new Vector<Attempt>();
+		Date today = new Date();
+		String todayString = today.toString().substring(0,10);//cuts irrelevant info
+		System.out.println(todayString);
+		for (Attempt attempt: attempts) {
+			String dateCompare = attempt.date.substring(0,10);//cuts irrelevant info
+			System.out.println(dateCompare);
+			if (todayString.equals(dateCompare)) todayAttempts.add(attempt); 
+		}
+		Collections.sort(todayAttempts, new ScoreCompare());
+		for (Attempt attempt: todayAttempts) {
+			out.println("<p>score: " + attempt.getScore() + "</p>");
+		}
+				
 	%>
 	<h1>Recent Performances</h1>
-	<% %>
+	<% 
+		class DateCompare implements Comparator<Attempt> {
+			@Override
+			public int compare(Attempt a1, Attempt a2) {
+				try {
+					Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(a1.date);
+					Date date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(a2.date);
+					if (date1.after(date2)) return -1;
+					else return 1;
+				} catch (Exception ie) {/*ignore*/}
+				return 0;
+				
+			}
+		}
+		Collections.sort(attempts, new DateCompare());
+		for (Attempt attempt: attempts) {
+			out.println("<p>score: " + attempt.getScore() + "</p>");
+		}
+	%>
 	<h1>Total Performance Summary</h1>
 	<% %>
 	<h1>Take Quiz</h1>
