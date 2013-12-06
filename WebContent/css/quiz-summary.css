@@ -1,0 +1,20 @@
+.categoryButton {
+	background: #256294;
+}
+
+#sortLabel {
+	position: relative;
+	top: 3px;
+}
+
+#descriptionToggle:hover {
+	cursor: pointer;
+}
+
+#title {
+	display: inline;
+}
+
+#quizButton {
+	background: #e5642d; 
+}

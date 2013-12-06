@@ -1,5 +1,6 @@
 <jsp:include page="/helpers/boilerplate.jsp">
   <jsp:param name="pageTitle" value="QuizSummary"/>
+  <jsp:param name = "cssInclude" value = "css/quiz-summary.css" />
 </jsp:include>
 <%@ include file="helpers/navbar.jsp" %>
 <%@ page import="dbconnection.DBConnection, java.util.*, java.sql.*, quizzes.Quiz, java.util.Date, java.text.SimpleDateFormat" %>
@@ -49,6 +50,34 @@
 			public double getScore() {
 				return Double.parseDouble(score); 
 			}
+			public String percentScore() {
+				double tempScore = Double.parseDouble(score);
+				tempScore *= 100;
+				String toReturn = Double.toString(tempScore);
+				int i = 0;
+				while (toReturn.charAt(i) != '.') {
+					i++;
+				}
+				toReturn = toReturn.substring(0,i) + " %";
+				return toReturn;
+			}
+			public String getDate() {
+				String toReturn = "";
+				try {
+					final String old = "yyyy-MM-dd HH:mm:ss";
+					final String newForm = "MMM dd yyyy";
+			
+					String oldString = date;
+					String newString;
+			
+					SimpleDateFormat simpleFormat = new SimpleDateFormat(old);
+					Date oldDate = simpleFormat.parse(oldString);
+					simpleFormat.applyPattern(newForm);
+					return simpleFormat.format(oldDate);
+				} catch (Exception e) {/*ignore*/}
+				return toReturn;
+			}
+
 		}
 		
 		/*
@@ -107,128 +136,156 @@
 		
 		
 	%>
-	<h1>Description</h1>
+	<h2 id ="title"><%out.println(quiz.getTitle());%></h2>
+	<a id="descriptionToggle">+ description</a><br><br>
 	<% 
-		out.println("<p>" + quiz.getDescription() + "</p>");
+		out.println("<div id=\"description\"><p>" + quiz.getDescription() + "</p></div>");
 	%>
-	<h1>Creator</h1>
-	<% 
-		out.println("<p>" + creator + "</p>");
-	%>
-	<h1>Your Past Performances</h1>
-	<button id="byScore">Score</button>
-	<button id="byDate">Date</button>
-	<button id="byTime">Time</button>
-	<div id = "scoreDiv">
-		<% 
-			List<Attempt> yourAttempts = new Vector<Attempt>();
-			for (Attempt attempt: attempts) {
-				if (attempt.user.equals(user)) {
-					yourAttempts.add(attempt);
+	<p>by <a href='profile.jsp?id=<%= User.getIDFromUsername(user)%>' > <%out.println(user);%></a></p><br><br>
+	<button class="categoryButton btn" id="yourButton">Your Performances</button>
+	<button class="categoryButton btn" id="allPerformanceButton">All Time Best</button>
+	<button class="categoryButton btn" id="todayPerformanceButton">Best of Today</button>
+	<button class="categoryButton btn" id="recentPerformanceButton">Recent Attempts</button>
+	<button class="categoryButton btn" id="statsButton">Quiz Statistics</button>
+	<%out.println("<a id=\"quizButton\" class=\"categoryButton btn\" href='DisplayQuiz?id="+quiz.getID()+"' >Take Quiz</a>"); %>
+	<!--------------------------Your Performances --------------------------->
+	
+	<div id = "yourPerformances">
+		<h1>Your Past Performances</h1>
+		<label id="sortLabel">Sort By:</label>
+		<button class="categoryButton btn" id="byScore">Score</button>
+		<button class="categoryButton btn" id="byDate">Date</button>
+		<button class="categoryButton btn" id="byTime">Time</button><br><br>
+		<div id = "scoreDiv">
+			<% 
+				List<Attempt> yourAttempts = new Vector<Attempt>();
+				for (Attempt attempt: attempts) {
+					if (attempt.user.equals(user)) {
+						yourAttempts.add(attempt);
+					}
 				}
-			}
-			Collections.sort(yourAttempts, new ScoreCompare());
+				Collections.sort(yourAttempts, new ScoreCompare());
+				for (Attempt attempt: yourAttempts) {
+					out.println("<label> " + attempt.user + "</label>" + "<p>" +  attempt.percentScore() + "</p>");
+				}
+			%>
+		</div>
+		<div id ="dateDiv">
+			<%
+				Collections.sort(yourAttempts, new DateCompare());
+				for (Attempt attempt: yourAttempts) {
+					out.println("<label> " + attempt.user + "</label>" + "<p>" +  attempt.getDate() + "</p>");
+				}
+			%>
+		</div>
+		<div id = "timeDiv">
+			<%
+				Collections.sort(yourAttempts, new TimeCompare());
 			for (Attempt attempt: yourAttempts) {
-				out.println("<p>score: " + attempt.getScore() + "</p>");
+				out.println("<label> " + attempt.user + "</label>" + "<p>" +  attempt.time + " seconds</p>");
+			}
+			%>
+		</div>
+	</div>
+<!--------------------------Highest of all time --------------------------->
+	
+	<div id="allTimePerformances">
+		<h1>Highest of All Time</h1>
+		<% 
+			Collections.sort(attempts, new ScoreCompare());
+			int limit = 5;
+			if (attempts.size() < 5) limit = attempts.size();
+			for (int i = 0; i < limit; i++) {
+				Attempt attempt = attempts.get(i);
+				out.println("<label> " + attempt.user + "</label>" + "<p>" +  attempt.percentScore() + "</p>");
 			}
 		%>
 	</div>
-	<div id ="dateDiv">
-		<%
-			Collections.sort(yourAttempts, new DateCompare());
-			for (Attempt attempt: yourAttempts) {
-				out.println("<p>date: " + attempt.date + "</p>");
+	<!--------------------------Highest of the Day --------------------------->
+	<div id="dayPerformances">
+		<h1>Highest of the Day</h1>
+		<% 
+			List<Attempt> todayAttempts = new Vector<Attempt>();
+			Date today = new Date();
+			
+			
+			final String OLD_FORMAT = "EEE MMM dd hh:mm:ss zzz yyyy";
+			final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
+			// August 12, 2010
+			String oldDateString = today.toString();
+			String newDateString;
+	
+			SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
+			Date d = sdf.parse(oldDateString);
+			sdf.applyPattern(NEW_FORMAT);
+			newDateString = sdf.format(d);
+			
+			
+			
+			String todayString = newDateString.substring(0,10);//cuts irrelevant info
+			System.out.println(todayString);
+			for (Attempt attempt: attempts) {
+				String dateCompare = attempt.date.substring(0,10);//cuts irrelevant info
+				if (todayString.equals(dateCompare)) todayAttempts.add(attempt); 
+			}
+			Collections.sort(todayAttempts, new ScoreCompare());
+			for (Attempt attempt: todayAttempts) {
+				out.println("<label> " + attempt.user + "</label>" + "<p>" +  attempt.percentScore() + "</p>");
+			}
+					
+		%>
+	</div>
+	<!--------------------------Recent Performances --------------------------->
+	<div id="recentPerformances">
+		<h1>Recent Performances</h1>
+		<% 
+			Collections.sort(attempts, new DateCompare());
+			for (Attempt attempt: attempts) {
+				out.println("<label> " + attempt.user + "</label>" + "<p>" +  attempt.percentScore() + "</p>");
 			}
 		%>
 	</div>
-	<div id = "timeDiv">
-		<%
-			Collections.sort(yourAttempts, new TimeCompare());
-		for (Attempt attempt: yourAttempts) {
-			out.println("<p>time: " + attempt.time + "</p>");
-		}
-		%>
-	</div>
-	<h1>Highest of All Time</h1>
-	<% 
-		Collections.sort(attempts, new ScoreCompare());
-		int limit = 5;
-		if (attempts.size() < 5) limit = attempts.size();
-		for (int i = 0; i < limit; i++) {
-			Attempt attempt = attempts.get(i);
-			out.println("<p>score: " + attempt.getScore() + "</p>");
-		}
-	%>
-	<h1>Highest of the Day</h1>
-	<% 
-		List<Attempt> todayAttempts = new Vector<Attempt>();
-		Date today = new Date();
-		
-		
-		final String OLD_FORMAT = "EEE MMM dd hh:mm:ss zzz yyyy";
-		final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-		// August 12, 2010
-		String oldDateString = today.toString();
-		String newDateString;
-
-		SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
-		Date d = sdf.parse(oldDateString);
-		sdf.applyPattern(NEW_FORMAT);
-		newDateString = sdf.format(d);
-		
-		
-		
-		String todayString = newDateString.substring(0,10);//cuts irrelevant info
-		System.out.println(todayString);
-		for (Attempt attempt: attempts) {
-			String dateCompare = attempt.date.substring(0,10);//cuts irrelevant info
-			if (todayString.equals(dateCompare)) todayAttempts.add(attempt); 
-		}
-		Collections.sort(todayAttempts, new ScoreCompare());
-		for (Attempt attempt: todayAttempts) {
-			out.println("<p>score: " + attempt.getScore() + "</p>");
-		}
-				
-	%>
-	<h1>Recent Performances</h1>
-	<% 
-		Collections.sort(attempts, new DateCompare());
-		for (Attempt attempt: attempts) {
-			out.println("<p>score: " + attempt.getScore() + "</p>");
-		}
-	%>
+	
+	
+	
+	<!--------------------------Performance Summary --------------------------->
+	<div id="performanceSummary">
 	<h1>Total Performance Summary</h1>
-	<% 
-		/*
-		 * Compute the avergae
-		 */
-		double average;
-		double denom = attempts.size();
-		System.out.println(quiz.getTotalPoints());
-		double num = 0;
-		for (Attempt attempt: attempts) {
-			num += attempt.getScore();
-		}
-		if (denom != 0) {
-			average = num/denom;
-			out.println("<p>Average: " + average + "</p>");
-		}
-		else out.println("<p>Average: N/A </p>");
-		/*
-		 * Compute the median
-		 */
-		if (attempts.size() > 0) {
-			int position = attempts.size()/2;
-			Attempt median = attempts.get(position);
-			out.println("<p>Median: " + median.getScore() + "</p>");		
-		}
-		else out.println("<p>Median: N/A </p>");
-	%>
-	<h1>Take Quiz</h1>
-	<% 
-		out.println("<a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</a>");
-	%>
+		<% 
+			/*
+			 * Compute the avergae
+			 */
+			double average;
+			double denom = attempts.size();
+			System.out.println(quiz.getTotalPoints());
+			double num = 0;
+			for (Attempt attempt: attempts) {
+				num += attempt.getScore();
+			}
+			if (denom != 0) {
+				average = num/denom;
+				String avString = Double.toString(average*100);
+				int i = 0;
+				while (avString.charAt(i) != '.') {
+					i++;
+				}
+				avString = avString.substring(0,i);
+				out.println("<label>Average</label><p> " + avString + " %</p>");
+			}
+			else out.println("<label>Average</label><p>N/A</p>");
+			/*
+			 * Compute the median
+			 */
+			if (attempts.size() > 0) {
+				int position = attempts.size()/2;
+				Attempt median = attempts.get(position);
+				out.println("<label>Median</label><p> " + median.percentScore() + "</p>");		
+			}
+			else out.println("<label>Median</label><p>N/A</p>");
+		%>
+		</div>
+
 	
 	
 <%@ include file="helpers/end_boilerplate.jsp" %>
