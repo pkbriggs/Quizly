@@ -11,7 +11,7 @@
 	
 	<p>You can also <a href="/Quizly/CreateQuiz?formID=initialize_quiz">create a quiz</a>.</p>
 	
-	<% String quizzes = Quiz.listQuizzes("SELECT * FROM quizzes"); %>
+	<% String quizzes = Quiz.listQuizzes("SELECT * FROM quizzes", "quizzes"); %>
 	<%= quizzes %>
 <% } %>
 

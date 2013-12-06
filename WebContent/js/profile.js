@@ -4,6 +4,7 @@ $(document).ready(function() {
 	$("#quizzes_taken_div").hide();
 
     $("#quizzes_created").click(function() {
+    	alert("In the quizzes created");
         if($("#quizzes_created_div").is(":visible")) $("#quizzes_created_div").slideUp();
         else {
             $("#quizzes_created_div").slideDown();
@@ -11,7 +12,9 @@ $(document).ready(function() {
     });
     
     $("#quizzes_taken").click(function() {
-        if($("#quizzes_taken_div").is(":visible")) $("#quizzes_created_div").slideUp();
+    	alert("In the quizzes taken");
+
+        if($("#quizzes_taken_div").is(":visible")) $("#quizzes_taken_div").slideUp();
         else {
             $("#quizzes_taken_div").slideDown();
         }

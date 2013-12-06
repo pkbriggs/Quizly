@@ -12,7 +12,7 @@
 <% List<User> users = User.getAllUsers(); %>
 <ul>
 <% for (User user: users) { %>
-	<li><%= user.getUsername() %></li>
+	<li><a href='profile.jsp?id=<%= user.getID()%>' > <%= user.getUsername() %></a></li>
 <% } %>
 </ul>
 
