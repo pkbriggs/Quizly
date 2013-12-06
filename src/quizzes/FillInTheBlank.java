@@ -26,9 +26,9 @@ public class FillInTheBlank implements Question {
 	FillInTheBlank(HttpServletRequest request)
 			throws Exception{
 		try{
+			this.user_responses = new ArrayList<String>();
 			this.question = SanitizeQuestion(request);
 			this.answers = SanitizeAnswer(request);
-			this.user_responses = new ArrayList<String>();
 		}catch(Exception e){
 			throw new Exception(e.getMessage());
 		}

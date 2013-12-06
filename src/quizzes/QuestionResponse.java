@@ -27,9 +27,11 @@ public class QuestionResponse implements Question {
 	QuestionResponse(HttpServletRequest request)
 		throws Exception{
 		try{
+			this.user_responses = new ArrayList<String>();
+
 			String num_responses_str = request.getParameter("num_responses");
 			String multiple_responses = request.getParameter("multiple_responses");
-			
+
 			if(multiple_responses != null){
 				if(num_responses_str.equals(null))
 					throw new Exception("Please indicate how many responses the question should ask for. Go back and try again.");
@@ -48,7 +50,6 @@ public class QuestionResponse implements Question {
 			
 			this.question = SanitizeQuestion(request);
 			this.answers = SanitizeAnswer(request);
-			this.user_responses = new ArrayList<String>();
 			
 			if(this.ordered == DBConnection.TRUE && this.num_responses != this.answers.size())
 				throw new Exception("For an ordered question, the number of responses you provide should be the same as the number of responses you provide in the number of responses text box.");

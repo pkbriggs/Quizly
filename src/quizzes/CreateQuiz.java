@@ -69,7 +69,9 @@ public class CreateQuiz extends HttpServlet {
 		}
 		try{
 			if(formID.equals("multiple_choice")){
+				System.out.println("Before making question " + request);
 				Question question = new MultipleChoice(request);
+				System.out.println("After making question");
 				currQuiz.addQuestion(question);
 			}
 			if(formID.equals("fill_in_the_blank")){

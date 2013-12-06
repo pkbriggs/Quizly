@@ -25,10 +25,17 @@ public class MultipleChoice implements Question {
 	MultipleChoice(HttpServletRequest request)
 		throws Exception{
 		try{
-			this.choices = SanitizeChoices(request);
-			this.answers = SanitizeAnswers(request);
-			this.question = SanitizeQuestion(request);
 			this.user_responses = new ArrayList<String>();
+
+			System.out.println("Before sanitizing choices");
+			this.choices = SanitizeChoices(request);
+			System.out.println("Before sanitizing answers");
+
+			this.answers = SanitizeAnswers(request);
+			
+			System.out.println("Before sanitizing questions");
+
+			this.question = SanitizeQuestion(request);
 
 		}catch(Exception e){
 			throw new Exception(e.getMessage());

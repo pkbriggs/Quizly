@@ -1,4 +1,22 @@
 $(document).ready(function() {
+	
+	$("#quizzes_created_div").hide();
+	$("#quizzes_taken_div").hide();
+
+    $("#quizzes_created").click(function() {
+        if($("#quizzes_created_div").is(":visible")) $("#quizzes_created_div").slideUp();
+        else {
+            $("#quizzes_created_div").slideDown();
+        }
+    });
+    
+    $("#quizzes_taken").click(function() {
+        if($("#quizzes_taken_div").is(":visible")) $("#quizzes_created_div").slideUp();
+        else {
+            $("#quizzes_taken_div").slideDown();
+        }
+    });
+    
 	$("#add-friend").one("click", function(event) {
 		$(this).addClass("disabled");
 	

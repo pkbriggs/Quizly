@@ -403,11 +403,11 @@ public class Quiz{
 
 	public static String listQuizzes(String query){
 		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes(query);
-		String html = "";
+		String html = "<ul>";
 		for(Quiz quiz: quizzes){
-			html+=("<a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</a><p>");
+			html+=("<li><a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</li>");
 		}
-		
+		html += "</ul>";
 		return html;
 	}
 	

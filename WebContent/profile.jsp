@@ -9,6 +9,9 @@
 </jsp:include>
 <%@ include file="helpers/navbar.jsp" %>
    
+<!-- Whether this is one's own profile. This is false when viewing another's profile -->
+<% boolean viewing_self_profile = true; %>
+
 <div class="profile-page">
 <% if (!User.isLoggedIn(session)) { %>
 	Please log in first.
@@ -29,8 +32,10 @@
 				
 				<h2><%= User.getUsername(session) %></h2>
 				<span>(you)</span>
+				
 			<% } else { %>
 				<!-- Viewing somebody else's profile -->
+				<% viewing_self_profile = false ; %>
 				<img src="http://blogs.utexas.edu/bonnecazegroup/files/2013/02/blank-profile-hi.png" class="profile-picture" data-userid="<%= userID %>" />
 				
 				<% if (userID == -1) { %>
@@ -67,7 +72,22 @@
 		</div>
 		
 		<div class="profile-content-section">
-			<p>Content here</p>
+			<%String user =  (viewing_self_profile) ? "You" : User.getUsernameFromID(userID); %>
+			<button id = "quizzes_created" class="btn btn-small btn-expand">+</button>
+			<h3> Quizzes <%= user %> Created </h3>
+			<div id='quizzes_created_div'>
+				<%= Quiz.listQuizzes("SELECT * FROM quizzes WHERE creator='"+user+"'") %>
+			</div>
+			
+			<%String user_phrase =  (viewing_self_profile) ? "You Have" : User.getUsernameFromID(userID) + " Has"; %>
+			
+			<button id = "quizzes_taken" class="btn btn-small btn-expand">+</button>	
+			<h3> Quizzes <%= user_phrase %> Taken </h3>
+			
+			<div id='quizzes_taken_div'>
+				<%= Quiz.listQuizzes("SELECT * FROM scores WHERE username='"+user+"'") %>
+			</div>
+			
 		</div>
 	</div> <!-- end row -->
 <% } %>
