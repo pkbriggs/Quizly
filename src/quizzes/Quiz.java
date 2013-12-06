@@ -305,14 +305,24 @@ public class Quiz{
 	 * @param query, connection
 	 * @return
 	 */
-	public static ArrayList<Quiz> GetArrayOfQuizzes(String query){
+	public static ArrayList<Quiz> GetArrayOfQuizzes(String query, String table){
 		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery(query);
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
+		boolean scores_table = (table.equals("scores")) ? true : false;
 		try {
 			while(rs.next()){
 				Quiz quiz = new Quiz();
-				FillWithInfoFromRow(quiz, rs);
+				
+				if(scores_table){
+					int quizID = rs.getInt("quizID");
+					System.out.println("In scores table option quizID = "+ quizID);
+					ResultSet rs1 = connection.executeQuery("SELECT * FROM quizzes WHERE id='"+ rs.getInt("quizID")+"'");	
+					rs1.next();
+					FillWithInfoFromRow(quiz, rs1);
+				}else
+					FillWithInfoFromRow(quiz, rs);
+
 				System.out.println("After filling with Info: quizID=" + quiz.getID() + " quizTitle= "+ quiz.getTitle()  +  " datecreated = "+ quiz.dateCreated);
 				quizzes.add(quiz);
 			}
@@ -401,8 +411,8 @@ public class Quiz{
 		return this.currPage == this.numPages - 1 ;
 	}
 
-	public static String listQuizzes(String query){
-		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes(query);
+	public static String listQuizzes(String query, String table){
+		ArrayList<Quiz> quizzes = Quiz.GetArrayOfQuizzes(query, table);
 		String html = "<ul>";
 		for(Quiz quiz: quizzes){
 			html+=("<li><a href='DisplayQuiz?id="+quiz.getID()+"' >" +quiz.getTitle() + "</li>");

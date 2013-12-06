@@ -18,7 +18,7 @@
 <% } else { %>
 	<% String idString = request.getParameter("id"); %>
 	<% int userID = -1; %>
-	<% if (idString != null) userID = Integer.parseInt(idString); %>
+	<% if (idString != null) userID = Integer.parseInt(idString); System.out.println("userId:" + userID); %>
 	
 	<div class="row">
 		<div class="profile-user-section">
@@ -72,20 +72,23 @@
 		</div>
 		
 		<div class="profile-content-section">
-			<%String user =  (viewing_self_profile) ? "You" : User.getUsernameFromID(userID); %>
+			<% String user =  (viewing_self_profile) ? "You" : User.getUsernameFromID(userID); %>
+			<% String quizzes_created = Quiz.listQuizzes("SELECT * FROM quizzes WHERE creator='"+User.getUsernameFromID(userID)+"'", "quizzes"); %>
+			<% String quizzes_taken = Quiz.listQuizzes("SELECT * FROM scores WHERE username='"+User.getUsernameFromID(userID)+"'", "scores"); %>
+			
 			<button id = "quizzes_created" class="btn btn-small btn-expand">+</button>
 			<h3> Quizzes <%= user %> Created </h3>
 			<div id='quizzes_created_div'>
-				<%= Quiz.listQuizzes("SELECT * FROM quizzes WHERE creator='"+user+"'") %>
+				<%= quizzes_created%>
 			</div>
 			
-			<%String user_phrase =  (viewing_self_profile) ? "You Have" : User.getUsernameFromID(userID) + " Has"; %>
+			<% String user_phrase =  (viewing_self_profile) ? "You Have" : User.getUsernameFromID(userID) + " Has"; %>
 			
 			<button id = "quizzes_taken" class="btn btn-small btn-expand">+</button>	
 			<h3> Quizzes <%= user_phrase %> Taken </h3>
 			
 			<div id='quizzes_taken_div'>
-				<%= Quiz.listQuizzes("SELECT * FROM scores WHERE username='"+user+"'") %>
+				<%= quizzes_taken%>
 			</div>
 			
 		</div>
