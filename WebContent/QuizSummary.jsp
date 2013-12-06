@@ -12,12 +12,10 @@
 		 */
 		ServletContext sContext = getServletContext();
 		DBConnection db = DBConnection.getInstance();
-		//String quizID = request.getParameter("id");
-		String quizID = "1";
+		String quizID = request.getParameter("id");
 		int quizIDInt = Integer.parseInt(quizID);
 		Quiz quiz = new Quiz(quizIDInt);
-		//String user = (String)session.getAttribute("username");
-		String user = "stevenqian";
+		String user = (String)session.getAttribute("username");
 		String name = quiz.getTitle();
 		String creator = quiz.getCreator();
 		String dateCreated = quiz.getDateCreated();
