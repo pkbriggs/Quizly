@@ -1,6 +1,8 @@
 package users;
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -58,6 +60,9 @@ public class Admin extends HttpServlet {
 		else{
 			//redirect
 		}
+		
+		RequestDispatcher dispatch = request.getRequestDispatcher("admin.jsp");
+		dispatch.forward(request, response);
 	}
 
 	/**
