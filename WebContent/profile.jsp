@@ -73,24 +73,52 @@
 		
 		<div class="profile-content-section">
 			<% String user =  (viewing_self_profile) ? "You" : User.getUsernameFromID(userID); %>
-			<% String quizzes_created = Quiz.listQuizzes("SELECT * FROM quizzes WHERE creator='"+User.getUsernameFromID(userID)+"'", "quizzes"); %>
-			<% String quizzes_taken = Quiz.listQuizzes("SELECT * FROM scores WHERE username='"+User.getUsernameFromID(userID)+"'", "scores"); %>
+			<% ArrayList<Quiz> quizzes_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes WHERE creator='"+User.getUsernameFromID(userID)+"'"); %>
+			<% ArrayList<Score> quizzes_taken = Score.getScores("SELECT * FROM scores WHERE username='"+User.getUsernameFromID(userID)+"' LIMIT 8 ORDER BY dateTaken"); %>
+			<% ArrayList<Quiz> recently_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes LIMIT 8 ORDER BY dateCreated"); %>
+			
+			<h3>New Quizzes</h3>
+			<div id='recently_created'>
+				<table>
+				<% for (Quiz quiz: recently_created) { %>
+					<tr>
+						<td><a href='QuizSummary.jsp?id=<%= quiz.getID()%>' > <%= quiz.getTitle() %></a> </td>
+						<td><em>Created: <%=quiz.getDateCreated() %></em></td>
+						<td><em>By: <a href='profile.jsp?id=<%= User.getIDFromUsername(quiz.getCreator()) %>' > <%= quiz.getCreator() %></a></em></td>
+					</tr>
+				<% } %>
+				</table>
+			</div>
+			
 			
 			<button id = "quizzes_created" class="btn btn-small btn-expand">+</button>
 			<h3> Quizzes <%= user %> Created </h3>
 			<div id='quizzes_created_div'>
-				<%= quizzes_created%>
+				<table>
+				<% for (Quiz quiz: quizzes_created) { %>
+					<tr>
+						<td><a href='QuizSummary.jsp?id=<%= quiz.getID()%>' > <%= quiz.getTitle() %></a> </td>
+						<td><em>Created: <%=quiz.getDateCreated() %></em></td>
+					</tr>
+				<% } %>
+				</table>
 			</div>
 			
 			<% String user_phrase =  (viewing_self_profile) ? "You Have" : User.getUsernameFromID(userID) + " Has"; %>
-			
 			<button id = "quizzes_taken" class="btn btn-small btn-expand">+</button>	
 			<h3> Quizzes <%= user_phrase %> Taken </h3>
-			
 			<div id='quizzes_taken_div'>
-				<%= quizzes_taken%>
+				<table>
+				<% for (Score score: quizzes_taken) { %>
+					
+					<tr>
+						<td><a href='QuizSummary.jsp?id=<%= score.getQuizID()%>' > <%= quiz.getTitle() %></a> </td>
+						<td><em>Taken: <%=quiz.getDateCreated() %></em></td>
+					</tr>
+				<% } %>
+				</table>
 			</div>
-			
+				
 		</div>
 	</div> <!-- end row -->
 <% } %>

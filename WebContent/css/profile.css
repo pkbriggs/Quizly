@@ -1,3 +1,8 @@
+.btn-expand {
+	background: #afd3f2;
+	position: relative;
+	float: left;
+}
 
 .profile-picture {
 	/*margin-top: -20px;*/ /* to account for the nav-bar's 20px margin-bottom */

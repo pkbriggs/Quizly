@@ -305,25 +305,14 @@ public class Quiz{
 	 * @param query, connection
 	 * @return
 	 */
-	public static ArrayList<Quiz> GetArrayOfQuizzes(String query, String table){
+	public static ArrayList<Quiz> GetArrayOfQuizzes(String query){
 		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery(query);
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
-		boolean scores_table = (table.equals("scores")) ? true : false;
 		try {
 			while(rs.next()){
 				Quiz quiz = new Quiz();
-				
-				if(scores_table){
-					int quizID = rs.getInt("quizID");
-					System.out.println("In scores table option quizID = "+ quizID);
-					ResultSet rs1 = connection.executeQuery("SELECT * FROM quizzes WHERE id='"+ rs.getInt("quizID")+"'");	
-					rs1.next();
-					FillWithInfoFromRow(quiz, rs1);
-				}else
-					FillWithInfoFromRow(quiz, rs);
-
-				System.out.println("After filling with Info: quizID=" + quiz.getID() + " quizTitle= "+ quiz.getTitle()  +  " datecreated = "+ quiz.dateCreated);
+				FillWithInfoFromRow(quiz, rs);
 				quizzes.add(quiz);
 			}
 		} catch (SQLException e) {
