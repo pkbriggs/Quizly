@@ -13,21 +13,25 @@ public class Score {
     private int quizID;
     private long time;
     private double score;
-    private Date dateTaken;
+    private String dateTaken;
     
     public static ArrayList<Score>getScores(String query){
+    	System.out.println("SCORES : returning scores: ");
     	ArrayList<Score> scores = new ArrayList<Score>();
 		DBConnection connection = DBConnection.getInstance();
 		ResultSet rs = connection.executeQuery(query);
 		
 		try {
+			int i = 0;
 			while(rs.next()){
+		    	System.out.println("SCORES : this is the index:  "+ i);
+
 				Score score = new Score();
 				score.quizID = rs.getInt("quizID");
 				score.user = rs.getString("username");
 				score.time = rs.getLong("time");
 				score.score = rs.getDouble("score");
-				score.dateTaken = rs.getDate("dateTaken");
+				score.dateTaken = rs.getString("dateTaken");
 				
 				scores.add(score);
 			}
@@ -48,7 +52,7 @@ public class Score {
     	return score;
     }
     
-    public Date dateTaken(){
+    public String dateTaken(){
     	return dateTaken;
     }
     

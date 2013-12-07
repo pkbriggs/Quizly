@@ -41,6 +41,11 @@ public class UserHandler extends HttpServlet {
 			if (photoFilename == null)
 				photoFilename = "http://blogs.utexas.edu/bonnecazegroup/files/2013/02/blank-profile-hi.png";
 			out.println(String.format("<img src='%s' class='small-profile-picture' />", photoFilename));
+		} else if (requestType.equals("SETPROFPIC")) {
+			String url = request.getParameter("url");
+			User.setProfilePicture(User.getID(request.getSession()), url);
+			
+			out.println(String.format("<img src='%s' class='medium-profile-picture' />", url));
 		}
 	}
 

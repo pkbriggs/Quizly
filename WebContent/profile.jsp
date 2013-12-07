@@ -28,9 +28,11 @@
 			
 			<% if (idString == null || userID == User.getID(session)) { %>						
 				<!-- this is the user's profile page -->
+				<% String picUrl = User.getUserFromID(User.getID(session)).getPhotoFilename(); %>
+				<% if (picUrl == null) picUrl = "http://blogs.utexas.edu/bonnecazegroup/files/2013/02/blank-profile-hi.png"; %>
 				<figure>
-					<img src="http://blogs.utexas.edu/bonnecazegroup/files/2013/02/blank-profile-hi.png" class="profile-picture" data-userid="<%= User.getID(session) %>" />
-					<figcaption><a href="#">Change profile picture...</a></figcaption>
+					<img src="<%= picUrl %>" class="profile-picture" data-userid="<%= User.getID(session) %>" />
+					<figcaption><a href="#" id="change-profile-picture" data-toggle="modal" data-target="#profPicModal" style="text-decoration: none;">Change profile picture...</a></figcaption>
 				</figure>
 				
 				<h2><%= User.getUsername(session) %></h2>
@@ -76,20 +78,24 @@
 		</div>
 		
 		<div class="profile-content-section">
-			<div class='achievements'>
-			
-			</div>
-			
-			
 			<% String user =  (viewing_self_profile) ? "You" : User.getUsernameFromID(userID); %>
 			<% System.out.println("Username : " +username); %>
 			<% ArrayList<Quiz> quizzes_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes WHERE creator='"+username+"'"); %>
 			<% ArrayList<Score> quizzes_taken = Score.getScores("SELECT * FROM scores WHERE username='"+username+"' ORDER BY dateTaken LIMIT 5"); %>
 			<% ArrayList<Quiz> recently_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes ORDER BY dateCreated LIMIT 5"); %>
-	
+			<% ArrayList<Achievement> achievements = Achievement.getAchievementsFor(username); %>
+			
+			<div class='achievements'>
+				<h3>Achievements:</h3>
+				<% for(Achievement achievement : achievements ){%>
+						<br><i class='<%=achievement.image %>'></i>
+						<%=achievement.name %> since <%=achievement.dateCreated %> 
+				<% }%>
+			</div>
+			
 			<br>
 		
-			<h4> Quizzes <%= user %> Created </h4>
+			<h3> Quizzes <%= user %> Created </h3>
 			<div id='quizzes_created_div'>
 				<table class="table table-hover table-striped">
 					<tr>
@@ -109,7 +115,7 @@
 			<br>
 			
 			<% String user_phrase =  (viewing_self_profile) ? "You Have" : User.getUsernameFromID(userID) + " Has"; %>
-			<h4> Quizzes <%= user_phrase %> Taken Recently</h4>
+			<h3> Quizzes <%= user_phrase %> Taken Recently</h3>
 			<div id='quizzes_taken_div'>
 				<table class="table table-hover table-striped">
 					<tr>
@@ -121,7 +127,7 @@
 					
 					<tr>
 						<td><a href='QuizSummary.jsp?id=<%= score.getQuizID() %>'><%= Quiz.getQuizTitleFromID(score.getQuizID()) %></a></td>
-						<td><em><%=DBConnection.GetDate(score.dateTaken()) %> </em></td>
+						<td><em><%=score.dateTaken() %> </em></td>
 						<td><em><%=score.getScore() * 100 %>%</em></td>
 						
 					</tr>
@@ -132,6 +138,36 @@
 		</div>
 	</div> <!-- end row -->
 <% } %>
+
+<!-- change profile picture modal -->
+<div class="modal fade" id="profPicModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Change profile picture</h4>
+      </div>
+      <div class="modal-body">
+        
+        <p>Please enter a URL for the profile picture you would like to use.</p>
+        
+        <div class="form-group">
+	    	<input type="text" class="dropdown-toggle form-control input-xlarge" id="prof-pic-entry" placeholder="Enter URL here..." data-toggle="dropdown">
+		</div>
+		
+		<button type="button" id="prof-pic-preview" class="btn btn-primary">Preview</button>
+		
+		<div id="new-picture-preview">
+		</div>
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="change-prof-pic-submit">Change</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 </div>
 
 <script src="js/profile.js"></script>

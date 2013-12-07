@@ -1,5 +1,19 @@
 $(document).ready(function() {
 
+	$("#prof-pic-preview").click(function() {
+		var query = "/Quizly/UserHandler?type=SETPROFPIC&url=" + encodeURIComponent($("#prof-pic-entry").val());
+		var method = "GET";
+		makeAjaxRequest(query, method, function(results) {
+			$("#new-picture-preview").html(results);
+		});
+	});
+	
+	$("#change-prof-pic-submit").click(function() {
+		$("#new-picture-preview").html("");
+		$("#prof-pic-entry").val("");
+		$("#profPicModal").modal('hide');
+		
+	});
     
     $("#quizzes_created").click(function() {
         if($("#quizzes_created_div").is(":visible")) $("#quizzes_created_div").slideUp();
