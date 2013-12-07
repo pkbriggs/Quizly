@@ -39,7 +39,11 @@ public class Search extends HttpServlet {
 		PrintWriter out = response.getWriter(); 
 		response.setContentType("text/html"); 
 		
-//		out.println("<ul class='search-results'>");
+		String searchType = request.getParameter("type");
+		if (searchType.equals("friends")) {
+			List<User> friendList = User.getFriends(User.getID(request.getSession()));
+			userList.retainAll(friendList); // userList now only contains users that match the search AND are friends with the user
+		}
 		
 		for (User user: userList) {
 			// the bolded username is done by simply bolding the characters that match the user's search so far. because
@@ -49,11 +53,12 @@ public class Search extends HttpServlet {
 			String boldedUsername = "<b>" + username.substring(0, query.length()) + "</b>" + username.substring(query.length());
 			
 			out.println("<li class='search-result search-result-user'>");
-			out.println(String.format("<a href='/Quizly/profile.jsp?id=%d'>%s</a>", user.getID(), boldedUsername));
+			if (request.getParameter("nourl") == null)
+				out.println(String.format("<a href='/Quizly/profile.jsp?id=%d'>%s</a>", user.getID(), boldedUsername));
+			else
+				out.println(String.format("<a href='#'>%s</a>", boldedUsername));
 			out.println("</li>");
 		}
-		
-//		out.println("</ul>");
 	}
 
 	/**

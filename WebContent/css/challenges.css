@@ -15,3 +15,87 @@
 	margin: 0;
 	list-style: none;
 }
+
+.challenge-list li {
+	border-bottom: 1px solid #e6e8ea;
+	padding-left: 5px;
+	padding: 10px 10px;
+}
+
+.challenge-list li:hover {
+	background-color: #f7f7f7;
+}
+
+.challenge-list li:last-of-type {
+	border: none;
+}
+
+.new-challenge {
+	padding-right: 10px;
+	text-decoration: none;
+	font-size: 0.7em;
+}
+
+.new-challenge:hover {
+	text-decoration: none;
+}
+
+/* New challenge modal */
+#challengeModal .modal-dialog {
+	padding-top: 50px;
+	width: 400px;
+}
+
+
+/* Search */
+
+#challenge-search-results li {
+	padding: 0 10px;
+}
+
+#challenge-search-results li a {
+	display: block;
+    text-decoration: none;
+    color: #333;
+    padding: 10px 0;
+    transition: all 0.3s ease-out;
+    border-bottom: 1px solid #e6e8ea;
+}
+
+#challenge-search-results li:last-of-type a {
+    border: none;
+    padding-bottom: 15px;
+}
+
+#challenge-search-results li i {
+    margin-right: 5px;
+    color: inherit;
+    vertical-align: middle;
+}
+
+#challenge-search-results {
+    /* Styles */
+    background: #fff;
+    color: #333;
+    border-radius: 0 0 5px 5px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-top: none;
+    border-bottom: none;
+    list-style: none;
+    transition: all 0.3s ease-out;
+    padding-left: 15px;
+    
+    margin-top: -35px;
+    margin-left: 20px;
+    min-width: 250px;
+}
+
+#challenge-search-results li:hover a {
+    color: #57a9d9;
+    background-color: white;
+}
+
+#challenge-quiz-select-instructions {
+	padding-top: 20px;
+}
+
