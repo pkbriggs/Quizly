@@ -3,6 +3,7 @@ package messages;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class Message {
 	 * @param title of message
 	 */
 	public static void sendMessage(String username, String recipientName, String message, String title) {                            
-		String stringDate = DBConnection.GetDate();
+		String stringDate = DBConnection.GetDate(Calendar.getInstance().getTime());
 		String query = String.format("INSERT INTO messages (fromUser, toUser, message, title, dateCreated, seen) VALUES ('%s', '%s', '%s', '%s', '%s', '%d');", username, recipientName, message, title, stringDate, 0);
 		System.out.println(query);
 		DBConnection.getInstance().executeQuery(query);                

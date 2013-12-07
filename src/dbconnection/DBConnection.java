@@ -180,10 +180,9 @@ public class DBConnection {
 	 * Useful for getting a date string to place in database
 	 * @return
 	 */
-	public static String GetDate(){
+	public static String GetDate(Date date){
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date currentTime = Calendar.getInstance().getTime();		
-		return dateFormat.format(currentTime);
+		return dateFormat.format(date);
 	}
 	
 

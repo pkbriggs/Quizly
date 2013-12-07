@@ -1,6 +1,8 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import dbconnection.DBConnection;
 
 
@@ -34,7 +36,7 @@ public class Achievement {
 	 * @param user receiving achievement
 	 */
     public static void giveAchievement(String achievement, String username) {                       
-    	String stringDate = DBConnection.GetDate();                                         
+    	String stringDate = DBConnection.GetDate(Calendar.getInstance().getTime());                                         
     	String query = String.format("INSERT into userAchievements (username, achievement, dateCreated) VALUES ('%s', '%s', '%s');", username, achievement, stringDate);
     	DBConnection.getInstance().executeQuery(query);            
     }

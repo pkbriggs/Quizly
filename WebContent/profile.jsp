@@ -19,11 +19,13 @@
 	<% String idString = request.getParameter("id"); %>
 	<% int userID = -1; %>
 	<% if (idString != null) userID = Integer.parseInt(idString); System.out.println("userId:" + userID); %>
-	
+	<% String username = ""; %>
+	<% if(idString == null) { username =  User.getUsername(session) ; %>
+	<% } else { username = User.getUsernameFromID(userID); }%>
 	<div class="row">
 		<div class="profile-user-section">
 			
-			<% if (idString == null || userID == User.getID(session)) { %>
+			<% if (idString == null || userID == User.getID(session)) { %>						
 				<!-- this is the user's profile page -->
 				<figure>
 					<img src="http://blogs.utexas.edu/bonnecazegroup/files/2013/02/blank-profile-hi.png" class="profile-picture" data-userid="<%= User.getID(session) %>" />
@@ -36,6 +38,7 @@
 			<% } else { %>
 				<!-- Viewing somebody else's profile -->
 				<% viewing_self_profile = false ; %>
+				
 				<img src="http://blogs.utexas.edu/bonnecazegroup/files/2013/02/blank-profile-hi.png" class="profile-picture" data-userid="<%= userID %>" />
 				
 				<% if (userID == -1) { %>
@@ -73,24 +76,53 @@
 		
 		<div class="profile-content-section">
 			<% String user =  (viewing_self_profile) ? "You" : User.getUsernameFromID(userID); %>
-			<% String quizzes_created = Quiz.listQuizzes("SELECT * FROM quizzes WHERE creator='"+User.getUsernameFromID(userID)+"'", "quizzes"); %>
-			<% String quizzes_taken = Quiz.listQuizzes("SELECT * FROM scores WHERE username='"+User.getUsernameFromID(userID)+"'", "scores"); %>
-			
-			<button id = "quizzes_created" class="btn btn-small btn-expand">+</button>
-			<h3> Quizzes <%= user %> Created </h3>
+			<% System.out.println("Username : " +username); %>
+			<% ArrayList<Quiz> quizzes_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes WHERE creator='"+username+"'"); %>
+			<% ArrayList<Score> quizzes_taken = Score.getScores("SELECT * FROM scores WHERE username='"+username+"' ORDER BY dateTaken LIMIT 5"); %>
+			<% ArrayList<Quiz> recently_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes ORDER BY dateCreated LIMIT 5"); %>
+	
+			<br>
+		
+			<h4> Quizzes <%= user %> Created </h4>
 			<div id='quizzes_created_div'>
-				<%= quizzes_created%>
+				<table>
+					<tr>
+						<th>Quiz</th>
+						<th>Created</th>
+					</tr>
+				<% for (Quiz quiz: quizzes_created) { %>
+					<%System.out.println("Quiz creator: "+ quiz.getCreator()); %>
+				
+					<tr>
+						<td><a href='QuizSummary.jsp?id=<%= quiz.getID()%>' > <%= quiz.getTitle() %></a> </td>
+						<td><em><%=quiz.getDateCreated() %></em></td>
+					</tr>
+				<% } %>
+				</table>
 			</div>
+			<br>
 			
 			<% String user_phrase =  (viewing_self_profile) ? "You Have" : User.getUsernameFromID(userID) + " Has"; %>
-			
-			<button id = "quizzes_taken" class="btn btn-small btn-expand">+</button>	
-			<h3> Quizzes <%= user_phrase %> Taken </h3>
-			
+			<h4> Quizzes <%= user_phrase %> Taken Recently</h4>
 			<div id='quizzes_taken_div'>
-				<%= quizzes_taken%>
+				<table>
+					<tr>
+						<th>Quiz</th>
+						<th>Taken</th>
+						<th>Score</th>	
+					</tr>
+				<% for (Score score: quizzes_taken) { %>
+					
+					<tr>
+						<td><a href='QuizSummary.jsp?id= <%= score.getQuizID() %>' > <%= Quiz.getQuizTitleFromID(score.getQuizID()) %></a> </td>
+						<td><em><%=DBConnection.GetDate(score.dateTaken()) %> </em></td>
+						<td><em><%=score.getScore() %>%</em></td>
+						
+					</tr>
+				<% } %>
+				</table>
 			</div>
-			
+			<br>	
 		</div>
 	</div> <!-- end row -->
 <% } %>

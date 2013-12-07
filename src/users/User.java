@@ -28,6 +28,7 @@ public class User {
 	private int id;
 	private String username;
 	private String photoFilename;
+	private boolean isAdmin;
 	
 	
 	public User(int id, String username, String photoFilename) {
@@ -38,6 +39,10 @@ public class User {
 	
 	public int getID() {
 		return id;
+	}
+	
+	public boolean isAdmin() {
+		return this.isAdmin;
 	}
 	
 	public String getUsername() {
@@ -121,6 +126,7 @@ public class User {
 	}
 	
 	public static int getIDFromUsername(String username) {
+		System.out.println("User.java 118: username = " + username);
 		String sql = String.format("SELECT id FROM users WHERE username = '%s';", username);
 		
 		ResultSet results = DBConnection.getInstance().executeQuery(sql);
@@ -347,22 +353,22 @@ public class User {
 	//created quizzes
 	
 	public static void promoteUserToAdmin(int userID) {     
-		String query = "UPDATE user SET isAdmin = 1 WHERE id = " + userID;
+		String query = "UPDATE users SET isAdmin = 1 WHERE id = " + userID;
 		DBConnection.getInstance().executeQuery(query);
 	}
 
 	public static void demoteUserFromAdmin(int userID) {     
-		String query = "UPDATE user SET isAdmin = 0 WHERE id = " + userID;
+		String query = "UPDATE users SET isAdmin = 0 WHERE id = " + userID;
 		DBConnection.getInstance().executeQuery(query);
 	}
 
 	public static ArrayList<User> getAdminUsers() {                
 		try {                        
 			ArrayList<User> results = new ArrayList<User>();                        
-			String query = "SELECT * FROM user WHERE is_admin=1 LIMIT 8";                                                
+			String query = "SELECT * FROM users WHERE isAdmin=1 LIMIT 8";                                                
 			ResultSet r = DBConnection.getInstance().executeQuery(query);                        
 			while(r.next()) {                                
-				User u = new User(r.getInt("id"), r.getString("username"), r.getString("picturefile"));                                
+				User u = new User(r.getInt("id"), r.getString("username"), r.getString("picturefile")); 
 				results.add(u);                        
 			}                        
 			return results;                
