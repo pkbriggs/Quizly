@@ -141,7 +141,7 @@
             		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= User.getUsername(session) %> <i class="fa fa-sort-asc"></i></a>
 	            	<ul class="dropdown-menu">
 	            		<li><a href="/Quizly/profile.jsp"><i class="fa fa-user fa-fw fa-lg"></i>Profile</a></li>
-				        <li><a href="#"><i class="fa fa-cog fa-fw fa-lg"></i>Settings</a></li>
+				        <li><a href="/Quizly/admin.jsp"><i class="fa fa-cog fa-fw fa-lg"></i>Admin</a></li>
 				        <li><a href="/Quizly/Logout"><i class="fa fa-sign-out fa-fw fa-lg"></i>Log out</a></li>
 	                </ul>
             	</li>

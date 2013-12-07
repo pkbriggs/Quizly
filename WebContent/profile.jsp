@@ -27,9 +27,11 @@
 			
 			<% if (idString == null || userID == User.getID(session)) { %>						
 				<!-- this is the user's profile page -->
+				<% String picUrl = User.getUserFromID(User.getID(session)).getPhotoFilename(); %>
+				<% if (picUrl == null) picUrl = "http://blogs.utexas.edu/bonnecazegroup/files/2013/02/blank-profile-hi.png"; %>
 				<figure>
-					<img src="http://blogs.utexas.edu/bonnecazegroup/files/2013/02/blank-profile-hi.png" class="profile-picture" data-userid="<%= User.getID(session) %>" />
-					<figcaption><a href="#">Change profile picture...</a></figcaption>
+					<img src="<%= picUrl %>" class="profile-picture" data-userid="<%= User.getID(session) %>" />
+					<figcaption><a href="#" id="change-profile-picture" data-toggle="modal" data-target="#profPicModal" style="text-decoration: none;">Change profile picture...</a></figcaption>
 				</figure>
 				
 				<h2><%= User.getUsername(session) %></h2>
@@ -131,6 +133,36 @@
 		</div>
 	</div> <!-- end row -->
 <% } %>
+
+<!-- change profile picture modal -->
+<div class="modal fade" id="profPicModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Change profile picture</h4>
+      </div>
+      <div class="modal-body">
+        
+        <p>Please enter a URL for the profile picture you would like to use.</p>
+        
+        <div class="form-group">
+	    	<input type="text" class="dropdown-toggle form-control input-xlarge" id="prof-pic-entry" placeholder="Enter URL here..." data-toggle="dropdown">
+		</div>
+		
+		<button type="button" id="prof-pic-preview" class="btn btn-primary">Preview</button>
+		
+		<div id="new-picture-preview">
+		</div>
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="change-prof-pic-submit">Change</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 </div>
 
 <script src="js/profile.js"></script>

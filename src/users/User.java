@@ -250,7 +250,8 @@ public class User {
 	 * @param url
 	 */
 	public static void setProfilePicture(int userID, String url) {
-		// TODO: Finish me
+		String query = String.format("UPDATE users SET picturefile = '%s' WHERE id = " + userID, url);
+		DBConnection.getInstance().executeQuery(query);
 	}
 	
 	public static List<Friendship> getFriendRequests(String username) {
