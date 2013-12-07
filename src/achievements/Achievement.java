@@ -62,14 +62,15 @@ public class Achievement {
     }
     
     /**
-     * Checks for achievements for that user and gives any if neccessary
+     * Checks for achievements for that user and gives any if necessary
      */
     public static String CheckForCreatingQuizAchievements(String username){
-    	String query = "SELECT * IN quizzes WHERE creator='"+username+"'";
+    	String query = "SELECT * FROM quizzes WHERE creator='"+username+"'";
     	ResultSet r = DBConnection.getInstance().executeQuery(query);
     	try {
 			r.last();
 	    	int numRows = r.getRow();
+    		
 	    	if(numRows == 1){
 	    		giveAchievement("Amateur Author", username); 
 	    		return "Amateur Author";
@@ -94,7 +95,50 @@ public class Achievement {
     }
     
     
-    public static boolean CheckForTakingQuizAchievements(String username){
-    	return false;
+    public static String CheckForTakingQuizAchievements(String username, double score, int quizID, boolean practice_mode){
+    	String query = "SELECT * FROM scores WHERE username='"+username+"'";
+    	ResultSet r = DBConnection.getInstance().executeQuery(query);
+    	String achievements = "";
+    	boolean previous_achievement = false;
+    	if(practice_mode){
+    		Achievement.giveAchievement("Practice Makes Perfect", username);
+    		achievements += "Practice Makes Perfect";
+    		previous_achievement = true;
+    	}
+    	
+    	try {
+			r.last();
+	    	int numRows = r.getRow();
+    		
+	    	if(numRows == 10){
+	    		giveAchievement("Quiz Machine", username);
+	    		if(previous_achievement){
+	    			achievements += " , ";
+	    		}
+	    		achievements += "Quiz Machine";
+	    		previous_achievement = true;
+
+	    	}
+	    	
+	    	query = "SELECT * FROM scores WHERE quizID='"+quizID+"' ORDER BY score";
+	    	r = DBConnection.getInstance().executeQuery(query);
+	    	r.next();
+	    	double top_score = r.getDouble("score");
+	    	
+	    	if(score > top_score){
+	    		giveAchievement("I Am The Greatest", username);
+	    		if(previous_achievement){
+	    			achievements += " , ";
+	    		}
+	    		achievements += "I Am The Greatest";
+	    	}
+	    	
+	    	return achievements;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return null;
     }
 }

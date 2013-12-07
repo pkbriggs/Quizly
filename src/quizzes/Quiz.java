@@ -345,7 +345,7 @@ public class Quiz{
 		return this.totalPoints;
 	}
 
-	public void scorePage(HttpServletRequest request){
+	public double scorePage(HttpServletRequest request){
 		for(int i = getStartIndex(); i< getEndIndex(); i++){
 			this.points += this.questions.get(i).score(request);
 			this.totalPoints += this.questions.get(i).numAnswers();
@@ -353,6 +353,7 @@ public class Quiz{
 		
 		//once a page is scored, go to the next page
 		this.currPage++;
+		return (double) this.points/this.totalPoints;
 	}
 	
 	private int getEndIndex() {

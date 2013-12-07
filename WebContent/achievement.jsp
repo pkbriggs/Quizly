@@ -6,6 +6,6 @@
 
 <h2> Yahoo!!</h2> 
 
-<h3>You recieved a new Achievement : <b> <%=request.getAttribute("achievment") %> </b> </h3>
+<h3>You received a new Achievement : <b> <%=request.getAttribute("achievement") %> </b> </h3>
 
 <%@ include file="helpers/end_boilerplate.jsp" %>

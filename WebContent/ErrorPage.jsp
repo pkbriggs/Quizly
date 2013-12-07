@@ -6,10 +6,8 @@
 
 <h2>Whoops!</h2>
 <br><br>
-<%
-String error_message = request.getParameter("error_message");
-%>
-<%=error_message %>
+
+<h3><%= request.getParameter("error_message") %></h3>
 <br><br>
 <em>Go back and try again.</em>
 <%@ include file="helpers/end_boilerplate.jsp" %>

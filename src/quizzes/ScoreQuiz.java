@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import achievements.Achievement;
 import users.User;
 import dbconnection.DBConnection;
 
@@ -54,18 +55,19 @@ public class ScoreQuiz extends HttpServlet {
 		
 		boolean practice_mode = quiz.isPracticeMode(request);
 		
-		quiz.scorePage(request);
+		double score = quiz.scorePage(request);
 		
 		if(!quiz.finished()){
 			RequestDispatcher dispatch = request.getRequestDispatcher("DisplayQuizPage.jsp");
 			dispatch.forward(request, response);
 			return;
 		}else{
-				
 			if(!practice_mode){
 				RecordScore(request, username, quiz);
 			}
-			
+			String achievement = Achievement.CheckForTakingQuizAchievements(username, score, quiz.getID(), practice_mode);
+			System.out.println("these were the achievements: " + achievement);
+			request.setAttribute("achievement", achievement);
 			RequestDispatcher dispatch = request.getRequestDispatcher("QuizSuccessPage.jsp");
 			dispatch.forward(request, response);
 		}

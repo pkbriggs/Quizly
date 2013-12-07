@@ -69,7 +69,7 @@ public class CreateQuiz extends HttpServlet {
 			String achievement = Achievement.CheckForCreatingQuizAchievements(username);
 			RequestDispatcher dispatch ;
 			if(achievement != null){
-				request.setAttribute("achievment", achievement);
+				request.setAttribute("achievement", achievement);
 				dispatch = request.getRequestDispatcher("achievement.jsp");
 			}else{
 				dispatch = request.getRequestDispatcher("index.jsp");
@@ -98,8 +98,8 @@ public class CreateQuiz extends HttpServlet {
 				currQuiz.addQuestion(question);
 			}
 		}catch(Exception e){
-			RequestDispatcher dispatch = request.getRequestDispatcher("ErrorPage.jsp");
 			request.setAttribute("error_message", e.getMessage());
+			RequestDispatcher dispatch = request.getRequestDispatcher("ErrorPage.jsp");
 			System.out.println("this is the error message that should have been recieved: "+ e.getMessage());
 			dispatch.forward(request, response);
 			return;

@@ -4,6 +4,14 @@
 </jsp:include>
 <%@ include file="helpers/navbar.jsp" %>
 
+<% String achievement = (String) request.getAttribute("achievement"); %>
+
+<% if(achievement != null) { %>
+	<h2> Yahoo!!</h2> 
+	
+	<h3>You received a new Achievement : <b> <%=request.getAttribute("achievement") %> </b> </h3>
+	<br><br>
+<% } %>
 
 <%
 	Quiz quiz = (Quiz) session.getAttribute("curr_quiz");
@@ -13,7 +21,7 @@
 %>
 
 <% if(practice_mode){ %>
-	<h2>Practice Mode:</h2>
+	<h2>Practice Mode:</h2><br>
 <% } %>
 
 <h2>Score: <%=score %> % </h2>

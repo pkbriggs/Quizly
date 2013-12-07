@@ -107,11 +107,8 @@ INSERT INTO achievements(name, description, imageUrl) VALUES
 ("Prolific Author", "Created 5 quizzes.", ""),
 ("Prodigious Author", "Created 10 quizzes.", ""),
 ("Quiz Machine", "Took ten quizzes.", ""),
-("I am the Greatest", "Highest score on a quiz.", ""),
-("Practice makes Perfect", "Took a quiz in practice mode.", "");
-
-
-
+("I Am The Greatest", "Highest score on a quiz.", ""),
+("Practice Makes Perfect", "Took a quiz in practice mode.", "");
 
 
 CREATE TABLE userAchievements (
