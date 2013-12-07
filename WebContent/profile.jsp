@@ -88,7 +88,7 @@
 	
 			<br>
 		
-			<h4> Quizzes <%= user %> Created </h4>
+			<h3> Quizzes <%= user %> Created </h3>
 			<div id='quizzes_created_div'>
 				<table class="table table-hover table-striped">
 					<tr>
@@ -108,7 +108,7 @@
 			<br>
 			
 			<% String user_phrase =  (viewing_self_profile) ? "You Have" : User.getUsernameFromID(userID) + " Has"; %>
-			<h4> Quizzes <%= user_phrase %> Taken Recently</h4>
+			<h3> Quizzes <%= user_phrase %> Taken Recently</h3>
 			<div id='quizzes_taken_div'>
 				<table class="table table-hover table-striped">
 					<tr>
