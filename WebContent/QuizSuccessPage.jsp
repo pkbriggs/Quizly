@@ -21,7 +21,7 @@
 %>
 
 <% if(practice_mode){ %>
-	<h2>Practice Mode:</h2><br>
+	<h1>Practice Mode</h1><br>
 <% } %>
 
 <h2>Score: <%=score %> % </h2>
