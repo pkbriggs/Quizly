@@ -126,12 +126,11 @@ public class Achievement {
 	    	if(r == null)
 	    		return achievements;
 
-	    	r.next();
-	    	
-	    	if(!r.next())
-	    		return achievements;
-	    	
-	    	double top_score = r.getDouble("score");
+	    	double top_score = 0.0;
+	    	if(r != null){
+	    		r.next();
+	    		top_score = r.getDouble("score");
+	    	}
 	    	
 	    	if(score > top_score){
 	    		giveAchievement("I Am The Greatest", username);
