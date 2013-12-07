@@ -502,8 +502,13 @@ public class Quiz{
 		DBConnection.getInstance().executeQuery(queryQ);
 	}
 
+	public static void deleteQuizHistory(int quizID){
+		String query = "DELETE FROM scores WHERE quizID = " + quizID;  
+		DBConnection.getInstance().executeQuery(query);
+	}
+	
 	//returns list of stats in this order: numUsers, numQuizzes, numFriendships
-	public ArrayList<Integer> getStats(){
+	public static ArrayList<Integer> getStats(){
 		ArrayList<Integer> stats = new ArrayList<Integer>();
 		
 		String numUsers = "SELECT * FROM users";

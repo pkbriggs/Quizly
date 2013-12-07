@@ -1,6 +1,7 @@
 package users;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -51,11 +52,12 @@ public class Admin extends HttpServlet {
 			//redirect to announcement form
 		}
 		else if(request.getParameter("admin-see-stats") != null){
-			//format Quiz.getStats() - returns array of ints
+			//returns list of stats in this order: numUsers, numQuizzes, numFriendships
+			ArrayList<Integer> stats = Quiz.getStats();
 		}
 		else if(request.getParameter("admin-clear-hist") != null){
-			//get from quizHistory page
-			//int quizID = Integer.parseInt(request.getParameter("quizID"));
+			int quizID = Integer.parseInt(request.getParameter("quizID"));
+			Quiz.deleteQuizHistory(quizID);
 		}
 		else{
 			//redirect
