@@ -100,10 +100,11 @@ public class Achievement {
     	ResultSet r = DBConnection.getInstance().executeQuery(query);
     	String achievements = "";
     	boolean previous_achievement = false;
+    	
     	if(practice_mode){
     		Achievement.giveAchievement("Practice Makes Perfect", username);
     		achievements += "Practice Makes Perfect";
-    		previous_achievement = true;
+    		return achievements;
     	}
     	
     	try {

@@ -124,7 +124,7 @@
 					
 					<tr>
 						<td><a href='QuizSummary.jsp?id=<%= score.getQuizID() %>'><%= Quiz.getQuizTitleFromID(score.getQuizID()) %></a></td>
-						<td><em><%=DBConnection.GetDate(score.dateTaken()) %> </em></td>
+						<td><em><%=score.dateTaken() %> </em></td>
 						<td><em><%=score.getScore() * 100 %>%</em></td>
 						
 					</tr>
