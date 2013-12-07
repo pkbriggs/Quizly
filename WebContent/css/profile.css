@@ -1,6 +1,5 @@
 
 h3, h4 {
-	font-size: 12;
 	color: #6a8eab;
 	display: inline;
 }
@@ -54,3 +53,12 @@ table{
 .profile-page figcaption {
 	color: #333;
 }
+
+#quizzes_created_div, #quizzes_taken_div {
+	margin-top: 10px !important;
+}
+
+#quizzes_created_div td, #quizzes_taken_div td {
+	text-align: left;
+} 
+

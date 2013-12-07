@@ -1,3 +1,5 @@
+
+
 <jsp:include page="/helpers/boilerplate.jsp">
   <jsp:param name="pageTitle" value="Quizly"/>
   <jsp:param name="cssInclude" value="css/index-page.css" />
@@ -47,8 +49,8 @@
 		</form>
 
 		<% } else { %>
-			<%		RequestDispatcher dispatch = request.getRequestDispatcher("homepage.jsp");
-			dispatch.forward(request, response); %>
+			
+			<%@ include file="homepage.jsp" %>
 			
 		<% } %>
 		
