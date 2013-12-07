@@ -16,7 +16,7 @@
 		<% for(Quiz quiz: quizzes){ %>
 			<li><a href='QuizSummary.jsp?id=<%=quiz.getID()%>' > <%= quiz.getTitle()%> </a> </li>
 		<% } %>
-	</ul>;
+	</ul>
 <% } %>
 
 
