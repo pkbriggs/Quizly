@@ -27,6 +27,7 @@
 
 <form name='submit_quiz' action='ScoreQuiz' method='post'>
 	<h2> <%=title %> </h2>
+	<h4>Practice Mode: <input type='checkbox' name='practice_mode' value='practice_mode'/></h4>
 	
 	<div class = 'rightCorner'>
 		Page: <%=(currPage+1) %> 
@@ -34,7 +35,6 @@
 		Score: <em><b><%=points %> / <%=totalPoints %></b></em>
 		<br>
 		<% if(currPage == 0) { %>
-		<h4>Practice Mode: <input type='checkbox' name='practice_mode' value='practice_mode'/></h4>
 	<% } %>
 	</div>
 	

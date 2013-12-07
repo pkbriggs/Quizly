@@ -102,6 +102,15 @@ CREATE TABLE achievements (
 	PRIMARY KEY(id)
 );
 
+INSERT INTO achievements(name, description, imageUrl) VALUES
+("Amateur Author", "Created a quiz.", ""),
+("Prolific Author", "Created 5 quizzes.", ""),
+("Prodigious Author", "Created 10 quizzes.", ""),
+("Quiz Machine", "Took ten quizzes.", ""),
+("I Am The Greatest", "Highest score on a quiz.", ""),
+("Practice Makes Perfect", "Took a quiz in practice mode.", "");
+
+
 CREATE TABLE userAchievements (
 	id int AUTO_INCREMENT,
 	username varchar(64),
@@ -128,3 +137,4 @@ CREATE TABLE announcements (
 	body text,  
 	PRIMARY KEY(id)
 );
+

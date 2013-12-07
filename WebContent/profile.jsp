@@ -75,6 +75,11 @@
 		</div>
 		
 		<div class="profile-content-section">
+			<div class='achievements'>
+			
+			</div>
+			
+			
 			<% String user =  (viewing_self_profile) ? "You" : User.getUsernameFromID(userID); %>
 			<% System.out.println("Username : " +username); %>
 			<% ArrayList<Quiz> quizzes_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes WHERE creator='"+username+"'"); %>

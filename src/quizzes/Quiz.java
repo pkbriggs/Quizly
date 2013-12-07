@@ -345,7 +345,7 @@ public class Quiz{
 		return this.totalPoints;
 	}
 
-	public void scorePage(HttpServletRequest request){
+	public double scorePage(HttpServletRequest request){
 		for(int i = getStartIndex(); i< getEndIndex(); i++){
 			this.points += this.questions.get(i).score(request);
 			this.totalPoints += this.questions.get(i).numAnswers();
@@ -353,6 +353,7 @@ public class Quiz{
 		
 		//once a page is scored, go to the next page
 		this.currPage++;
+		return (double) this.points/this.totalPoints;
 	}
 	
 	private int getEndIndex() {
@@ -502,8 +503,13 @@ public class Quiz{
 		DBConnection.getInstance().executeQuery(queryQ);
 	}
 
+	public static void deleteQuizHistory(int quizID){
+		String query = "DELETE FROM scores WHERE quizID = " + quizID;  
+		DBConnection.getInstance().executeQuery(query);
+	}
+	
 	//returns list of stats in this order: numUsers, numQuizzes, numFriendships
-	public ArrayList<Integer> getStats(){
+	public static ArrayList<Integer> getStats(){
 		ArrayList<Integer> stats = new ArrayList<Integer>();
 		
 		String numUsers = "SELECT * FROM users";

@@ -62,7 +62,7 @@
 			</div>
 			
 			<p id="challenge-quiz-select-instructions">Now select a quiz:</p>
-			<% List<Quiz> quizList = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes;", "quizzes"); %>
+			<% List<Quiz> quizList = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes;"); %>
 			<select class="form-control" id="challenge-quiz-select">
 				<% for (Quiz quiz: quizList) { %>
 					<option data-quizid="<%= quiz.getID() %>"><%= quiz.getTitle() %></option>

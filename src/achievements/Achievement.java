@@ -1,3 +1,4 @@
+package achievements;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -58,5 +59,86 @@ public class Achievement {
 			e.printStackTrace();
 		}
 		return achievements;
+    }
+    
+    /**
+     * Checks for achievements for that user and gives any if necessary
+     */
+    public static String CheckForCreatingQuizAchievements(String username){
+    	String query = "SELECT * FROM quizzes WHERE creator='"+username+"'";
+    	ResultSet r = DBConnection.getInstance().executeQuery(query);
+    	try {
+			r.last();
+	    	int numRows = r.getRow();
+    		
+	    	if(numRows == 1){
+	    		giveAchievement("Amateur Author", username); 
+	    		return "Amateur Author";
+	    	}
+	    	
+	    	if(numRows == 5){
+	    		giveAchievement("Prolific Author", username); 
+	    		return "Prolific Author";
+	    	}
+	    	
+	    	if(numRows == 10){
+	    		giveAchievement("Prodigious Author", username); 
+	    		return "Prodigious Author";
+	    	}
+	    	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return null;
+    }
+    
+    
+    public static String CheckForTakingQuizAchievements(String username, double score, int quizID, boolean practice_mode){
+    	String query = "SELECT * FROM scores WHERE username='"+username+"'";
+    	ResultSet r = DBConnection.getInstance().executeQuery(query);
+    	String achievements = "";
+    	boolean previous_achievement = false;
+    	if(practice_mode){
+    		Achievement.giveAchievement("Practice Makes Perfect", username);
+    		achievements += "Practice Makes Perfect";
+    		previous_achievement = true;
+    	}
+    	
+    	try {
+			r.last();
+	    	int numRows = r.getRow();
+    		
+	    	if(numRows == 10){
+	    		giveAchievement("Quiz Machine", username);
+	    		if(previous_achievement){
+	    			achievements += " , ";
+	    		}
+	    		achievements += "Quiz Machine";
+	    		previous_achievement = true;
+
+	    	}
+	    	
+	    	query = "SELECT * FROM scores WHERE quizID='"+quizID+"' ORDER BY score";
+	    	r = DBConnection.getInstance().executeQuery(query);
+	    	r.next();
+	    	double top_score = r.getDouble("score");
+	    	
+	    	if(score > top_score){
+	    		giveAchievement("I Am The Greatest", username);
+	    		if(previous_achievement){
+	    			achievements += " , ";
+	    		}
+	    		achievements += "I Am The Greatest";
+	    	}
+	    	
+	    	return achievements;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return null;
     }
 }
