@@ -16,7 +16,7 @@ $(document).ready(function() {
 });
 
 function updateSearch(searchQuery) {
-	var query = "/Quizly/Search?query=" + encodeURIComponent(searchQuery);
+	var query = "/Quizly/Search?query=" + encodeURIComponent(searchQuery) + "&type=all";
 	var method = "GET";
 	makeAjaxRequest(query, method, function(results) {
 		updateSearchResults(results);

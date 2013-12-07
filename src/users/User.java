@@ -48,6 +48,17 @@ public class User {
 		return photoFilename;
 	}
 	
+	@Override
+	public boolean equals(Object other){
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof User)) return false;
+	    User otherUser = (User) other;
+	    
+	    if (otherUser.getID() == this.getID()) return true;
+	    return false;
+	}
+	
 	/**
 	 * Given a @userID, will compare the hashed @pass to the hashed password associated with the user's account.
 	 * @param userID

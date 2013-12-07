@@ -65,8 +65,9 @@ body, h1, h2, h3, h4, h5, h6, p, span, div {
 	padding-top: 12px !important;
 	padding-bottom: 12px !important;
 	margin-left: -15px; 
-	color: #b5e3ff !important;
+	color: #def3ff !important;
 	text-shadow: 0px 1px #64a8d0 !important; /* 5b9abf */
+	padding-right: 10px !important;
 }
 .user-action-icon i {
 	font-size: 26px;
@@ -100,6 +101,12 @@ body, h1, h2, h3, h4, h5, h6, p, span, div {
 }
 .navbar-brand {
 	font-weight:bold;
+}
+
+.navbar .badge {
+	background-color: #b5e3ff;
+	color: white;
+	font-size: 1.0em;
 }
 
 /* Dropdowns */

@@ -59,12 +59,28 @@ public class Challenge {
     	return challenges;        
     }
 
+    /**
+	 * Indicate that a user has either accepted or rejected a challenge: delete it from the table of challenges. 
+	 * @param id of challenge
+	 */
+    private static void deleteChallenge(int challengeId) {
+    	String query = "DELETE from challenges where id = " + challengeId;                                
+    	DBConnection.getInstance().executeQuery(query);   
+    }
+    
 	/**
 	 * Indicate that a user has accepted a challenge: delete it from the table of challenges. 
 	 * @param id of challenge
 	 */
     public static void acceptChallenge(int challengeId) {                
-    	String query = "DELETE from challenges where id = " + challengeId;                                
-    	DBConnection.getInstance().executeQuery(query);             
+    	deleteChallenge(challengeId);          
+    }
+    
+    /**
+	 * Indicate that a user has rejected a challenge: delete it from the table of challenges. 
+	 * @param id of challenge
+	 */
+    public static void rejectChallenge(int challengeId) {
+    	deleteChallenge(challengeId);
     }
 }

@@ -1,4 +1,6 @@
+<%@page import="messages.Challenge"%>
 <%@ page import="users.User" %>
+<%@ page import="messages.Message" %>
 <%@ page import="users.Friendship" %>
 <%@ page import="java.util.*" %>
 <%@ page import="quizzes.*" %>
@@ -101,7 +103,9 @@
             
             	<li class="dropdown">
             		<% if (User.isLoggedIn(session)) { //  User.getIDFromUsername(User.getUsername(session)) %>
-	            		<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown" data-currid="<%= User.getID(session) %>" id="user-dropdown"><i class="fa fa-users fa-2x"></i></a>
+            			<% String numFriendRequests = Integer.toString(User.getFriendRequests(User.getUsername(session)).size()); %>
+            			<% if (numFriendRequests.equals("0")) numFriendRequests = ""; %>
+	            		<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown" data-currid="<%= User.getID(session) %>" id="user-dropdown"><i class="fa fa-users fa-2x"></i><span class="badge"><%= numFriendRequests %></span></a>
 	            	<% } else { %>
 	            		<a href="#" class="user-action-icon dropdown-toggle" data-toggle="dropdown" data-currid="-1" id="user-dropdown"><i class="fa fa-users fa-2x"></i></a>
 	            	<% } %>
@@ -128,6 +132,8 @@
 	            </li>
 	            
 	            <li>
+	            	<% String numChallenges = Integer.toString(Challenge.getUserChallenges(User.getUsername(session), 0).size()); %>
+	            	<% if (numChallenges.equals("0")) numChallenges = ""; %>
 	            	<a href="/Quizly/challenges.jsp" class="user-action-icon"><i class="fa fa-bullhorn fa-2x"></i></a>
 	            </li>
         
