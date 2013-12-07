@@ -3,6 +3,7 @@
 <%@ page import="users.Friendship.FriendshipStatus" %>
 <%@ page import="java.util.List" %>
 
+
 <jsp:include page="/helpers/boilerplate.jsp">
   <jsp:param name="pageTitle" value="Quizly | Profile"/>
   <jsp:param name="cssInclude" value="css/profile.css" />
