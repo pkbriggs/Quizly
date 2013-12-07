@@ -1,7 +1,3 @@
-<%@ page import="users.User" %>
-<%@ page import="users.Friendship" %>
-<%@ page import="users.Friendship.FriendshipStatus" %>
-<%@ page import="java.util.List" %>
 
 <jsp:include page="/helpers/boilerplate.jsp">
   <jsp:param name="pageTitle" value="Quizly | Admin"/>
@@ -9,47 +5,47 @@
 </jsp:include>
 <%@ include file="helpers/navbar.jsp" %>
 
-<h2>Administation</h2>
+<h2>Administration</h2>
 
 <div id='admin_users'>
-	Admin Users: 
+	<h3>Admin Users: </h3>
 	<% List<User> admin_users = User.getAdminUsers(); %>
-	<ul>
+	<table class='shiftRight'>
 	<% for (User user: admin_users) { %>
-		<li>
-			<a href='profile.jsp?id=<%= user.getID()%>' > <%= user.getUsername() %></a> 
-			<a class='action' href='Admin?admin-demote=yes&userID=<%= user.getID()%>' >demote</a>			
-		</li>
+		<tr>
+			<td><a href='profile.jsp?id=<%= user.getID()%>' > <%= user.getUsername() %></a></td> 
+			<td><a class='btn btn-small btn-primary' href='Admin?admin-demote=yes&userID=<%= user.getID()%>' >demote  &raquo;</a></td>			
+		</tr>
 	<% } %>
-	</ul>
+	</table>
 </div>
 
 <div id= 'reg_users'>
-	Users:
+	<h3> Users:</h3>
 	<% List<User> users = User.getAllUsers(); %>
-	<ul>
+	<table class='shiftRight'>
 	<% for (User user: users) { %>
-		<li>
-			<a href='profile.jsp?id=<%= user.getID()%>' > <%= user.getUsername() %></a> 
-			<a class='action' href='Admin?admin-promote=yes&userID=<%= user.getID()%>' >promote</a>
-			<a class='action' href='Admin?admin-delete=yes&userID=<%= user.getID()%>' >delete</a>	
-		</li>
+		<tr>
+			<td><a href='profile.jsp?id=<%= user.getID()%>' > <%= user.getUsername() %></a> </td>
+			<td><a class='btn btn-small btn-primary' href='Admin?admin-promote=yes&userID=<%= user.getID()%>' >promote</a></td>
+			<td><a class='btn btn-small btn-primary' href='Admin?admin-delete=yes&userID=<%= user.getID()%>' >delete</a></td>
+		</tr>
 	<% } %>
-	</ul>
+	</table>
 </div>
 
 <div id= 'quizzes'>
 	
-	Quizzes: 
+	<h3> Quizzes: </h3>
 	<% List<Quiz> quizzes = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes"); %>
-	<ul>
+	<table class='shiftRight'>
 	<% for (Quiz quiz: quizzes) { %>
-		<li>
-			<a href='QuizSummary.jsp?id=<%= quiz.getID()%>' > <%= quiz.getTitle() %></a>
-			<a class='action' href='Admin?admin-quiz-delete=yes&quizID=<%= quiz.getID()%>' >delete</a>	
+		<tr>
+			<td><a href='QuizSummary.jsp?id=<%= quiz.getID()%>' > <%= quiz.getTitle() %></a></td>
+			<td><a class='btn btn-small btn-primary' href='Admin?admin-quiz-delete=yes&quizID=<%= quiz.getID()%>' >delete</a></td>
 		
-		</li>
+		</tr>
 	<% } %>
-	</ul>
+	</table>
 </div>
 <%@ include file="helpers/end_boilerplate.jsp" %>
