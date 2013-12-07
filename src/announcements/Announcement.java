@@ -12,7 +12,7 @@ public class Announcement {
 	public int userID;        
 	public String posted;        
 	public String subject;        
-	public String body;                     
+	public String body;  
 
 	public Announcement(int announcement_id) {                
 		this.announcement_id = announcement_id;                                
@@ -53,5 +53,6 @@ public class Announcement {
 		String query = String.format("INSERT INTO announcements (userID, posted, subject, body) VALUES ('%d', '%s', '%s');", u.getID(), stringDate, subject, body);                     
 		DBConnection.getInstance().executeQuery(query);        
 	}
+	
 	
 }

@@ -48,4 +48,14 @@
 	<% } %>
 	</table>
 </div>
+<div id='announcements'>
+	<h3>Announcements</h3>
+	<form>
+		<label>Subject</label>
+		<textarea id="sub" rows="1" cols="20" name="subject"></textarea><br><br>
+		<label>Body</label>
+		<textarea id="bod" rows="5" cols="50" name="body"></textarea><br><br>
+		<a class='btn btn-small btn-primary' href='Admin?admin-announce=yes&userID=<% User.getUsername(session); %>&subject='>Submit</a>
+	</form>
+</div>
 <%@ include file="helpers/end_boilerplate.jsp" %>

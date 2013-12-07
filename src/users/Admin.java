@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import announcements.Announcement;
 import quizzes.Quiz;
 
 /**
@@ -50,6 +51,9 @@ public class Admin extends HttpServlet {
 		}
 		else if(request.getParameter("admin-announce") != null){
 			//redirect to announcement form
+			int userID = Integer.parseInt(request.getParameter("userID"));
+			User user = User.getUserFromID(userID);
+			Announcement.newAnnouncement(user, request.getParameter("subject"), request.getParameter("body"));
 		}
 		else if(request.getParameter("admin-see-stats") != null){
 			//returns list of stats in this order: numUsers, numQuizzes, numFriendships
