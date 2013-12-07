@@ -5,6 +5,8 @@
 <%@ page import="java.util.*" %>
 <%@ page import="quizzes.*" %>
 <%@ page import="dbconnection.DBConnection" %>
+<%@ page import="achievements.*" %>
+<%@ page import="announcements.*" %>
 
 
 <div class="navbar navbar-default navbar-static-top" role="navigation">

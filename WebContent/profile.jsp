@@ -75,17 +75,21 @@
 		</div>
 		
 		<div class="profile-content-section">
-			<div class='achievements'>
-			
-			</div>
-			
-			
 			<% String user =  (viewing_self_profile) ? "You" : User.getUsernameFromID(userID); %>
 			<% System.out.println("Username : " +username); %>
 			<% ArrayList<Quiz> quizzes_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes WHERE creator='"+username+"'"); %>
 			<% ArrayList<Score> quizzes_taken = Score.getScores("SELECT * FROM scores WHERE username='"+username+"' ORDER BY dateTaken LIMIT 5"); %>
 			<% ArrayList<Quiz> recently_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes ORDER BY dateCreated LIMIT 5"); %>
-	
+			<% ArrayList<Achievement> achievements = Achievement.getAchievementsFor(username); %>
+			
+			<div class='achievements'>
+				<h3>Achievements:</h3>
+				<% for(Achievement achievement : achievements ){%>
+						<br><i class='<%=achievement.image %>'></i>
+						<%=achievement.name %> since <%=achievement.dateCreated %> 
+				<% }%>
+			</div>
+			
 			<br>
 		
 			<h4> Quizzes <%= user %> Created </h4>

@@ -48,7 +48,7 @@ public class Achievement {
 	 * @return ArrayList of achievements for a user. 
 	 */
     public static ArrayList<Achievement> getAchievementsFor(String user){
-    	String query = String.format("SELECT achievements.name, achievements.description, achievements.imageUrl, filtered.dateCreated from achievements inner join (select * from userAchievements where username '%s') filtered on achievements.name = filtered.achievement", user);
+    	String query = String.format("SELECT achievements.name, achievements.description, achievements.imageUrl, filtered.dateCreated from achievements inner join (select * from userAchievements where username='%s') filtered on achievements.name = filtered.achievement", user);
 		ArrayList<Achievement> achievements = new ArrayList<Achievement>();                  
 		ResultSet rs = DBConnection.getInstance().executeQuery(query);                       
 		try {
@@ -122,7 +122,14 @@ public class Achievement {
 	    	
 	    	query = "SELECT * FROM scores WHERE quizID='"+quizID+"' ORDER BY score";
 	    	r = DBConnection.getInstance().executeQuery(query);
+	    	if(r == null)
+	    		return achievements;
+
 	    	r.next();
+	    	
+	    	if(!r.next())
+	    		return achievements;
+	    	
 	    	double top_score = r.getDouble("score");
 	    	
 	    	if(score > top_score){
