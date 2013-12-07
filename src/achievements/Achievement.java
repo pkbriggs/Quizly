@@ -48,7 +48,7 @@ public class Achievement {
 	 * @return ArrayList of achievements for a user. 
 	 */
     public static ArrayList<Achievement> getAchievementsFor(String user){
-    	String query = String.format("SELECT achievements.name, achievements.description, achievements.imageUrl, filtered.dateCreated from achievements inner join (select * from userAchievements where username '%s') filtered on achievements.name = filtered.achievement", user);
+    	String query = String.format("SELECT achievements.name, achievements.description, achievements.imageUrl, filtered.dateCreated from achievements inner join (select * from userAchievements where username='%s') filtered on achievements.name = filtered.achievement", user);
 		ArrayList<Achievement> achievements = new ArrayList<Achievement>();                  
 		ResultSet rs = DBConnection.getInstance().executeQuery(query);                       
 		try {
@@ -100,10 +100,11 @@ public class Achievement {
     	ResultSet r = DBConnection.getInstance().executeQuery(query);
     	String achievements = "";
     	boolean previous_achievement = false;
+    	
     	if(practice_mode){
     		Achievement.giveAchievement("Practice Makes Perfect", username);
     		achievements += "Practice Makes Perfect";
-    		previous_achievement = true;
+    		return achievements;
     	}
     	
     	try {
@@ -122,8 +123,12 @@ public class Achievement {
 	    	
 	    	query = "SELECT * FROM scores WHERE quizID='"+quizID+"' ORDER BY score";
 	    	r = DBConnection.getInstance().executeQuery(query);
-	    	r.next();
-	    	double top_score = r.getDouble("score");
+
+	    	double top_score = 0.0;
+	    	if(r != null){
+	    		r.next();
+	    		top_score = r.getDouble("score");
+	    	}
 	    	
 	    	if(score > top_score){
 	    		giveAchievement("I Am The Greatest", username);

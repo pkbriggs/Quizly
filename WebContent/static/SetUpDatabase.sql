@@ -103,12 +103,12 @@ CREATE TABLE achievements (
 );
 
 INSERT INTO achievements(name, description, imageUrl) VALUES
-("Amateur Author", "Created a quiz.", ""),
-("Prolific Author", "Created 5 quizzes.", ""),
-("Prodigious Author", "Created 10 quizzes.", ""),
-("Quiz Machine", "Took ten quizzes.", ""),
-("I Am The Greatest", "Highest score on a quiz.", ""),
-("Practice Makes Perfect", "Took a quiz in practice mode.", "");
+("Amateur Author", "Created a quiz.", "fa fa-pencil"),
+("Prolific Author", "Created 5 quizzes.", "fa fa-star-o"),
+("Prodigious Author", "Created 10 quizzes.", "fa fa-star-half-o"),
+("Quiz Machine", "Took ten quizzes.", "fa fa-star"),
+("I Am The Greatest", "Highest score on a quiz.", "fa fa-trophy"),
+("Practice Makes Perfect", "Took a quiz in practice mode.", "fa fa-pencil-square-o");
 
 
 CREATE TABLE userAchievements (

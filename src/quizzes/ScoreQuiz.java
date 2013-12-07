@@ -65,6 +65,7 @@ public class ScoreQuiz extends HttpServlet {
 			if(!practice_mode){
 				RecordScore(request, username, quiz);
 			}
+			
 			String achievement = Achievement.CheckForTakingQuizAchievements(username, score, quiz.getID(), practice_mode);
 			System.out.println("these were the achievements: " + achievement);
 			request.setAttribute("achievement", achievement);
@@ -78,8 +79,10 @@ public class ScoreQuiz extends HttpServlet {
 		long time = quiz.getTime();
 		double score = (double) quiz.getPoints() /quiz.getTotalPoints();
 		DBConnection connection= DBConnection.getInstance();
+		String dateTaken = DBConnection.GetDate(Calendar.getInstance().getTime());
+		System.out.println("SCOREQUIZ: dateTaken: " + dateTaken);
 		String query = "INSERT INTO scores (username, quizID, score, time, dateTaken) "
-				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+score+"\", \""+time+"\", \""+DBConnection.GetDate(Calendar.getInstance().getTime())+"\")";
+				+ "VALUES(\""+username+"\", \""+quiz.getID()+"\", \""+score+"\", \""+time+"\", \""+dateTaken+"\")";
 		connection.executeQuery(query);
 	}
 
