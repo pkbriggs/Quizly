@@ -1,3 +1,4 @@
+package achievements;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -58,5 +59,42 @@ public class Achievement {
 			e.printStackTrace();
 		}
 		return achievements;
+    }
+    
+    /**
+     * Checks for achievements for that user and gives any if neccessary
+     */
+    public static String CheckForCreatingQuizAchievements(String username){
+    	String query = "SELECT * IN quizzes WHERE creator='"+username+"'";
+    	ResultSet r = DBConnection.getInstance().executeQuery(query);
+    	try {
+			r.last();
+	    	int numRows = r.getRow();
+	    	if(numRows == 1){
+	    		giveAchievement("Amateur Author", username); 
+	    		return "Amateur Author";
+	    	}
+	    	
+	    	if(numRows == 5){
+	    		giveAchievement("Prolific Author", username); 
+	    		return "Prolific Author";
+	    	}
+	    	
+	    	if(numRows == 10){
+	    		giveAchievement("Prodigious Author", username); 
+	    		return "Prodigious Author";
+	    	}
+	    	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return null;
+    }
+    
+    
+    public static boolean CheckForTakingQuizAchievements(String username){
+    	return false;
     }
 }

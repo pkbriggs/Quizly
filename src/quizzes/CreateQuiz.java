@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import achievements.Achievement;
 import users.User;
 import dbconnection.DBConnection;
 
@@ -63,7 +64,17 @@ public class CreateQuiz extends HttpServlet {
 		
 		if(formID.equals("submit_quiz")){
 			AddQuizToDatabase(request);
-			RequestDispatcher dispatch = request.getRequestDispatcher("index.jsp");
+			String username = User.getUsername(session);
+			
+			String achievement = Achievement.CheckForCreatingQuizAchievements(username);
+			RequestDispatcher dispatch ;
+			if(achievement != null){
+				request.setAttribute("achievment", achievement);
+				dispatch = request.getRequestDispatcher("achievement.jsp");
+			}else{
+				dispatch = request.getRequestDispatcher("index.jsp");
+			}
+			
 			dispatch.forward(request, response);
 			return;
 		}
