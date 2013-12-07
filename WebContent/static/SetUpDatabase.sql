@@ -134,7 +134,7 @@ CREATE TABLE announcements (
 	userID int,
 	posted varchar(255),  
 	subject text,  
-	body text,  
+	body text,
 	PRIMARY KEY(id)
 );
 
