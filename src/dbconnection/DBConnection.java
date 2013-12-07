@@ -185,5 +185,12 @@ public class DBConnection {
 		return dateFormat.format(date);
 	}
 	
+	public static String getMinsSecsFromMillis(long millis) {
+		Date date = new Date(millis);
+		
+		String newString = new SimpleDateFormat("mm:ss").format(date); // 09:30
+		return newString;
+	}
+	
 
 }

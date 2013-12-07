@@ -85,7 +85,7 @@
 		
 			<h4> Quizzes <%= user %> Created </h4>
 			<div id='quizzes_created_div'>
-				<table>
+				<table class="table table-hover table-striped">
 					<tr>
 						<th>Quiz</th>
 						<th>Created</th>
@@ -105,7 +105,7 @@
 			<% String user_phrase =  (viewing_self_profile) ? "You Have" : User.getUsernameFromID(userID) + " Has"; %>
 			<h4> Quizzes <%= user_phrase %> Taken Recently</h4>
 			<div id='quizzes_taken_div'>
-				<table>
+				<table class="table table-hover table-striped">
 					<tr>
 						<th>Quiz</th>
 						<th>Taken</th>
@@ -114,9 +114,9 @@
 				<% for (Score score: quizzes_taken) { %>
 					
 					<tr>
-						<td><a href='QuizSummary.jsp?id= <%= score.getQuizID() %>' > <%= Quiz.getQuizTitleFromID(score.getQuizID()) %></a> </td>
+						<td><a href='QuizSummary.jsp?id=<%= score.getQuizID() %>'><%= Quiz.getQuizTitleFromID(score.getQuizID()) %></a></td>
 						<td><em><%=DBConnection.GetDate(score.dateTaken()) %> </em></td>
-						<td><em><%=score.getScore() %>%</em></td>
+						<td><em><%=score.getScore() * 100 %>%</em></td>
 						
 					</tr>
 				<% } %>
