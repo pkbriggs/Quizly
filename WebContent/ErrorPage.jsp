@@ -7,7 +7,7 @@
 <h2>Whoops!</h2>
 <br><br>
 
-<h3><%= request.getParameter("error_message") %></h3>
+<h3><%= request.getAttribute("error_message") %></h3>
 <br><br>
 <em>Go back and try again.</em>
 <%@ include file="helpers/end_boilerplate.jsp" %>
