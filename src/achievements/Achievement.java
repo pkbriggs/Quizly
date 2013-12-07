@@ -123,8 +123,6 @@ public class Achievement {
 	    	
 	    	query = "SELECT * FROM scores WHERE quizID='"+quizID+"' ORDER BY score";
 	    	r = DBConnection.getInstance().executeQuery(query);
-	    	if(r == null)
-	    		return achievements;
 
 	    	double top_score = 0.0;
 	    	if(r != null){
