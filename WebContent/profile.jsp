@@ -80,28 +80,9 @@
 			<% ArrayList<Quiz> quizzes_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes WHERE creator='"+username+"'"); %>
 			<% ArrayList<Score> quizzes_taken = Score.getScores("SELECT * FROM scores WHERE username='"+username+"' ORDER BY dateTaken LIMIT 5"); %>
 			<% ArrayList<Quiz> recently_created = Quiz.GetArrayOfQuizzes("SELECT * FROM quizzes ORDER BY dateCreated LIMIT 5"); %>
-			
-			<button id = "recently_created_btn" class="btn btn-small btn-expand">+</button>				
-			<h4>New Quizzes</h4>
-			<div id='recently_created'>
-				<table>
-					<tr>
-						<th>Quiz</th>
-						<th>Created</th>
-						<th>By</th>	
-					</tr>
-				<% for (Quiz quiz: recently_created) { %>
-					<tr>
-						<td><a href='QuizSummary.jsp?id=<%= quiz.getID()%>' > <%= quiz.getTitle() %></a> </td>
-						<td><em><%=quiz.getDateCreated() %></em></td>
-						<td><em><a href='profile.jsp?id=<%=User.getIDFromUsername(quiz.getCreator()) %>' > <%= quiz.getCreator() %></a></em></td>
-					</tr>
-				<% } %>
-				</table>
-			</div>
+	
 			<br>
-			
-			<button id = "quizzes_created" class="btn btn-small btn-expand">+</button>
+		
 			<h4> Quizzes <%= user %> Created </h4>
 			<div id='quizzes_created_div'>
 				<table>
@@ -120,8 +101,8 @@
 				</table>
 			</div>
 			<br>
+			
 			<% String user_phrase =  (viewing_self_profile) ? "You Have" : User.getUsernameFromID(userID) + " Has"; %>
-			<button id = "quizzes_taken" class="btn btn-small btn-expand">+</button>	
 			<h4> Quizzes <%= user_phrase %> Taken Recently</h4>
 			<div id='quizzes_taken_div'>
 				<table>

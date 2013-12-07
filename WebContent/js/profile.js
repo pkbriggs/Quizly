@@ -1,15 +1,5 @@
 $(document).ready(function() {
-	
-	$("#quizzes_created_div").hide();
-	$("#quizzes_taken_div").hide();
-	$("#recently_created").hide();
 
-    $("#recently_created_btn").click(function() {
-        if($("#recently_created").is(":visible")) $("#recently_created").slideUp();
-        else {
-            $("#recently_created").slideDown();
-        }
-    });
     
     $("#quizzes_created").click(function() {
         if($("#quizzes_created_div").is(":visible")) $("#quizzes_created_div").slideUp();

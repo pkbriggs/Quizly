@@ -540,23 +540,23 @@ public class Quiz{
 	}
 	
 	//Get 10 most popular quizzes
-	public ArrayList<Quiz> homepageGetPopularQuizzes(){
-		ArrayList<Quiz> result = new ArrayList<Quiz>();
-		String query = "SELECT quizID, COUNT(*) FROM score ORDER BY COUNT(*) GROUP BY quizID LIMIT 10";
+	public static ArrayList<Score> homepageGetPopularQuizzes(){
+		ArrayList<Score> results = new ArrayList<Score>();
+		String query = "SELECT quizID, COUNT(*) FROM scores GROUP BY quizID ORDER BY COUNT(*) LIMIT 10";
 		ResultSet rs = DBConnection.getInstance().executeQuery(query);
 		try{
 			while(rs.next()){
-				result.add(new Quiz(rs.getInt("quizID")));
+				//results.add(new Score(rs.getInt("quizID")));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return result;
+		return results;
 	}
 	
 	//Get 10 most popular quizzes
-	public ArrayList<Quiz> homepageGetNewQuizzes(){
+	public static ArrayList<Quiz> homepageGetNewQuizzes(){
 		ArrayList<Quiz> result = new ArrayList<Quiz>();
 		String query = "SELECT dateCeated, COUNT(*) FROM quizzes ORDER BY COUNT(*) GROUP BY dateCreated LIMIT 10";
 		ResultSet rs = DBConnection.getInstance().executeQuery(query);
